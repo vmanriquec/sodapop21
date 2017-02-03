@@ -7,4 +7,5 @@ package com.food.sistemas.sodapopapp.api;
 public interface Usuariologinapi {
    // Call<UsuarioResponse>
 
+
 }
