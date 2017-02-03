@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Communicator {
     private static  final String TAG = "Communicator";
-    private static final String SERVER_URL = "http://sodapop.net16.net";
+    private static final String SERVER_URL = "https://sodapop.000webhostapp.com";
 
     public void loginPost(String username, String password){
 
