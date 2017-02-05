@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,7 +55,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
 
         loginButton=(LoginButton) findViewById(R.id.login_button);
-        Button loginnormal =(Button) findViewById(R.id.iicionormal);
+        final Button normal;
+        normal =(Button) findViewById(R.id.inicionormal);
+        normal.setOnClickListener(new Button.OnClickListener() {
+
+            public void onClick(View v) {
+                Toast.makeText(LoginActivity.this,"Veificar usuarios",Toast.LENGTH_LONG);
+
+
+
+            }
+        });
 
 
         result = (TextView) findViewById(R.id.textView4);
