@@ -10,10 +10,9 @@ public interface Loginapi {
     @FormUrlEncoded
     @POST("/login.php")
     public void insertUser(
-            @Field("name") String name,
-            @Field("username") String username,
-            @Field("password") String password,
-            @Field("email") String email,
+            @Field("nombreusuario") String nombreusuario,
+            @Field("claveusuario") String claveusuario,
+
             Callback<Response> callback);
 
 
