@@ -123,7 +123,7 @@ Intent intent= new Intent(this,Vaio.class);
 /* When negative (No/cancel) button is clicked*/
         alertDialog.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                finish(); // Your custom code
+                finish(); // Your custom codeyyhhh
             }
         });
         alertDialog.show();
