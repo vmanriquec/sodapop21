@@ -53,10 +53,10 @@ public class Almacen {
         return correoalm;
     }
 
-    @Override
-    public String toString(){
-        return String.valueOf(idalmacen)+" A=>"+ String.valueOf(nombrealm);
-    }
+    //@Override
+   // public String toString(){
+     //   return String.valueOf(idalmacen)+" A=>"+ String.valueOf(nombrealm);
+    //}
 
 
 }

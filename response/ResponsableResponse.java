@@ -6,15 +6,23 @@ import java.util.ArrayList;
 
 public class ResponsableResponse {
 
-    private ArrayList<Almacen> almacen;
+    private ArrayList<Almacen> almacenes;
     private boolean error;
 
     public ArrayList<Almacen> getResponsables() {
-        return almacen;
+        return almacenes;
     }
 
-    public void setResponsables(ArrayList<Almacen> almacenes) {
-        this.almacen = almacen;
+    public void setResponsables(ArrayList<Almacen> almacenes)
+    {
+        this.almacenes = almacenes;
+    }
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 
 

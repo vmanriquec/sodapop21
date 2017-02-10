@@ -4,7 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.POST;
 
 public interface RedemnorteApiService {
-    @POST("/api.php/almacen")
+    @POST("apiandroidrecuperaalmacenes.php")
     Call<ResponsableResponse> getResponsables();
 
 
