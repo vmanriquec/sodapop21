@@ -20,6 +20,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.food.sistemas.sodapopapp.modelo.Almacen;
 import com.food.sistemas.sodapopapp.modelo.Usuarios;
+import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
+import com.food.sistemas.sodapopapp.response.ResponsableResponse;
 import com.vansuita.library.Icon;
 
 import org.json.JSONArray;
@@ -27,6 +29,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 //import com.google.android.gms.appindexing.Action;
 //import com.google.android.gms.appindexing.AppIndex;
@@ -42,32 +48,33 @@ public class Login extends AppCompatActivity {
     String showUsuario = "http://sodapop.net16.net/apiandroidrecuperausuarios.php";
     RequestQueue requestQueue;
     Almacen mes;
+    private  Spinner listar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
  Button normal =(Button) findViewById(R.id.button2);
+        obtenerDatosResponsable();
         normal.setOnClickListener(new Button.OnClickListener() {
 
             public void onClick(View v) {
                // Toast.makeText(Login.this,"traer usuarios",Toast.LENGTH_LONG);
-
-
-                traerusuarios();
+                listar =(Spinner) findViewById(R.id.spinner3);
+                obtenerDatosResponsable();
+                //traerusuarios();
             }
         });
 
-        final Spinner list;
 
-        listaalmacenes();
+        //listaalmacenes();
 
-        list =(Spinner) findViewById(R.id.spinner3);
+
 
          nombreusuario = (EditText) findViewById(R.id.txtnombreusuario);
-        Icon.left(nombreusuario, R.mipmap.logo);
+        Icon.left(nombreusuario, R.drawable.userlogin);
         claveusuario = (EditText) findViewById(R.id.txtclaveusuario);
-        Icon.left(claveusuario, R.mipmap.icn_3);
+        Icon.left(claveusuario, R.drawable.llavelogin);
 
                 String nombre = nombreusuario.getText().toString();
         String clave = claveusuario.getText().toString();
@@ -226,6 +233,46 @@ ir();
             });
             requestQueue.add(jsonObjectRequest);
         }
+
+
+
+    private void poblarSpinnerResponsables(ArrayList<Almacen> almacen) {
+
+        List<String> lista = new ArrayList<String>();
+        for (Almacen r : almacen) {
+            lista.add(r.getNombrealm());
+            Toast.makeText(Login.this,r.getNombrealm(),Toast.LENGTH_LONG);
+        }
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, lista);
+        //spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        listar.setAdapter(spinnerArrayAdapter);
+    }
+
+    private void obtenerDatosResponsable() {
+        Call<ResponsableResponse> call = RedemnorteApiAdapter.getApiService().getResponsables();
+        call.enqueue(new Login.ResponsablesCallback());
+    }
+
+    class ResponsablesCallback implements Callback<ResponsableResponse> {
+
+        @Override
+        public void onResponse(Call<ResponsableResponse> call, retrofit2.Response<ResponsableResponse> response) {
+            if (response.isSuccessful()) {
+                ResponsableResponse responsableResponse = response.body();
+                poblarSpinnerResponsables(responsableResponse.getResponsables());
+            }   else {
+                Toast.makeText(Login.this, "Error en el formato de respuesta", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponsableResponse> call, Throwable t) {
+            Toast.makeText(Login.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     }
 
 

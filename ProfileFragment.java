@@ -23,12 +23,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * User: special
- * Date: 13-12-22
- * Time: 下午1:31
- * Mail: specialcyci@gmail.com
- */
 public class ProfileFragment extends Fragment {
     String showUrl = "http://www.sodapop1978.pe.hu/apiandroidrecuperaalmacenes.php";
     TextView result;

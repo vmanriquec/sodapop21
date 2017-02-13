@@ -11,13 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -26,12 +22,15 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.food.sistemas.sodapopapp.modelo.Almacen;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
+import com.food.sistemas.sodapopapp.response.ResponsableResponse;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A login screen that offers login via email/password.
@@ -43,6 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Almacen mes;
     TextView result;
     Button boton;
+    Spinner spineralmacen;
 
 
     RequestQueue requestQueue;
@@ -55,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         callbackManager = CallbackManager.Factory.create();
         final Spinner list;
 
+        final ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
+        spineralmacen=(Spinner) findViewById(R.id.spinalmacen);
 
 
         loginButton=(LoginButton) findViewById(R.id.login_button);
@@ -140,58 +142,45 @@ Intent intent= new Intent(this,Vaio.class);
             }
         });
         alertDialog.show();
-    }
-    public void listaalmacenes(){
-
-        final Spinner list;
-        list =(Spinner) findViewById(R.id.spinner3);
-        final ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,"http://sodapop.net16.net/apiandroidrecuperaalmacenes.php"
-                , new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                System.out.println(response.toString());
-                try {
-                    JSONArray students = response.getJSONArray("students");
-                    for (int i = 0; i < students.length(); i++) {
-                        JSONObject student = students.getJSONObject(i);
-
-                        String firstname = student.getString("idalmacen");
-                        String lastname = student.getString("nombrealm");
-                        String age = student.getString("correoalm");
-                        mes = new Almacen(Integer.parseInt(firstname), lastname,age,"1234");
-                        listaalmacen.add(mes);
-                        //        result.append(nombrealm + " " +  " \n");
-
-
-                    }
-
-                    ArrayAdapter<Almacen> asa = new ArrayAdapter<Almacen>(LoginActivity.this, android.R.layout.simple_spinner_item,listaalmacen );
-                    // return asa;
-
-                    list.setAdapter(asa);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.append(error.getMessage());
-
-            }
-
-        });
-        requestQueue.add(jsonObjectRequest);
-
-
-
-
-
 
     }
+
+    private void poblarSpinnerResponsables(ArrayList<Almacen> almacen) {
+
+        List<String> list = new ArrayList<String>();
+        for (Almacen r : almacen) {
+            list.add(r.getNombrealm());
+            Toast.makeText(LoginActivity.this,r.getNombrealm(),Toast.LENGTH_LONG);
+        }
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, list);
+        //spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spineralmacen.setAdapter(spinnerArrayAdapter);
+    }
+
+    private void obtenerDatosResponsables() {
+        Call<ResponsableResponse> call = RedemnorteApiAdapter.getApiService().getResponsables();
+        call.enqueue(new LoginActivity.ResponsablesCallback());
+    }
+
+    class ResponsablesCallback implements Callback<ResponsableResponse> {
+
+        @Override
+        public void onResponse(Call<ResponsableResponse> call, Response<ResponsableResponse> response) {
+            if (response.isSuccessful()) {
+                ResponsableResponse responsableResponse = response.body();
+                poblarSpinnerResponsables(responsableResponse.getResponsables());
+            }   else {
+                Toast.makeText(LoginActivity.this, "Error en el formato de respuesta", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponsableResponse> call, Throwable t) {
+            Toast.makeText(LoginActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
 
 
