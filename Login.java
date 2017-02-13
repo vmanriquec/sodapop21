@@ -67,6 +67,8 @@ public class Login extends AppCompatActivity {
         });
 
 
+
+
         //listaalmacenes();
 
 
