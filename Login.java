@@ -55,14 +55,16 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
  Button normal =(Button) findViewById(R.id.button2);
-        obtenerDatosResponsable();
+
         normal.setOnClickListener(new Button.OnClickListener() {
 
             public void onClick(View v) {
                // Toast.makeText(Login.this,"traer usuarios",Toast.LENGTH_LONG);
-                listar =(Spinner) findViewById(R.id.spinner3);
-                obtenerDatosResponsable();
+             //   listar =(Spinner) findViewById(R.id.spinner3);
+               // String y= Integer.toString(listar.getAdapter().getCount());
+         //Toast.makeText(Login.this,"almacenes"+y,Toast.LENGTH_LONG).show();
                 //traerusuarios();
+                ir();
             }
         });
 
