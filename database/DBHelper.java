@@ -1,13 +1,22 @@
 package com.food.sistemas.sodapopapp.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "guardify.sqlite";
+    private static final String DB_NAME = "comidarapida.sqlite";
     private static final int DB_VERSION = 1;
+    public static final String TABLE_NAME = "usuario";
+
+    public static final String USU_ID = "idusuario";
+    public static final String USU_NOMBRE = "nombreusuario";
+    public static final String USU_CLAVE = "claveusuario";
+    public static final String USU_ALMACEN = "almacenusuario";
+    public static final String USU_ESTADO = "estadousuario";
+    public static final String USU_SELECTED = "selected";
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -15,14 +24,32 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(ContactDB.CREATE_TABLE);
-        db.execSQL(TrackDB.CREATE_TABLE);
+        db.execSQL(Usuariosql.CREATE_TABLE);
+        //db.execSQL(TrackDB.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(ContactDB.DROP_TABLE);
-        db.execSQL(TrackDB.DROP_TABLE);
+        db.execSQL(Usuariosql.DROP_TABLE);
+        //db.execSQL(TrackDB.DROP_TABLE);
         onCreate(db);
+    }
+
+    public Boolean insertarUsuario( String nombreusuario, String claveusuario, String almacenusuario, String estadousuario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(USU_NOMBRE, nombreusuario);
+        contentValues.put(USU_CLAVE, claveusuario);
+        contentValues.put(USU_ALMACEN, almacenusuario);
+        contentValues.put(USU_ESTADO, estadousuario);
+      long result=  db.insert(TABLE_NAME, null, contentValues);
+        db.close();
+        if (result==-1){
+            return false;
+        }else
+        {
+            return true;
+        }
     }
 }

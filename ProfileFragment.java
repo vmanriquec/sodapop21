@@ -12,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.food.sistemas.sodapopapp.database.DBHelper;
+import com.food.sistemas.sodapopapp.database.UsuarioHelper;
+import com.food.sistemas.sodapopapp.database.Usuariosql;
 import com.food.sistemas.sodapopapp.modelo.Almacen;
 import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
 import com.food.sistemas.sodapopapp.response.ResponsableResponse;
@@ -23,6 +26,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+
 public class ProfileFragment extends Fragment {
     String showUrl = "http://www.sodapop1978.pe.hu/apiandroidrecuperaalmacenes.php";
     TextView result;
@@ -30,60 +35,49 @@ public class ProfileFragment extends Fragment {
     Button insert, show;
     Almacen mes;
     Spinner spinnerResponsable;
+    DBHelper mydb;
+    Button btnclick;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.profile, container, false);
+        View view = inflater.inflate(R.layout.usuariossqlite, container, false);
 
-        result = (TextView) view.findViewById(R.id.textView3);
-        result.setText("holaaaa");
-        final Spinner list;
-        list =(Spinner) view.findViewById(R.id.spinner);
-        final ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
-        spinnerResponsable=(Spinner) view.findViewById(R.id.spinalmacen);
+        final TextView nombreusuario = (TextView) view.findViewById(R.id.nombreusuario);
+        final TextView claveusuario = (TextView) view.findViewById(R.id.claveusuario);
 
+        final String allmacenes[] = {"huaral ","chancay","huacho","barranca"};
+        final Spinner salmacenes=(Spinner) view.findViewById(R.id.spinneralmacenes);
 
-        show = (Button) view.findViewById(R.id.buttonRegister);
+ArrayAdapter <String> aa = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,allmacenes);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
 
-        obtenerDatosResponsables();
-        return view;
+        salmacenes.setAdapter(aa);
+mydb=new DBHelper(getContext());
+        btnclick =(Button) view.findViewById(R.id.sqliteinsertar);
+        btnclick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            String usuario=nombreusuario.getText().toString();
+                String clave=claveusuario.getText().toString();
+String almacen=salmacenes.getItemAtPosition(salmacenes.getSelectedItemPosition()).toString();
+                String esdt="1";
+                Boolean result= mydb.insertarUsuario(usuario,clave,almacen,esdt);
+            if (result==true){
+                Toast.makeText(getContext(),"usuario insertado",Toast.LENGTH_LONG).show();
 
-    }
+            }else {
+                    Toast.makeText(getContext(),"nooo se completo la operacion",Toast.LENGTH_LONG).show();
 
-    private void poblarSpinnerResponsables(ArrayList<Almacen> almacen) {
-
-        List<String> list = new ArrayList<String>();
-        for (Almacen r : almacen) {
-            list.add(r.getNombrealm());
-        }
-
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, list);
-         //spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerResponsable.setAdapter(spinnerArrayAdapter);
-    }
-
-    private void obtenerDatosResponsables() {
-        Call<ResponsableResponse> call = RedemnorteApiAdapter.getApiService().getResponsables();
-        call.enqueue(new ResponsablesCallback());
-    }
-
-    class ResponsablesCallback implements Callback<ResponsableResponse> {
-
-        @Override
-        public void onResponse(Call<ResponsableResponse> call, Response<ResponsableResponse> response) {
-            if (response.isSuccessful()) {
-                ResponsableResponse responsableResponse = response.body();
-                poblarSpinnerResponsables(responsableResponse.getResponsables());
-            }   else {
-                Toast.makeText(getContext(), "Error en el formato de respuesta", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
+        });
 
-        @Override
-        public void onFailure(Call<ResponsableResponse> call, Throwable t) {
-            Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
+
+          return view;
+
     }
+
+
 
 
 }
