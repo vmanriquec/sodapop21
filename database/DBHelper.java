@@ -2,6 +2,7 @@ package com.food.sistemas.sodapopapp.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -51,5 +52,13 @@ public class DBHelper extends SQLiteOpenHelper {
         {
             return true;
         }
+    }
+
+    public Cursor traerUsarios() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+       Cursor res =db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return res;
+
     }
 }
