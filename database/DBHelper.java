@@ -17,6 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String USU_CLAVE = "claveusuario";
     public static final String USU_ALMACEN = "almacenusuario";
     public static final String USU_ESTADO = "estadousuario";
+    public static final String USU_IMAGEN = "imagen";
     public static final String USU_SELECTED = "selected";
 
     public DBHelper(Context context) {
@@ -36,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public Boolean insertarUsuario( String nombreusuario, String claveusuario, String almacenusuario, String estadousuario) {
+    public Boolean insertarUsuario( String nombreusuario, String claveusuario, String almacenusuario, String estadousuario,String imagen) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -44,6 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(USU_CLAVE, claveusuario);
         contentValues.put(USU_ALMACEN, almacenusuario);
         contentValues.put(USU_ESTADO, estadousuario);
+        contentValues.put(USU_IMAGEN, imagen);
       long result=  db.insert(TABLE_NAME, null, contentValues);
         db.close();
         if (result==-1){
@@ -60,5 +62,11 @@ public class DBHelper extends SQLiteOpenHelper {
        Cursor res =db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         return res;
 
+    }
+
+    public void eliminarusuario(int idusuario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + USU_ID + " = " + idusuario);
+        db.close();
     }
 }

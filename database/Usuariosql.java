@@ -19,6 +19,7 @@ public class Usuariosql {
     public static final String USU_CLAVE = "claveusuario";
     public static final String USU_ALMACEN = "almacenusuario";
     public static final String USU_ESTADO = "estadousuario";
+    public static final String USU_IMAGEN = "imagenusuario";
     public static final String USU_SELECTED = "selected";
 
     public static final String CREATE_TABLE = " create table if not exists " + TABLE_NAME + " ("
@@ -27,6 +28,7 @@ public class Usuariosql {
             + USU_CLAVE + " text not null, "
             + USU_ALMACEN + " text not null, "
             + USU_ESTADO + " text not null,"
+            + USU_IMAGEN + " text not null,"
             + USU_SELECTED + " text not null default '0' );";
 
     public static final String DROP_TABLE = " DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -37,7 +39,7 @@ public class Usuariosql {
         dbHelper = new DBHelper(context);
     }
 
-    public void insertarUsuario(int idusuario, String nombreusuario, String claveusuario, String almacenusuario, String estadousuario) {
+    public void insertarUsuario(int idusuario, String nombreusuario, String claveusuario, String almacenusuario, String estadousuario,String imagen) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(USU_ID, idusuario);
@@ -45,6 +47,7 @@ public class Usuariosql {
         contentValues.put(USU_CLAVE, claveusuario);
         contentValues.put(USU_ALMACEN, almacenusuario);
         contentValues.put(USU_ESTADO, estadousuario);
+        contentValues.put(USU_IMAGEN, imagen);
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
     }

@@ -1,19 +1,36 @@
 
 package com.food.sistemas.sodapopapp.modelo;
 
+import java.net.IDN;
+
 /**
  * Created by Perseo on 04/08/2014.
  */
 public class Usuarios {
-    private String nombreusuario,claveusuario,almacenusuario;
-    public Usuarios(String nombreusuario, String claveusuario,String almacenusuario )
+    private String idusuario,nombreusuario,claveusuario,almacenusuario,imagen;
+
+    public Usuarios(String idusuario,String nombreusuario, String claveusuario,String almacenusuario ,String imagen)
     {
         super();
+        this.idusuario=idusuario;
         this.nombreusuario=nombreusuario;
         this.claveusuario=claveusuario;
         this.almacenusuario=almacenusuario;
-
+        this.imagen=imagen;
     }
+
+    public String getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(String idusuario) {
+        this.idusuario = idusuario;
+    }
+
+
+
+
+
     public String getNombreusuario() {
         return nombreusuario;
     }
@@ -37,6 +54,15 @@ public class Usuarios {
 
     public void setAlmacenusuario(String almacenusuario) {
         this.almacenusuario = almacenusuario;
+    }
+
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String idusuario) {
+        this.imagen = imagen;
     }
 
     @Override

@@ -1,6 +1,11 @@
 package com.food.sistemas.sodapopapp.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,8 @@ import android.widget.TextView;
 
 import com.food.sistemas.sodapopapp.R;
 import com.food.sistemas.sodapopapp.modelo.Usuarios;
+import com.food.sistemas.sodapopapp.ui.CircleTransform;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -30,12 +37,14 @@ import java.util.List;
         protected TextView nombre;
         protected TextView clave;
         protected TextView  almacen;
+        protected ImageView imagennes;
         public AdaptadorViewHolder(View v){
             super(v);
             this.id=(TextView) v.findViewById(R.id.cvid);
             this.nombre=(TextView) v.findViewById(R.id.cvnombre);
             this.clave=(TextView) v.findViewById(R.id.cvclave);
             this.almacen=(TextView) v.findViewById(R.id.cvalmacen);
+            this.imagennes=(ImageView) v.findViewById(R.id.imagensqlite);
 
         }
     }
@@ -51,15 +60,20 @@ import java.util.List;
 
     @Override
     public void onBindViewHolder(AdaptadorViewHolder viewHolder, int position) {
-Usuarios item=items.get(position);
+        Usuarios item = items.get(position);
         viewHolder.itemView.setTag(item);
-        viewHolder.id.setText("Nº: ");
-        viewHolder.nombre.setText("Nombre: " +  item.getNombreusuario());
-        viewHolder.clave.setText("clave: " +  item.getClaveusuario());
+        viewHolder.id.setText("Idº: " + item.getIdusuario());
+        viewHolder.nombre.setText("Nombre: " + item.getNombreusuario());
+        viewHolder.clave.setText("clave: " + item.getClaveusuario());
         viewHolder.almacen.setText("almacen: " + item.getAlmacenusuario());
+        String p = item.getImagen();
+       Bitmap bitmap;
+        bitmap = BitmapFactory.decodeStream(G.getContentResolver().openInputStream(targetUri));
 
+        viewHolder.imagennes.setImageBitmap(bitmap);
 
     }
+
 
     @Override
     public int getItemCount() {
