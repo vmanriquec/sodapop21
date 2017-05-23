@@ -18,6 +18,7 @@ import com.food.sistemas.sodapopapp.modelo.Usuarios;
 import com.food.sistemas.sodapopapp.ui.CircleTransform;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -65,15 +66,23 @@ import java.util.List;
         viewHolder.id.setText("Idº: " + item.getIdusuario());
         viewHolder.nombre.setText("Nombre: " + item.getNombreusuario());
         viewHolder.clave.setText("clave: " + item.getClaveusuario());
-        viewHolder.almacen.setText("almacen: " + item.getAlmacenusuario());
+
         String p = item.getImagen();
-       Bitmap bitmap;
 
-        Picasso.with(this).load(android_versions.get(i).getAndroid_image_url()).resize(120, 60).into(viewHolder.img_android);
+        viewHolder.almacen.setText("almacenito: " + p);
 
-        bitmap = BitmapFactory.decodeStream(G.getContentResolver().openInputStream(targetUri));
 
-        viewHolder.imagennes.setImageBitmap(bitmap);
+        File f = new File(p);
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 8;
+        Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),options);
+        String nombre=f.getName().toString();
+        String sCadena = nombre;
+
+       viewHolder.imagennes.setImageBitmap(bitmap);
+
 
     }
 

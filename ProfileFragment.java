@@ -157,7 +157,7 @@ cargarimagen=(Button) view.findViewById(R.id.sqlitecargarimagen);
 
                             itemso.add(new Usuarios( res.getString(0), res.getString(1),res.getString(2),res.getString(3),res.getString(4)) );
                         }
-//listasql.setText(stringBuffer.toString());
+listasql.setText(stringBuffer.toString());
                         Adaptadorsqlite adapterrecicler= new Adaptadorsqlite( itemso,getContext());
                         recycler.setAdapter(adapterrecicler);
                         Toast.makeText(getContext(),"listado",Toast.LENGTH_LONG).show();

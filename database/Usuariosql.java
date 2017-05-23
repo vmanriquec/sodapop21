@@ -19,7 +19,7 @@ public class Usuariosql {
     public static final String USU_CLAVE = "claveusuario";
     public static final String USU_ALMACEN = "almacenusuario";
     public static final String USU_ESTADO = "estadousuario";
-    public static final String USU_IMAGEN = "imagenusuario";
+    public static final String USU_IMAGEN = "imagen";
     public static final String USU_SELECTED = "selected";
 
     public static final String CREATE_TABLE = " create table if not exists " + TABLE_NAME + " ("

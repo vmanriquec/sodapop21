@@ -61,7 +61,7 @@ public class Usuarios {
         return imagen;
     }
 
-    public void setImagen(String idusuario) {
+    public void setImagen(String imagen) {
         this.imagen = imagen;
     }
 
