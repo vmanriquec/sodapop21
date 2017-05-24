@@ -4,9 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,9 @@ import com.food.sistemas.sodapopapp.modelo.Usuarios;
 import com.food.sistemas.sodapopapp.ui.CircleTransform;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -39,6 +43,7 @@ import java.util.List;
         protected TextView clave;
         protected TextView  almacen;
         protected ImageView imagennes;
+        protected TextView imagente;
         public AdaptadorViewHolder(View v){
             super(v);
             this.id=(TextView) v.findViewById(R.id.cvid);
@@ -46,6 +51,7 @@ import java.util.List;
             this.clave=(TextView) v.findViewById(R.id.cvclave);
             this.almacen=(TextView) v.findViewById(R.id.cvalmacen);
             this.imagennes=(ImageView) v.findViewById(R.id.imagensqlite);
+
 
         }
     }
@@ -69,20 +75,41 @@ import java.util.List;
 
         String p = item.getImagen();
 
-        viewHolder.almacen.setText("almacenito: " + p);
+        viewHolder.almacen.setText("almacenito: " + item.getAlmacenusuario());
 
 
+        FileInputStream in;
+        BufferedInputStream buf;
+        try {
+            in = new FileInputStream(p);
+            buf = new BufferedInputStream(in);
+            Bitmap bMap = BitmapFactory.decodeStream(buf);
+
+            // viewHolder.imagennes.setImageBitmap(BitmapFactory.decodeFile(item.getImagen()));
+
+            viewHolder.imagennes.setImageBitmap(bMap);
+            if (in != null) {
+                in.close();
+            }
+            if (buf != null) {
+                buf.close();
+            }
+        } catch (Exception e) {
+            Log.e("Error reading file", e.toString());
+        }
+
+
+/*
         File f = new File(p);
-
-
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 8;
         Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),options);
-        String nombre=f.getName().toString();
-        String sCadena = nombre;
+               viewHolder.imagennes.setImageBitmap(bitmap);
 
-       viewHolder.imagennes.setImageBitmap(bitmap);
+*/
 
+       // viewHolder.imagennes.setImageBitmap(BitmapFactory.decodeFile(item.getImagen()));
+      //  viewHolder.imagennes.setImageURI(Uri.fromFile(new File(item.getImagen())));
 
     }
 

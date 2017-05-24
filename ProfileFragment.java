@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.usuariossqlite, container, false);
-        final Button btnrefrescar =(Button) view.findViewById(R.id.sqliterefrescar);
+        //final Button btnrefrescar =(Button) view.findViewById(R.id.sqliterefrescar);
 
         final TextView nombreusuario = (TextView) view.findViewById(R.id.nombreusuario);
         final TextView claveusuario = (TextView) view.findViewById(R.id.claveusuario);
@@ -106,10 +106,13 @@ public class ProfileFragment extends Fragment {
 
                     Toast.makeText(getContext(),"seleccione una foto por favor",Toast.LENGTH_LONG).show();
                 }else {
+
+                    //Toast.makeText(getContext(),"esoesloquehay"+imagePath,Toast.LENGTH_LONG).show();
+
                     String usuario = nombreusuario.getText().toString();
                     String clave = claveusuario.getText().toString();
                     String almacen = salmacenes.getItemAtPosition(salmacenes.getSelectedItemPosition()).toString();
-                    String esdt = "1";
+                    String esdt = imagePath;
                     Boolean result = mydb.insertarUsuario(usuario, clave, almacen, esdt,imagePath );
                     Toast.makeText(getContext(), imagePath, Toast.LENGTH_LONG).show();
 
@@ -137,10 +140,7 @@ cargarimagen=(Button) view.findViewById(R.id.sqlitecargarimagen);
             public void onClick(View v) {
 
 //verificar que seleciono la imagen osea que imagenpoath no sea vacio
-                if (imagePath.isEmpty()){
 
-                    Toast.makeText(getContext(),"seleccione una foto por favor",Toast.LENGTH_LONG).show();
-                   }else{
                     Toast.makeText(getContext(),imagePath,Toast.LENGTH_LONG).show();
 
                     Cursor res =mydb.traerUsarios();
@@ -151,22 +151,21 @@ cargarimagen=(Button) view.findViewById(R.id.sqlitecargarimagen);
                             stringBuffer.append("nombreusuario :"+res.getString(1)+"\n");
                             stringBuffer.append("claveusuario  :"+res.getString(2)+"\n");
                             stringBuffer.append("almacen       :"+res.getString(3)+"\n");
-
+                            stringBuffer.append("imagen       :"+imagePath);
                             lManager = new LinearLayoutManager(getContext());
                             recycler.setLayoutManager(lManager);
 
                             itemso.add(new Usuarios( res.getString(0), res.getString(1),res.getString(2),res.getString(3),res.getString(4)) );
                         }
-listasql.setText(stringBuffer.toString());
+//listasql.setText(stringBuffer.toString());
                         Adaptadorsqlite adapterrecicler= new Adaptadorsqlite( itemso,getContext());
                         recycler.setAdapter(adapterrecicler);
-                        Toast.makeText(getContext(),"listado",Toast.LENGTH_LONG).show();
+
                         imagePath="";
                     }else {
                         Toast.makeText(getContext(),"no hay datos",Toast.LENGTH_LONG).show();
                     }
 
-                }
 
             }
         });
