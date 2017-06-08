@@ -105,12 +105,12 @@ public class Vaio extends FragmentActivity implements View.OnClickListener {
     private ResideMenu.OnMenuListener menuListener = new ResideMenu.OnMenuListener() {
         @Override
         public void openMenu() {
-            Toast.makeText(mContext, "abierto!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "abierto!", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void closeMenu() {
-            Toast.makeText(mContext, "cerrado!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "cerrado!", Toast.LENGTH_SHORT).show();
         }
     };
 
