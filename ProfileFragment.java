@@ -1,7 +1,9 @@
 package com.food.sistemas.sodapopapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -43,6 +45,8 @@ import com.food.sistemas.sodapopapp.modelo.Almacen;
 import com.food.sistemas.sodapopapp.modelo.Usuarios;
 import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
 import com.food.sistemas.sodapopapp.response.ResponsableResponse;
+import com.food.sistemas.sodapopapp.ui.CircleTransform;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -70,7 +74,7 @@ public class ProfileFragment extends Fragment {
     private Resources res = null;
     private android.app.AlertDialog alert;
 
-
+    String FileName ="myfile";
     Button cargarimagen,insert, show,  btnclick,btnclickver,btnrefrescar,imqagenclkick;
     Almacen mes;
     Spinner spinnerResponsable;
@@ -82,17 +86,18 @@ public class ProfileFragment extends Fragment {
     private  List<Usuarios> listaItemsUsuarios;
     private static int LOAD_IMAGE_RESULTS = 1;
     List itemso = new ArrayList();
-
+    String session;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.usuariossqlite, container, false);
 
-
-
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.reciclador);
 
+
         mydb=new DBHelper(getContext());
-try {
+
+
+        try {
     Cursor res = mydb.traerUsarios();
     StringBuffer stringBuffer = new StringBuffer();
     if (res != null && res.getCount() > 0) {
@@ -101,7 +106,7 @@ try {
             stringBuffer.append("nombreusuario :" + res.getString(1) + "\n");
             stringBuffer.append("claveusuario  :" + res.getString(2) + "\n");
             stringBuffer.append("almacen       :" + res.getString(3) + "\n");
-            stringBuffer.append("imagen       :" + imagePath);
+            stringBuffer.append("imagen       :" +  res.getString(4));
             lManager = new LinearLayoutManager(getContext());
             recycler.setLayoutManager(lManager);
 
@@ -152,5 +157,18 @@ lanzar();
 
         return view;
     }
+
+    private void leershare(){
+        SharedPreferences sharedPreferences=getContext().getSharedPreferences(FileName,Context.MODE_PRIVATE);
+        String session=sharedPreferences.getString("sessionid","");
+        String nomb=sharedPreferences.getString("sessionnombre","");
+        String apepa=sharedPreferences.getString("sessionapepat","");
+        String apema=sharedPreferences.getString("sessionapemat","");
+        if (session.equals(null) || session.equals("")){
+            Toast.makeText(getContext(),"no existe session::::::"+session,Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(getContext(),"Session activa "+nomb,Toast.LENGTH_LONG).show();
+
+        }}
 
 }

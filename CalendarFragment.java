@@ -1,5 +1,6 @@
 package com.food.sistemas.sodapopapp;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,6 +27,31 @@ public class CalendarFragment extends Fragment {
         parentView = inflater.inflate(R.layout.calendar, container, false);
         listView   = (ListView) parentView.findViewById(R.id.listView);
         initView();
+
+        Resources res = getResources();
+
+        TabHost tabs=(TabHost) parentView.findViewById(android.R.id.tabhost);
+        tabs.setup();
+
+        TabHost.TabSpec spec=tabs.newTabSpec("mi");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("",
+                res.getDrawable(android.R.drawable.ic_btn_speak_now));
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec("mitab2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("",
+                res.getDrawable(android.R.drawable.ic_dialog_map));
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec("mitab3");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("TAB3",
+                res.getDrawable(android.R.drawable.ic_dialog_map));
+        tabs.addTab(spec);
+
+        tabs.setCurrentTab(1);
         return parentView;
     }
 

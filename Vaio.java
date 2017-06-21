@@ -1,5 +1,6 @@
 package com.food.sistemas.sodapopapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,11 +28,13 @@ public class Vaio extends FragmentActivity implements View.OnClickListener {
         mContext = this;
 
 
-
+        Intent ii = new Intent(this, Otromenu.class);
         setUpMenu();
 
         if (savedInstanceState == null)
-            changeFragment(new HomeFragment());
+
+
+        startActivity(ii);
     }
 
     private void setUpMenu() {
@@ -90,13 +93,14 @@ public class Vaio extends FragmentActivity implements View.OnClickListener {
     public void onClick(View view) {
 
         if (view == itemHome) {
-            changeFragment(new HomeFragment());
+            Intent i = new Intent(this, Otromenu.class);
+                       startActivity(i);
         } else if (view == itemProfile) {
             changeFragment(new ProfileFragment());
         } else if (view == itemCalendar) {
             changeFragment(new CalendarFragment());
         } else if (view == itemSettings) {
-            changeFragment(new SettingsFragment());
+
         }
 
         resideMenu.closeMenu();

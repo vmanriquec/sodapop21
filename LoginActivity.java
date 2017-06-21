@@ -5,12 +5,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +42,13 @@ import com.facebook.login.widget.LoginButton;
 import com.food.sistemas.sodapopapp.modelo.Almacen;
 import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
 import com.food.sistemas.sodapopapp.response.ResponsableResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +61,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,12 +84,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView result;
     Button boton;
     Spinner spineralmaceno;
+private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
-String sessionusuario;
+
+String sessionusuario,sessionnombre,sessionapemat,sessionapepat,correo;
     RequestQueue requestQueue;
-
-
-
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
     private SimpleCursorAdapter myAdapter;
@@ -89,74 +103,51 @@ String FileName ="myfile";
         AppEventsLogger.activateApp(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        callbackManager = CallbackManager.Factory.create();
 
+
+  callbackManager = CallbackManager.Factory.create();
 leershare();
-        final ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
 
-        new cargaralmacen().execute();
 
         loginButton=(LoginButton) findViewById(R.id.login_button);
+       // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
 
-       // boton = (Button) findViewById(R.id.btnnormal);
-        //boton.setOnClickListener(this);
-
-
-        loginButton.setReadPermissions("user_friends");
-        loginButton.setReadPermissions("public_profile");
-        loginButton.setReadPermissions("email");
-
-
-        loginButton.setReadPermissions("user_birthday");
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
-
                 if(Profile.getCurrentProfile() == null) {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                            // profile2 is the new profile
+                             mProfileTracker.stopTracking();
+                            sessionusuario=profile2.getId();
+                            sessionnombre=profile2.getName();
+                            sessionapepat=profile2.getFirstName();
+                            sessionapemat=profile2.getLastName();
 
-                            mProfileTracker.stopTracking();
-                          //  Log.v("facebook - profile", profile2.getFirstName());
-                            Log.v("facebook - id", profile2.getId());
-                            //Log.v("facebook - profile", profile2.getLastName());
-                            //Log.v("facebook - profile", profile2.getName());
-sessionusuario=profile2.getId();
-                            Toast.makeText(getApplicationContext(),"sessipojn iniciada con id"+sessionusuario, Toast.LENGTH_SHORT).show();
-
-                            guardarshare(sessionusuario);
+                            Toast.makeText(getApplicationContext(),"Hola :) "+sessionnombre+" Disfruta la Aplicacion", Toast.LENGTH_SHORT).show();
+                            guardarshare(sessionusuario,sessionnombre,sessionapepat,sessionapemat);
                         }
                     };
-                    // no need to call startTracking() on mProfileTracker
-                    // because it is called by its constructor, internally.
-                    ir();
+
+
+                    handlefacebookaccestocken(loginResult.getAccessToken());
+
                 }
                 else {
                     Profile profile = Profile.getCurrentProfile();
                     //Log.v("facebook - profile", profile.getFirstName());
-
-
-
-
                 }
-
-
-
             }
-
             @Override
             public void onCancel() {
               //  Toast.makeText(getApplicationContext(), R.string.cancel_login, Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onError(FacebookException error) {
-                //Toast.makeText(getApplicationContext(), R.string.error_login, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Ups! hay un error con facebook", Toast.LENGTH_SHORT).show();
             }
         });
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
@@ -166,17 +157,56 @@ sessionusuario=profile2.getId();
                     AccessToken currentAccessToken) {
 
                 if (currentAccessToken == null){
-                    limpiarshared();
                 }
             }
         };
         loginButton = (LoginButton) findViewById(R.id.login_button);
-
         setContentView(R.layout.activity_login);
 
+        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuthListener=new FirebaseAuth.AuthStateListener()
+        {
 
 
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user=firebaseAuth.getCurrentUser();
+                if (user !=null){
 
+                    ir();
+                }
+            }
+        };
+
+
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        firebaseAuth.addAuthStateListener(firebaseAuthListener);
+
+
+    }
+    @Override
+    protected void onStop(){
+
+        super.onStop();
+        firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+
+    }
+//si hay errores en el logueo de firebase aqui lo mkostramos
+    private void handlefacebookaccestocken(AccessToken accessToken) {
+        AuthCredential credencial= FacebookAuthProvider.getCredential((accessToken.getToken()));
+        firebaseAuth.signInWithCredential(credencial).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+if(task.isSuccessful()){
+    Toast.makeText(getApplicationContext(),"logueo exitoso en firebase",Toast.LENGTH_LONG).show();
+
+
+}
+            }
+        });
 
     }
 
@@ -186,203 +216,58 @@ sessionusuario=profile2.getId();
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
-
 private void ir(){
-Intent intent= new Intent(this,Vaio.class);
+Intent intent= new Intent(this,Menuprincipal.class);
   startActivity(intent);
+
     }
-
-
     @Override
     public void onClick(View view) {
 
-    }
-    public void buttonClick(View view) {
-        if (view.getId() == R.id.btnnormal) {
-
-           mostraralert();
-
-
-
-        }
     }
 
     public void mostraralert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
         alertDialog.setView(inflater.inflate(R.layout.dialgologin, null));
-
-/* When positive (yes/ok) is clicked */
-        alertDialog.setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
+      alertDialog.setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel(); // Your custom code
             }
         });
-/* When negative (No/cancel) button is clicked*/
-        alertDialog.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+     alertDialog.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel(); // Your custom code
             }
         });
         alertDialog.show();
-
     }
-
-
-
-    // Create class AsyncFetch
-
-    private class cargaralmacen extends AsyncTask<String, String, String> {
-
-        ProgressDialog pdLoading = new ProgressDialog(LoginActivity.this);
-        HttpURLConnection conn;
-        URL url = null;
-        ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            spineralmaceno=(Spinner) findViewById(R.id.spinalmacen);
-
-            try {
-
-                // Enter URL address where your php file resides or your JSON file address
-                url = new URL("http://sodapop.ga/sugest/fetch-all-fish.php");
-
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return e.toString();
-            }
-            try {
-
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("GET");
-
-                // setDoOutput to true as we receive data
-                conn.setDoOutput(true);
-                conn.connect();
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return e1.toString();
-            }
-
-            try {
-
-                int response_code = conn.getResponseCode();
-
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
-
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    return("Connection error");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return e.toString();
-            } finally {
-                conn.disconnect();
-            }
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-            ArrayList<String> dataList = new ArrayList<String>();
-
-            Almacen mes;
-
-            if(result.equals("no rows")) {
-
-
-                Toast.makeText(LoginActivity.this,"no existen datos a mostrar",Toast.LENGTH_LONG).show();
-
-            }else{
-
-                try {
-
-                    JSONArray jArray = new JSONArray(result);
-                    // Extract data from json and store into ArrayList
-                    for (int i = 0; i < jArray.length(); i++) {
-                        JSONObject json_data = jArray.getJSONObject(i);
-                        dataList.add(json_data.getString("nombrealm"));
-
-                        Toast.makeText(LoginActivity.this,json_data.getString("nombrealm"),Toast.LENGTH_LONG).show();
-
-                        mes = new Almacen(json_data.getInt("idalmacen"), json_data.getString("nombrealm"), json_data.getString("telfonoalm"), json_data.getString("correoalm"));
-                        listaalmacen.add(mes);
-
-                    }
-
-                    strArrData = dataList.toArray(new String[dataList.size()]);
-
-
-
-                    ArrayAdapter<Almacen> adaptadorl= new ArrayAdapter<Almacen>(LoginActivity.this, android.R.layout.simple_spinner_item,listaalmacen );
-                    spineralmaceno.setAdapter(adaptadorl);
-                } catch (JSONException e) {
-                    // You to understand what actually error is and handle it appropriately
-
-                }
-
-            }
-
-        }
-
-    }
-    private  void guardarshare(String sesion){
+      private  void guardarshare(String idusuario,String nombre,String apepat,String apemat){
         SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.putString("nombresession",sesion);
+        editor.putString("sessionid",idusuario);
+        editor.putString("sessionnombre",nombre);
+        editor.putString("sessionapepat",apepat);
+        editor.putString("sessionapemat",apemat);
+
         editor.commit();
-        Toast.makeText(this,"guardadoooooooooooo"+sesion,Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"Session Guardada"+idusuario+nombre+apepat+apemat,Toast.LENGTH_LONG).show();
     }
 private void leershare(){
     SharedPreferences sharedPreferences=getSharedPreferences(FileName,Context.MODE_PRIVATE);
-      String session=sharedPreferences.getString("nombresession","");
+      String session=sharedPreferences.getString("sessionid","");
+    String nomb=sharedPreferences.getString("sessionnombre","");
+    String apepa=sharedPreferences.getString("sessionapepat","");
+    String apema=sharedPreferences.getString("sessionapemat","");
     if (session.equals(null) || session.equals("")){
-        Toast.makeText(this,"no existe session::::::"+session,Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"no existe session::::::"+session,Toast.LENGTH_LONG).show();
     }else {
-        Toast.makeText(this,"ya habias inicioado session en   "+session,Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"Session activa "+nomb,Toast.LENGTH_LONG).show();
         ir();
     }}
-private void limpiarshared(){
-        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-    editor.clear();
-    editor.commit();}
 
 }
+
 
 
 

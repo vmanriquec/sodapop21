@@ -63,7 +63,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
             this.nombre=(TextView) v.findViewById(R.id.cvnombre);
             this.clave=(TextView) v.findViewById(R.id.cvclave);
             this.almacen=(TextView) v.findViewById(R.id.cvalmacen);
-            this.imagennes=(ImageView) v.findViewById(R.id.imagensqlite);
+            this.imagennes=(ImageView) v.findViewById(R.id.sqliteimagen);
 this.editar=(Button) v.findViewById(R.id.sqliteeditar);
             this.eliminar=(Button) v.findViewById(R.id.sqliteeliminar);
 
@@ -92,7 +92,14 @@ this.editar=(Button) v.findViewById(R.id.sqliteeditar);
         viewHolder.editar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), item.getNombreusuario() + " is selected!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), " Editar "+item.getNombreusuario()  , Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        viewHolder.eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), " eliminar "+item.getNombreusuario()  , Toast.LENGTH_SHORT).show();
 
             }
         });

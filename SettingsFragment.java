@@ -1,10 +1,15 @@
 package com.food.sistemas.sodapopapp;
 
+
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 /**
  * User: special
@@ -14,9 +19,27 @@ import android.view.ViewGroup;
  */
 public class SettingsFragment extends Fragment {
 
+    private View parentView;
+    private com.food.sistemas.sodapopapp.special.ResideMenu.ResideMenu resideMenu;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.settings, container, false);
+        parentView = inflater.inflate(R.layout.layout, container, false);
+        setUpViews();
+
+
+        return parentView;
+
+    }
+
+    private void setUpViews() {
+        Vaio parentActivity = (Vaio) getActivity();
+        resideMenu = parentActivity.getResideMenu();
+
+
+
+        // add gesture operation's ignored views
+
     }
 
 }

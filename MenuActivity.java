@@ -28,8 +28,6 @@ public class MenuActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.main);
         mContext = this;
         setUpMenu();
-        if( savedInstanceState == null )
-            changeFragment(new HomeFragment());
     }
 
     private void setUpMenu() {
@@ -85,13 +83,13 @@ public class MenuActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View view) {
 
         if (view == itemHome){
-            changeFragment(new HomeFragment());
+           // changeFragment(new HomeFragment());
         }else if (view == itemProfile){
             changeFragment(new ProfileFragment());
         }else if (view == itemCalendar){
             changeFragment(new CalendarFragment());
         }else if (view == itemSettings){
-            changeFragment(new SettingsFragment());
+
         }
 
         resideMenu.closeMenu();
