@@ -1,11 +1,16 @@
 package com.food.sistemas.sodapopapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +24,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v7.app.NotificationCompat;
+import android.util.Log;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -92,19 +109,58 @@ public class SettingsFragment extends Fragment {
             protected void populateView(View v, Message model, int position) {
                 TextView msg=(TextView)v.findViewById(R.id.textView11);
                 msg.setText(model.getUser_name()+" : "+model.getMessage());
+                mostrarnotificacionb("Sodapop",model.getMessage());
+
             }
         };
         listView.setAdapter(adapter);
 bu.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre));//storing actual msg with name of the user
-        editText.setText("");//clear the msg in edittext
+        String f=editText.getText().toString();
+        if (f==""){Toast.makeText(getContext(),"no has ingresado tu mensaje",Toast.LENGTH_LONG).show();
+
+        }
+        else
+        {
+            chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre));//storing actual msg with name of the user
+            editText.setText("");//clear the msg in edittext
+             }
+
+
+
+
                }
 });
 
         return view;
 
+
+    }
+    public static final String TAG="noticias";
+    private void mostrarnotificacionb(String title, String body) {
+
+        Intent targetIntent = new Intent(getContext(), Menuprincipal.class);
+        targetIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingintent = PendingIntent.getActivity(getContext(), 0,
+                targetIntent, PendingIntent.FLAG_ONE_SHOT);
+
+
+        Uri sound= RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION));
+        NotificationCompat.Builder noti= (NotificationCompat.Builder) new NotificationCompat.Builder(getContext())
+                .setSmallIcon(R.drawable.ic_menu_send)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setSound(sound)
+                .setContentIntent(pendingintent);
+
+
+        NotificationManager notifi    = (NotificationManager)getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+
+
+        notifi.notify(0,noti.build());
 
     }
 }
