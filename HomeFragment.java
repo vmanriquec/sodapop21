@@ -88,9 +88,6 @@ public class HomeFragment extends  Fragment {
         spec.setIndicator("Mesa ", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
         tabs.setCurrentTab(1);
-
-
-
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab4);
         spec.setIndicator("Mov ", res.getDrawable(android.R.drawable.ic_dialog_map));

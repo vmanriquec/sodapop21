@@ -153,6 +153,8 @@ public class Menuprincipal extends AppCompatActivity
             fragment = new HomeFragment();
             FragmentTransaction=true;
         } else if (id == R.id.nav_slideshow) {
+            fragment = new SettingsFragment();
+            FragmentTransaction=true;
 
         } else if (id == R.id.nav_manage) {
 

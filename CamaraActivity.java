@@ -82,7 +82,7 @@ public class CamaraActivity extends ActionBarActivity implements NavigationView.
         setContentView(R.layout.dialogonuevousuario);
         final TextView nombreusuario = (TextView) findViewById(R.id.nombreusuario);
         final TextView claveusuario = (TextView) findViewById(R.id.claveusuario);
-        final TextView listasql = (TextView) findViewById(R.id.textsqlite);
+
 
 
         final Spinner spina=(Spinner) findViewById(R.id.spinnertask);
