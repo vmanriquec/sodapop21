@@ -92,7 +92,7 @@ public class SettingsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                //name=dataSnapshot.getValue().toString();
+                name=dataSnapshot.getValue().toString();
                // dato=userIdRef.child("name").setValue(nombre);
 
 
@@ -118,14 +118,14 @@ bu.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
         String f=editText.getText().toString();
-        if (f==""){Toast.makeText(getContext(),"no has ingresado tu mensaje",Toast.LENGTH_LONG).show();
+        if (editText.getText().toString().length() == 0 ){
+              Toast.makeText(getContext(),"no has ingresado tu mensaje",Toast.LENGTH_LONG).show();
 
         }
         else
-        {
-            chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre));//storing actual msg with name of the user
+        {  chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre));//storing actual msg with name of the user
             editText.setText("");//clear the msg in edittext
-             }
+        }
 
 
 

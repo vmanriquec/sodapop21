@@ -157,6 +157,8 @@ public class Menuprincipal extends AppCompatActivity
             FragmentTransaction=true;
 
         } else if (id == R.id.nav_manage) {
+            fragment = new CalendarFragment();
+            FragmentTransaction=true;
 
         } else if (id == R.id.nav_share) {
 

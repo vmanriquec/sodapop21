@@ -1,14 +1,8 @@
 package com.food.sistemas.sodapopapp.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,17 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.food.sistemas.sodapopapp.R;
 import com.food.sistemas.sodapopapp.modelo.Usuarios;
-import com.food.sistemas.sodapopapp.ui.CircleTransform;
-import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
@@ -60,10 +50,10 @@ import static com.facebook.FacebookSdk.getApplicationContext;
         public AdaptadorViewHolder(View v){
             super(v);
             this.id=(TextView) v.findViewById(R.id.cvid);
-            this.nombre=(TextView) v.findViewById(R.id.cvnombre);
+            this.nombre=(TextView) v.findViewById(R.id.textochat);
             this.clave=(TextView) v.findViewById(R.id.cvclave);
             this.almacen=(TextView) v.findViewById(R.id.cvalmacen);
-            this.imagennes=(ImageView) v.findViewById(R.id.sqliteimagen);
+            this.imagennes=(ImageView) v.findViewById(R.id.imagenchat);
 this.editar=(Button) v.findViewById(R.id.sqliteeditar);
             this.eliminar=(Button) v.findViewById(R.id.sqliteeliminar);
 
