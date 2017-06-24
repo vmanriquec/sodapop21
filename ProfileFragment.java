@@ -90,13 +90,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.usuariossqlite, container, false);
-
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.reciclador);
-
-
         mydb=new DBHelper(getContext());
-
-
         try {
     Cursor res = mydb.traerUsarios();
     StringBuffer stringBuffer = new StringBuffer();

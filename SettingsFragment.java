@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -57,7 +58,7 @@ public class SettingsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private String dato="",name="";
     DatabaseReference databaseReference;
-    String nombre;
+    String nombre,idf;
     private DatabaseReference userIdRef;
     HashMap<String,String> map;
     @Override
@@ -69,21 +70,18 @@ public class SettingsFragment extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         nombre = prefs.getString("sessionnombre", "");
 
+        idf=prefs.getString("sessionid","");
 
         databaseReference= FirebaseDatabase.getInstance().getReference().child("chat_users");
         mAuth=FirebaseAuth.getInstance();
         userIdRef=databaseReference.child(mAuth.getCurrentUser().getUid());
         userIdRef.child("name").setValue(nombre);
 
-
-
-
-
         mAuth= FirebaseAuth.getInstance();
         editText=(EditText)view.findViewById(R.id.edittext);
         chat_data_ref= FirebaseDatabase.getInstance().getReference().child("chat_data");
 
-        user_name_ref=FirebaseDatabase.getInstance().getReference().child("chat_users").child(mAuth.getCurrentUser().getUid()).child("name");
+        user_name_ref=FirebaseDatabase.getInstance().getReference().child("chat_users").child(mAuth.getCurrentUser().getUid()).child("name").child("idfacebook");
         listView=(ListView)view.findViewById(R.id.listview);
         map=new HashMap<>();
 
@@ -92,7 +90,7 @@ public class SettingsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                name=dataSnapshot.getValue().toString();
+               // name=dataSnapshot.getValue().toString();
                // dato=userIdRef.child("name").setValue(nombre);
 
 
@@ -102,6 +100,8 @@ public class SettingsFragment extends Fragment {
                 // Failed to read value
             }
         });
+
+
         FirebaseListAdapter<Message> adapter=new FirebaseListAdapter<Message>(
                 getActivity(),Message.class,R.layout.individual_row,chat_data_ref
         ) {
@@ -123,7 +123,7 @@ bu.setOnClickListener(new View.OnClickListener() {
 
         }
         else
-        {  chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre));//storing actual msg with name of the user
+        {  chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre,idf));//storing actual msg with name of the user
             editText.setText("");//clear the msg in edittext
         }
 

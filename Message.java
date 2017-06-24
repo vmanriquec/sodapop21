@@ -6,7 +6,15 @@ package com.food.sistemas.sodapopapp;
 
 
 public class Message {
-    private String message,user_name;
+    private String message,user_name,facebook;
+
+    public String getFacebook() {
+        return facebook;
+    }
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -21,8 +29,9 @@ public class Message {
     }
     public Message() {
     }
-    public Message(String message, String user_name) {
+    public Message(String message, String user_name,String facebook) {
         this.message = message;
         this.user_name = user_name;
+        this.facebook=facebook;
     }
 }

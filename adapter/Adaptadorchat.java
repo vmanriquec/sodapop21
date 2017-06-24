@@ -75,7 +75,7 @@ static class AdaptadorViewHolder extends RecyclerView.ViewHolder{
     public void onBindViewHolder(final Adaptadorchat.AdaptadorViewHolder viewHolder, final int position) {
         final Usuarios item = items.get(position);
         viewHolder.itemView.setTag(item);
-        viewHolder.textochat.setText("" + item.getIdusuario());
+        viewHolder.textochat.setText("**" + item.getIdusuario());
 
         {
         };
