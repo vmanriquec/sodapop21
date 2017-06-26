@@ -47,8 +47,7 @@ import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
 public class HomeFragment extends  Fragment {
     String FileName ="myfile";
     private View view;
-    private com.food.sistemas.sodapopapp.special.ResideMenu.ResideMenu resideMenu;
-    private String[] strArrData = {"No Suggestions"};
+     private String[] strArrData = {"No Suggestions"};
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout, container, false);

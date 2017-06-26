@@ -139,6 +139,7 @@ public class CalendarFragment extends Fragment {
                     protected void populateViewHolder(BlogViewHolder viewHolder, Message model, int position) {
                         viewHolder.setTitle(model.getMessage());
                         viewHolder.setImage(getApplicationContext(), model.getFacebook());
+                        mostrarnotificacionb(model.getUser_name(),model.getMessage());
                     }
 
 
@@ -199,8 +200,8 @@ public class CalendarFragment extends Fragment {
             // We Need TO pass Context
            String imgUrl = "https://graph.facebook.com/"+image+"/picture?type=large";
 
-            Picasso.with(ctx) .load(imgUrl).transform(new CropCircleTransformation()).resize(50, 50)
-                    .into(post_image);;
+            Picasso.with(ctx) .load(imgUrl).transform(new CropCircleTransformation()).resize(60, 60)
+                    .into(post_image);
             //Picasso.with(ctx).load(image).into(post_image);
         }    }
 }

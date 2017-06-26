@@ -153,17 +153,13 @@ public class Menuprincipal extends AppCompatActivity
             fragment = new HomeFragment();
             FragmentTransaction=true;
         } else if (id == R.id.nav_slideshow) {
-            fragment = new SettingsFragment();
-            FragmentTransaction=true;
-
-        } else if (id == R.id.nav_manage) {
             fragment = new CalendarFragment();
             FragmentTransaction=true;
-
+        } else if (id == R.id.nav_manage) {
+            fragment = new SettingsFragment();
+            FragmentTransaction=true;
         } else if (id == R.id.nav_share) {
-
         } else if (id == R.id.nav_send) {
-
         }
         if(FragmentTransaction){
           getSupportFragmentManager().beginTransaction()
