@@ -70,16 +70,17 @@ public class CalendarFragment extends Fragment {
         View view = inflater.inflate(R.layout.reciclerchat, container, false);
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.recicladorchat);
         lManager = new LinearLayoutManager(getContext());
+
+
         recycler.setLayoutManager(lManager);
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         nombre = prefs.getString("sessionnombre", "");
         idf=prefs.getString("sessionid","");
-         editText=(EditText) view.findViewById(R.id.editto);
+        editText=(EditText) view.findViewById(R.id.editto);
         Button btnemviar=(Button) view.findViewById(R.id.btnemviar);
         mBlogList = (RecyclerView)view.findViewById(R.id.recicladorchat);
         mBlogList.setHasFixedSize(true);
         mBlogList.setLayoutManager(new LinearLayoutManager(getContext()));
-
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("chat_data");
@@ -97,10 +98,10 @@ public class CalendarFragment extends Fragment {
         user_name_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                       }
+            }
             @Override
             public void onCancelled(DatabaseError error) {
-               }
+            }
         });
 
 
@@ -139,14 +140,13 @@ public class CalendarFragment extends Fragment {
                     protected void populateViewHolder(BlogViewHolder viewHolder, Message model, int position) {
                         viewHolder.setTitle(model.getMessage());
                         viewHolder.setImage(getApplicationContext(), model.getFacebook());
-                        mostrarnotificacionb(model.getUser_name(),model.getMessage());
                     }
 
 
                 };
         mBlogList.setAdapter(firebaseRecyclerAdapter);
 
-            return view;
+        return view;
 
 
     }
@@ -198,10 +198,10 @@ public class CalendarFragment extends Fragment {
         public void setImage(Context ctx , String image){
             ImageView post_image = (ImageView)mView.findViewById(R.id.imagenchat);
             // We Need TO pass Context
-           String imgUrl = "https://graph.facebook.com/"+image+"/picture?type=large";
+            String imgUrl = "https://graph.facebook.com/"+image+"/picture?type=large";
 
-            Picasso.with(ctx) .load(imgUrl).transform(new CropCircleTransformation()).resize(60, 60)
-                    .into(post_image);
+            Picasso.with(ctx) .load(imgUrl).transform(new CropCircleTransformation()).resize(50, 50)
+                    .into(post_image);;
             //Picasso.with(ctx).load(image).into(post_image);
         }    }
 }
