@@ -50,8 +50,8 @@ public class Otromenu extends FragmentActivity implements OnMapReadyCallback,Goo
             mapa.getUiSettings().setZoomControlsEnabled(false);
             mapa.getUiSettings().setCompassEnabled(true);
         } else {
-            Button btnMiPos=(Button) findViewById(R.id.button2);
-            btnMiPos.setEnabled(false);
+          //  Button btnMiPos=(Button) findViewById(R.id.button2);
+         //   btnMiPos.setEnabled(false);
         }
     }
     public void moveCamera(View view) {

@@ -19,6 +19,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBarActivity;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;

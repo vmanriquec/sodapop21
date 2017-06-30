@@ -51,7 +51,7 @@ public class HomeFragment extends  Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout, container, false);
-        Spinner spin;
+
         Resources res = getResources();
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         String nombre = prefs.getString("sessionnombre", "");
@@ -107,10 +107,10 @@ public class HomeFragment extends  Fragment {
 
     private class cargarmesas extends AsyncTask<String, String, String> {
 
-        ProgressDialog pdLoading = new ProgressDialog(HomeFragment.this.getContext());
-        HttpURLConnection conn;
+        ProgressDialog pdLoading = new ProgressDialog(HomeFragment.this.getActivity());
+        HttpURLConnection conne;
         URL url = null;
-        ArrayList<Mesas> listaalmacen = new ArrayList<Mesas>();
+        ArrayList<Mesas> listaalmaceno = new ArrayList<Mesas>();
 
         @Override
         protected void onPreExecute() {
@@ -130,23 +130,23 @@ public class HomeFragment extends  Fragment {
                 return e.toString();
             }
             try {
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("GET");
-                conn.setDoOutput(true);
-                conn.connect();
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("GET");
+                conne.setDoOutput(true);
+                conne.connect();
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
                 return e1.toString();
             }
             try {
-                int response_code = conn.getResponseCode();
+                int response_code = conne.getResponseCode();
 
                 if (response_code == HttpURLConnection.HTTP_OK) {
 
-                    InputStream input = conn.getInputStream();
+                    InputStream input = conne.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                     StringBuilder result = new StringBuilder();
                     String line;
@@ -162,16 +162,18 @@ public class HomeFragment extends  Fragment {
                 e.printStackTrace();
                 return e.toString();
             } finally {
-                conn.disconnect();
+                conne.disconnect();
             }
         }
         @Override
         protected void onPostExecute(String result) {
+            Spinner spin=(Spinner)view.findViewById(R.id.spinnermesas);
+
 
             ArrayList<String> dataList = new ArrayList<String>();
-            Mesas mes;
+            Mesas meso;
             if(result.equals("no rows")) {
-                Toast.makeText(HomeFragment.this.getContext(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
 
             }else{
 
@@ -179,17 +181,18 @@ public class HomeFragment extends  Fragment {
 
                     JSONArray jArray = new JSONArray(result);
 
+
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.getJSONObject(i);
-                        dataList.add(json_data.getString("numeromesa"));
+                        dataList.add(json_data.getString("estadomesa"));
+                          meso = new Mesas(json_data.getInt("idmesa"), json_data.getInt("numeromesa"), json_data.getString("estadomesa"), json_data.getInt("sillasmesa"));
 
-                        Log.d("TAGito", json_data.getString("estadomesa"));
-                        mes = new Mesas(json_data.getInt("idmesas"), json_data.getInt("numeromesa"), json_data.getString("estadomesa"), json_data.getInt("sillasmesa"));
-                        listaalmacen.add(mes);
+                        listaalmaceno.add(meso);
+
                     }
                     strArrData = dataList.toArray(new String[dataList.size()]);
-                    ArrayAdapter<Mesas> adaptadorl= new ArrayAdapter<Mesas>(HomeFragment.this.getContext(), android.R.layout.simple_spinner_item,listaalmacen );
-                   Spinner spin=(Spinner)view.findViewById(R.id.spinnermesas);
+                    ArrayAdapter<Mesas> adaptadorl= new ArrayAdapter<Mesas>(HomeFragment.this.getContext(), android.R.layout.simple_spinner_item,listaalmaceno );
+
                     spin.setAdapter(adaptadorl);
 
                 } catch (JSONException e) {

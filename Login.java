@@ -54,9 +54,9 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
- Button normal =(Button) findViewById(R.id.button2);
 
-        normal.setOnClickListener(new Button.OnClickListener() {
+
+      /*  normal.setOnClickListener(new Button.OnClickListener() {
 
             public void onClick(View v) {
                // Toast.makeText(Login.this,"traer usuarios",Toast.LENGTH_LONG);
@@ -85,7 +85,7 @@ public class Login extends AppCompatActivity {
 
 
 
-        /** if(TextUtils.isEmpty(nombre)) {
+         if(TextUtils.isEmpty(nombre)) {
             nombreusuario.setError("Debes especificar clave");
             if (TextUtils.isEmpty(clave)){
                 nombreusuario.setError("Debes especificar usuario");
@@ -152,7 +152,7 @@ public class Login extends AppCompatActivity {
     public void listaalmacenes(){
 
         final Spinner list;
-        list =(Spinner) findViewById(R.id.spinner3);
+       // list =(Spinner) findViewById(R.id.spinner3);
         final ArrayList<Almacen> listaalmacen = new ArrayList<Almacen>();
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
@@ -178,7 +178,7 @@ public class Login extends AppCompatActivity {
                     ArrayAdapter<Almacen> asa = new ArrayAdapter<Almacen>(Login.this, android.R.layout.simple_spinner_item,listaalmacen );
                     // return asa;
 
-                    list.setAdapter(asa);
+           //         list.setAdapter(asa);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
