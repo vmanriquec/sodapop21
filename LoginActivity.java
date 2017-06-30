@@ -16,6 +16,7 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -91,7 +92,7 @@ String FileName ="myfile";
         AppEventsLogger.activateApp(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        new LoginActivity.cargaralmacen().execute();
 
   callbackManager = CallbackManager.Factory.create();
 leershare();
@@ -480,7 +481,9 @@ private void leershare(){
                         listaalmacen.add(mes);
                     }
                     strArrData = dataList.toArray(new String[dataList.size()]);
+
                     ArrayAdapter<Almacen> adaptadorl= new ArrayAdapter<Almacen>(LoginActivity.this, android.R.layout.simple_spinner_item,listaalmacen );
+
                     spin.setAdapter(adaptadorl);
 
 
@@ -492,6 +495,8 @@ private void leershare(){
         }
 
     }
+
+
 
 }
 

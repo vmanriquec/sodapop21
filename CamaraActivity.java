@@ -81,6 +81,7 @@ public class CamaraActivity extends ActionBarActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogonuevousuario);
+        new cargaralmacen().execute();
         final TextView nombreusuario = (TextView) findViewById(R.id.nombreusuario);
         final TextView claveusuario = (TextView) findViewById(R.id.claveusuario);
 
@@ -89,7 +90,6 @@ public class CamaraActivity extends ActionBarActivity implements NavigationView.
         final Spinner spina=(Spinner) findViewById(R.id.spinnertask);
         imagensqlites=(ImageView) findViewById(R.id.imagensqlite2);
 
-        new cargaralmacen().execute();
 
 
         mydb=new DBHelper(this);
