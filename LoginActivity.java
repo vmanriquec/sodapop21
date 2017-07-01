@@ -13,12 +13,13 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,28 +97,24 @@ String FileName ="myfile";
 
   callbackManager = CallbackManager.Factory.create();
 leershare();
-final TextView nombreuser=(TextView) findViewById(R.id.phpnombreusuario);
-        final TextView claveusuario=(TextView) findViewById(R.id.phpclaveusuario);
 
-        Button loginadminist=(Button) findViewById(R.id.phpbtnloginphp);
 
-        loginadminist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Hola :) ", Toast.LENGTH_SHORT).show();
 
-            }
-        });
+
+
+
+
         new LoginActivity.cargaralmacen().execute();
 
         loginButton=(LoginButton) findViewById(R.id.login_button);
-       // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
-
-        loginButton.setReadPermissions(Arrays.asList(
+         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+
+
                 if(Profile.getCurrentProfile() == null) {
                     mProfileTracker = new ProfileTracker() {
                         @Override
@@ -132,10 +129,7 @@ final TextView nombreuser=(TextView) findViewById(R.id.phpnombreusuario);
                             guardarshare(sessionusuario,sessionnombre,sessionapepat,sessionapemat);
                         }
                     };
-
-
                     handlefacebookaccestocken(loginResult.getAccessToken());
-
                 }
                 else {
                     Profile profile = Profile.getCurrentProfile();
@@ -173,14 +167,42 @@ final TextView nombreuser=(TextView) findViewById(R.id.phpnombreusuario);
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if (user !=null){
+//primero verifica si esdta el id de facebook y el almacen correcto
+                    //si esta entonces pasa a menuprincipal
+
+                    //si noooo
+
+                    // pide que te loguees por primera  grabar el id de facebook donnnde  user y pass coincida
+
+
+
+
+
+
+
+
+
+
 
                     ir();
                 }
             }
         };
-
+        Button angryButton = (Button) findViewById(R.id.phpbtnloginphp);
+        angryButton.setOnClickListener(this);
 
     }
+
+
+
+
+
+
+
+
+
+
+
     @Override
     protected void onStart(){
         super.onStart();
@@ -222,9 +244,49 @@ Intent intent= new Intent(this,Menuprincipal.class);
   startActivity(intent);
 
     }
+
     @Override
     public void onClick(View view) {
+        switch(view.getId())
+        {
+            case R.id.phpbtnloginphp:
+            {
 
+                final TextView nombreuser=(TextView) findViewById(R.id.phpnombreusuario);
+                final TextView claveusuario=(TextView) findViewById(R.id.phpclaveusuario);
+                final Spinner spinerio=(Spinner) findViewById(R.id.spinnerio);
+
+                if( nombreuser.getText().toString().length() == 0 || claveusuario.getText().toString().length() == 0 ){
+                    nombreuser.setError( "Debes digitar un nombre y clave de usuario" );
+
+                }
+else{
+                    if( nombreuser.getText().toString().length() == 0 ){
+                        nombreuser.setError( "Debes digitar un nombre usuario" );
+
+                    }   else{
+                        if( claveusuario.getText().toString().length() == 0 ){
+                            claveusuario.setError( "Debes digitar su clave" );
+
+                        }else{
+
+                            String al =spinerio.getItemAtPosition(spinerio.getSelectedItemPosition()).toString();
+                              String mesei=al;
+                            String mesi = mesei.substring(0, 2);
+                            String mei=mesi.trim();
+                            new AsyncLogin().execute(nombreuser.getText().toString(),claveusuario.getText().toString(),mei);
+
+                        }
+
+                    }
+
+                }
+
+                break;
+            }
+
+
+        }
     }
 
     public void mostraralert(){
@@ -271,6 +333,7 @@ private void leershare(){
 
 
 
+
     private class AsyncLogin extends AsyncTask<String, String, String>
     {
         ProgressDialog pdLoading = new ProgressDialog(LoginActivity.this);
@@ -292,7 +355,7 @@ private void leershare(){
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://localhost/test/login.inc.php");
+                url = new URL("http://sodapop.ga/sugest/apilogin.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -313,7 +376,8 @@ private void leershare(){
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("username", params[0])
-                        .appendQueryParameter("password", params[1]);
+                        .appendQueryParameter("password", params[1])
+                        .appendQueryParameter("idalmacen", params[2]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -380,18 +444,16 @@ private void leershare(){
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
 
-                Intent intent = new Intent(LoginActivity.this,Menuprincipal.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
+ir();
 
             }else if (result.equalsIgnoreCase("false")){
 
                 // If username and password does not match display a error message
-                Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "no estas autorizado a hacer operaciones en este almacen", Toast.LENGTH_LONG).show();
 
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
 
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "OOPs! hay problemas de conexion...", Toast.LENGTH_LONG).show();
 
             }
         }
@@ -408,7 +470,9 @@ private void leershare(){
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            pdLoading.setMessage("\tCargando Almacenes");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
 
         }
 
@@ -460,7 +524,9 @@ private void leershare(){
         }
         @Override
         protected void onPostExecute(String result) {
-
+            ImageView im=(ImageView) findViewById(R.id.ima);
+            Animation animation =AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+            im.startAnimation(animation);
             ArrayList<String> dataList = new ArrayList<String>();
             Almacen mes;
             if(result.equals("no rows")) {
@@ -491,13 +557,18 @@ private void leershare(){
                 }
 
             }
-
+            pdLoading.dismiss();
         }
 
     }
 
 
+public void mueveimagen(){
+    ImageView i=(ImageView) findViewById(R.id.ima);
+    Animation animation =AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+    i.startAnimation(animation);
 
+}
 }
 
 
