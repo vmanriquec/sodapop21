@@ -8,11 +8,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -75,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Spinner spineralmaceno;
 private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-
+String siestafacebook="";
 
 String sessionusuario,sessionnombre,sessionapemat,sessionapepat,correo;
     RequestQueue requestQueue;
@@ -111,31 +113,80 @@ leershare();
                 "public_profile", "email", "user_birthday", "user_friends"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-
-
-
+            public void onSuccess(final LoginResult loginResult) {
                 if(Profile.getCurrentProfile() == null) {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                             mProfileTracker.stopTracking();
-                            sessionusuario=profile2.getId();
-                            sessionnombre=profile2.getName();
-                            sessionapepat=profile2.getFirstName();
-                            sessionapemat=profile2.getLastName();
+                            mProfileTracker.stopTracking();
+                            sessionusuario = profile2.getId();
+                            asynccomprobaridfacebook asyn = new asynccomprobaridfacebook();
+                            asyn.execute(sessionusuario);
+                                                        sessionnombre = profile2.getName();
+                            sessionapepat = profile2.getFirstName();
+                            sessionapemat = profile2.getLastName();
 
-                            Toast.makeText(getApplicationContext(),"Hola :) "+sessionnombre+" Disfruta la Aplicacion", Toast.LENGTH_SHORT).show();
-                            guardarshare(sessionusuario,sessionnombre,sessionapepat,sessionapemat);
+
                         }
                     };
-                    handlefacebookaccestocken(loginResult.getAccessToken());
-                }
-                else {
-                    Profile profile = Profile.getCurrentProfile();
-                    //Log.v("facebook - profile", profile.getFirstName());
-                }
-            }
+
+                    // ver si acces tocken esta en base de datos
+
+                    //new LoginActivity.asynccomprobaridfacebook().execute(sessionusuario);
+
+
+                    new CountDownTimer(3000, 1000) {
+                        public void onTick(long millisUntilFinished) {
+
+                        } public void onFinish() {
+                            if (siestafacebook=="no") {
+                                Toast.makeText(LoginActivity.this, "Tu ingreso por Facebook aun no esta disponible por favor  llena tu usuario y contraseña", Toast.LENGTH_LONG).show();
+                                final TextView nombreuser=(TextView) findViewById(R.id.phpnombreusuario);
+                                final TextView claveusuario=(TextView) findViewById(R.id.phpclaveusuario);
+                                final Spinner spinerio=(Spinner) findViewById(R.id.spinnerio);
+
+                                if( nombreuser.getText().toString().length() == 0 || claveusuario.getText().toString().length() == 0 ){
+                                    nombreuser.setError( "Debes digitar un nombre y clave de usuario" );
+
+                                }
+                                else{
+                                    if( nombreuser.getText().toString().length() == 0 ){
+                                        nombreuser.setError( "Debes digitar un nombre usuario" );
+
+                                    }   else{
+                                        if( claveusuario.getText().toString().length() == 0 ){
+                                            claveusuario.setError( "Debes digitar su clave" );
+
+                                        }else{
+
+                                            String al =spinerio.getItemAtPosition(spinerio.getSelectedItemPosition()).toString();
+                                            String mesei=al;
+                                            String mesi = mesei.substring(0, 2);
+                                            String mei=mesi.trim();
+                                                                                   new asingusrdarnombreidfacebook().execute(nombreuser.getText().toString(),claveusuario.getText().toString(),mei,sessionusuario,sessionnombre);
+                                            guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
+                                            leershare();
+
+
+
+                                        }
+
+                                    }
+
+                                }
+
+
+                            }
+                            else{
+                                handlefacebookaccestocken(loginResult.getAccessToken());
+                                guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
+                                leershare();
+                                Toast.makeText(getApplicationContext(), "Hola :) " + sessionnombre + " Disfruta la Aplicacion", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        } }.start();
+          }}
             @Override
             public void onCancel() {
               //  Toast.makeText(getApplicationContext(), R.string.cancel_login, Toast.LENGTH_SHORT).show();
@@ -167,23 +218,9 @@ leershare();
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if (user !=null){
-//primero verifica si esdta el id de facebook y el almacen correcto
-                    //si esta entonces pasa a menuprincipal
 
-                    //si noooo
-
-                    // pide que te loguees por primera  grabar el id de facebook donnnde  user y pass coincida
-
-
-
-
-
-
-
-
-
-
-
+                    guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
+                    leershare();
                     ir();
                 }
             }
@@ -314,7 +351,7 @@ else{
         editor.putString("sessionapemat",apemat);
 
         editor.commit();
-        Toast.makeText(this,"Session Guardada"+idusuario+nombre+apepat+apemat,Toast.LENGTH_LONG).show();
+
     }
 private void leershare(){
     SharedPreferences sharedPreferences=getSharedPreferences(FileName,Context.MODE_PRIVATE);
@@ -325,8 +362,7 @@ private void leershare(){
     if (session.equals(null) || session.equals("")){
         //Toast.makeText(this,"no existe session::::::"+session,Toast.LENGTH_LONG).show();
     }else {
-        Toast.makeText(this,"Session activa "+nomb,Toast.LENGTH_LONG).show();
-        ir();
+
     }}
 
 
@@ -443,7 +479,8 @@ private void leershare(){
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-
+                guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
+                leershare();
 ir();
 
             }else if (result.equalsIgnoreCase("false")){
@@ -562,7 +599,264 @@ ir();
 
     }
 
+    private class asynccomprobaridfacebook extends AsyncTask<String, String, String>
+    {
+        ProgressDialog pdLoading = new ProgressDialog(LoginActivity.this);
+        HttpURLConnection conn;
+        URL url = null;
 
+        @Override
+        protected void onPreExecute() {
+            pdLoading.setMessage("\tcomprobando");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
+            super.onPreExecute();
+
+
+
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://sodapop.ga/sugest/apisiexisteenfacebook.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("idfacebook", params[0]);
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    // Pass data to onPostExecute method
+                    return(result.toString());
+
+
+                }else{
+
+                    return("unsuccessful");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "exception";
+            } finally {
+                conn.disconnect();
+            }
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            pdLoading.dismiss();
+
+            if(result.equalsIgnoreCase("true"))
+            {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                siestafacebook="si";
+                ir();
+
+            }else if (result.equalsIgnoreCase("false")){
+
+                // If username and password does not match display a error message
+                 siestafacebook="no";
+
+            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
+
+
+
+                Toast.makeText(LoginActivity.this, "OOPs! hay problemas de conexion...", Toast.LENGTH_LONG).show();
+
+            }
+        }
+
+    }
+
+
+    private class asingusrdarnombreidfacebook extends AsyncTask<String, String, String>
+    {
+        ProgressDialog pdLoading = new ProgressDialog(LoginActivity.this);
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            //this method will be running on UI thread
+            pdLoading.setMessage("\tLoading...");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
+
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://sodapop.ga/sugest/apigrabarnombreidfacebook.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("username", params[0])
+                        .appendQueryParameter("password", params[1])
+                        .appendQueryParameter("idalmacen", params[2])
+                        .appendQueryParameter("idfacebook", params[3])
+                        .appendQueryParameter("nombrefacebook", params[4]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    // Pass data to onPostExecute method
+                    return(result.toString());
+
+                }else{
+
+                    return("unsuccessful");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "exception";
+            } finally {
+                conn.disconnect();
+            }
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            pdLoading.dismiss();
+
+            Log.d("TAGITOOO", result);
+            if(result.equalsIgnoreCase("true"))
+            {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(LoginActivity.this, "Felicitaciones registro exitoso", Toast.LENGTH_LONG).show();
+
+                ir();
+
+            }else if (result.equalsIgnoreCase("false")){
+
+                // If username and password does not match display a error message
+                Toast.makeText(LoginActivity.this, "no tienes tus credenciales correctas", Toast.LENGTH_LONG).show();
+
+            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
+
+                Toast.makeText(LoginActivity.this, "OOPs! hay problemas de conexion...", Toast.LENGTH_LONG).show();
+
+            }
+        }
+
+    }
 public void mueveimagen(){
     ImageView i=(ImageView) findViewById(R.id.ima);
     Animation animation =AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
