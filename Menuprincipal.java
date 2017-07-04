@@ -30,13 +30,14 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 public class Menuprincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
    String idd;
-    String session,nombreususrio;
+    String session,nombreususrio,almacenactivo;
     String FileName ="myfile";
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menuprincipal);
+
         SharedPreferences sharedPreferences=getSharedPreferences(FileName, Context.MODE_PRIVATE);
         session=sharedPreferences.getString("sessionid","");
         nombreususrio=sharedPreferences.getString("sessionnombre","");

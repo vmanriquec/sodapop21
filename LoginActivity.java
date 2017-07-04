@@ -95,7 +95,9 @@ String FileName ="myfile";
         AppEventsLogger.activateApp(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         new LoginActivity.cargaralmacen().execute();
+
 
   callbackManager = CallbackManager.Factory.create();
 leershare();
@@ -158,6 +160,7 @@ leershare();
                                             claveusuario.setError( "Debes digitar su clave" );
 
                                         }else{
+
 
                                             String al =spinerio.getItemAtPosition(spinerio.getSelectedItemPosition()).toString();
                                             String mesei=al;
@@ -277,8 +280,9 @@ if(task.isSuccessful()){
     }
 
 private void ir(){
-Intent intent= new Intent(this,Menuprincipal.class);
-  startActivity(intent);
+Intent i= new Intent(this,Menuprincipal.class);
+
+  startActivity(i);
 
     }
 
@@ -345,10 +349,19 @@ else{
       private  void guardarshare(String idusuario,String nombre,String apepat,String apemat){
         SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sharedPreferences.edit();
+          Spinner s=(Spinner)findViewById(R.id.spinnerio);
+          String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
+          String mesei=al;
+          int g= mesei.length();
+          String mesi = mesei.substring(3,g);
+          String almacenactivo=mesi.trim();
+
+
         editor.putString("sessionid",idusuario);
         editor.putString("sessionnombre",nombre);
         editor.putString("sessionapepat",apepat);
         editor.putString("sessionapemat",apemat);
+          editor.putString("almacenactivo",almacenactivo);
 
         editor.commit();
 

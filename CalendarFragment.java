@@ -1,4 +1,45 @@
-package com.food.sistemas.sodapopapp;
+package  com.food.sistemas.sodapopapp;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.food.sistemas.sodapopapp.Menuprincipal;
+import com.food.sistemas.sodapopapp.Message;
+import com.food.sistemas.sodapopapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -204,4 +245,5 @@ public class CalendarFragment extends Fragment {
                     .into(post_image);;
             //Picasso.with(ctx).load(image).into(post_image);
         }    }
+
 }

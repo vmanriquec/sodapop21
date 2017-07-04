@@ -8,6 +8,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +23,9 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.food.sistemas.sodapopapp.modelo.Almacen;
+
 import com.food.sistemas.sodapopapp.modelo.Mesas;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,10 +39,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
+
+
 
 /**
  * User: special
@@ -45,6 +55,12 @@ import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
  * Mail: specialcyci@gmail.com
  */
 public class HomeFragment extends  Fragment {
+
+
+
+    Toolbar toolbar;
+    DrawerLayout mDrawer;
+    ActionBarDrawerToggle mDrawerToggle;
     String FileName ="myfile";
     private View view;
      private String[] strArrData = {"No Suggestions"};
@@ -55,12 +71,17 @@ public class HomeFragment extends  Fragment {
         Resources res = getResources();
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         String nombre = prefs.getString("sessionnombre", "");
+        String almacenactivo = prefs.getString("almacenactivo", "");
 
-
-
+        TextView fechadehoy =(TextView)view.findViewById(R.id.textViewfechadehoy);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String currentDateandTime = sdf.format(new Date());
+        fechadehoy.setText(currentDateandTime);
 
         TextView mesero=(TextView)view.findViewById(R.id.textViewmesero);
       mesero.setText(nombre);
+        TextView almacen=(TextView)view.findViewById(R.id.textalmacen);
+        almacen.setText(almacenactivo);
 
 
        new cargarmesas().execute();
@@ -72,13 +93,14 @@ public class HomeFragment extends  Fragment {
         tabs.setup();
         TabHost.TabSpec spec = tabs.newTabSpec("mitabs1");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Orden",
-                res.getDrawable(android.R.drawable.ic_input_add));
+        spec.setIndicator("Orden", ContextCompat.getDrawable(getActivity(), R.drawable.beer));
+
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Menu ", res.getDrawable(android.R.drawable.ic_dialog_map));
+
+        spec.setIndicator("Menu ", res.getDrawable(R.drawable.ic_menu_send));
         tabs.addTab(spec);
         tabs.setCurrentTab(0);
 
