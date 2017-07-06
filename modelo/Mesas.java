@@ -54,7 +54,7 @@ public class Mesas{
     }
     @Override
     public String toString(){
-        return String.valueOf(idmesas)+"Mesa  "+String.valueOf(numeromesa);
+        return String.valueOf(idmesas)+"Ms:"+String.valueOf(numeromesa);
     }
 
 

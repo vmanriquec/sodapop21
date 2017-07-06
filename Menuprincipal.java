@@ -201,7 +201,8 @@ public class Menuprincipal extends AppCompatActivity
         editor.putString("sessionnombre","");
         editor.putString("sessionapepat","");
         editor.putString("sessionapemat","");
-
+        editor.putString("almacenactivo","");
+        editor.putString("facebook","");
         editor.commit();
         Toast.makeText(this,"Session Cerrada",Toast.LENGTH_LONG).show();
     }

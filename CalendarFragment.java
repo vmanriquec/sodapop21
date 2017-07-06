@@ -8,9 +8,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +86,7 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.R.layout.profile;
+import static com.food.sistemas.sodapopapp.R.layout.tarjetacardview;
 
 /**
  * User: special
@@ -108,7 +113,7 @@ public class CalendarFragment extends Fragment {
     String FileName ="myfile";
     List itemso = new ArrayList();
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.reciclerchat, container, false);
+        final View view = inflater.inflate(R.layout.reciclerchat, container, false);
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.recicladorchat);
         lManager = new LinearLayoutManager(getContext());
 
@@ -134,7 +139,6 @@ public class CalendarFragment extends Fragment {
         map=new HashMap<>();
         lManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(lManager);
-
 
         user_name_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -170,17 +174,38 @@ public class CalendarFragment extends Fragment {
         });
 
         FirebaseRecyclerAdapter<Message, BlogViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<Message, BlogViewHolder>(
-                        Message.class,
-                        R.layout.tarjetachat,
-                        BlogViewHolder.class,
-                        myRef)  {
+                new FirebaseRecyclerAdapter<Message, BlogViewHolder>(Message.class,R.layout.tarjetachat,BlogViewHolder.class,myRef)  {
 
 
                     @Override
                     protected void populateViewHolder(BlogViewHolder viewHolder, Message model, int position) {
-                        viewHolder.setTitle(model.getMessage());
-                        viewHolder.setImage(getApplicationContext(), model.getFacebook());
+                        Log.d("valor",model.getFacebook().toString());
+                        if(model.getFacebook().toString().equals("10205968625733202")){
+
+                            viewHolder.mView.findViewById(R.id.ln_message_bg).setBackgroundResource(R.color.chatmio);
+
+                            viewHolder.setTitle(model.getMessage());
+                            viewHolder.setImage(getApplicationContext(), model.getFacebook());
+  /*                          RelativeLayout.LayoutParams rl=(RelativeLayout.LayoutParams) viewHolder.mView.findViewById(R.id.rela).getLayoutParams();
+                            rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);*/
+                            RelativeLayout d =(RelativeLayout)viewHolder.mView.findViewById(R.id.rela);
+                            d.setGravity(Gravity.RIGHT);
+
+
+                        }else{
+                            viewHolder.mView.findViewById(R.id.ln_message_bg).setBackgroundResource(R.color.chatotro);
+
+
+                            viewHolder.setTitle(model.getMessage());
+                            viewHolder.setImage(getApplicationContext(), model.getFacebook());
+                           /* RelativeLayout.LayoutParams rl=(RelativeLayout.LayoutParams) viewHolder.mView.findViewById(R.id.rela).getLayoutParams();
+                            rl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                            viewHolder.mView.findViewById(R.id.rela).setLayoutParams(rl);
+*/
+                        }
+
+
+
                     }
 
 
@@ -227,9 +252,16 @@ public class CalendarFragment extends Fragment {
     public static class BlogViewHolder extends RecyclerView.ViewHolder  {
         View mView;
         public BlogViewHolder(View itemView) {
-            super(itemView);
-            mView= itemView;
 
+
+
+            super(itemView);
+            CardView cardView=(CardView)itemView.findViewById(R.id.cv_message);
+            TextView tvmenssage=(TextView) itemView.findViewById(R.id.textochat);
+            ImageView imagemessage=(ImageView) itemView.findViewById(R.id.imagenchat);
+            LinearLayout mensagebg=(LinearLayout)itemView.findViewById(R.id.ln_message_bg);
+
+            mView= itemView;
 
         }
         public void setTitle(String title){
@@ -245,5 +277,10 @@ public class CalendarFragment extends Fragment {
                     .into(post_image);;
             //Picasso.with(ctx).load(image).into(post_image);
         }    }
+    public void bg(){
+
+
+    }
+
 
 }

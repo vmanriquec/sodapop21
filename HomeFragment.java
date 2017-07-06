@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,10 +33,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -70,21 +74,41 @@ public class HomeFragment extends  Fragment {
 
         Resources res = getResources();
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
-        String nombre = prefs.getString("sessionnombre", "");
-        String almacenactivo = prefs.getString("almacenactivo", "");
+        String face=prefs.getString("facebook","");
+
+        if (face.equals("si")){
+
+            String nombre = prefs.getString("sessionnombre", "");
+            String almacenactivo = prefs.getString("almacenactivo", "");
+
+            TextView mesero=(TextView)view.findViewById(R.id.textViewmesero);
+            mesero.setText(nombre);
+            TextView almacen=(TextView)view.findViewById(R.id.textalmacen);
+            almacen.setText(almacenactivo);
+
+            new cargarmesas().execute(nombre);
+        }else if(face.equals("no")){
+            String nombre = prefs.getString("sessionnombre", "");
+            String almacenactivo = prefs.getString("almacenactivo", "");
+            TextView mesero=(TextView)view.findViewById(R.id.textViewmesero);
+            mesero.setText(nombre);
+
+            //   hacer estoooooooooooooo
+            //cargar almacen segun nombre de ususario y contraseña
+            //
+            // ademas de cargar me sas segun usuario y contraseña
+            //
+            //
+            // new cargarmesas().execute(nombre);
+
+        }
+
 
         TextView fechadehoy =(TextView)view.findViewById(R.id.textViewfechadehoy);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String currentDateandTime = sdf.format(new Date());
         fechadehoy.setText(currentDateandTime);
 
-        TextView mesero=(TextView)view.findViewById(R.id.textViewmesero);
-      mesero.setText(nombre);
-        TextView almacen=(TextView)view.findViewById(R.id.textalmacen);
-        almacen.setText(almacenactivo);
-
-
-       new cargarmesas().execute();
 
 
 
@@ -99,11 +123,9 @@ public class HomeFragment extends  Fragment {
 
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab2);
-
         spec.setIndicator("Menu ", res.getDrawable(R.drawable.ic_menu_send));
         tabs.addTab(spec);
         tabs.setCurrentTab(0);
-
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab3);
         spec.setIndicator("Mesa ", res.getDrawable(android.R.drawable.ic_dialog_map));
@@ -114,13 +136,11 @@ public class HomeFragment extends  Fragment {
         spec.setIndicator("Mov ", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
         tabs.setCurrentTab(2);
-
         /*spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab5);
         spec.setIndicator("Est ", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
-        tabs.setCurrentTab(3);
-*/
+        tabs.setCurrentTab(3);*/
 
         return view;
 
@@ -129,8 +149,7 @@ public class HomeFragment extends  Fragment {
 
     private class cargarmesas extends AsyncTask<String, String, String> {
 
-        ProgressDialog pdLoading = new ProgressDialog(HomeFragment.this.getActivity());
-        HttpURLConnection conne;
+         HttpURLConnection conne;
         URL url = null;
         ArrayList<Mesas> listaalmaceno = new ArrayList<Mesas>();
 
@@ -155,9 +174,30 @@ public class HomeFragment extends  Fragment {
                 conne = (HttpURLConnection) url.openConnection();
                 conne.setReadTimeout(READ_TIMEOUT);
                 conne.setConnectTimeout(CONNECTION_TIMEOUT);
-                conne.setRequestMethod("GET");
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
                 conne.setDoOutput(true);
+
+                // Append parameters to URL
+                Log.d("valore","ttt");
+
+                Log.d("valor",params[0]);
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("nombre", params[0]);
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
                 conne.connect();
+
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -175,8 +215,10 @@ public class HomeFragment extends  Fragment {
 
                     while ((line = reader.readLine()) != null) {
                         result.append(line);
+
                     }
                     return (result.toString());
+
                 } else {
                     return("Connection error");
                 }
@@ -189,6 +231,7 @@ public class HomeFragment extends  Fragment {
         }
         @Override
         protected void onPostExecute(String result) {
+            Log.d("waaaaaaa",result);
             Spinner spin=(Spinner)view.findViewById(R.id.spinnermesas);
 
 

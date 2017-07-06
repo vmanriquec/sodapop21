@@ -222,8 +222,8 @@ leershare();
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if (user !=null){
 
-                    guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
-                    leershare();
+                    //guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
+                    //leershare();
                     ir();
                 }
             }
@@ -245,6 +245,7 @@ leershare();
 
     @Override
     protected void onStart(){
+
         super.onStart();
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
 
@@ -254,6 +255,7 @@ leershare();
     protected void onStop(){
 
         super.onStop();
+
         firebaseAuth.removeAuthStateListener(firebaseAuthListener);
 
     }
@@ -353,19 +355,49 @@ else{
           String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
           String mesei=al;
           int g= mesei.length();
-          String mesi = mesei.substring(3,g);
-          String almacenactivo=mesi.trim();
+          String mesi = mesei.substring(0,2);
+          String  idalmacenactivo=mesi.trim();
 
 
+
+          String mesio = mesei.substring(3,g);
+          String almacenactivo=mesio.trim();
+
+          editor.putString("facebook","si");
         editor.putString("sessionid",idusuario);
         editor.putString("sessionnombre",nombre);
         editor.putString("sessionapepat",apepat);
         editor.putString("sessionapemat",apemat);
           editor.putString("almacenactivo",almacenactivo);
 
+
         editor.commit();
 
     }
+    private  void guardarsharesinfacebook(String idusuario,String nombre){
+        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        Spinner s=(Spinner)findViewById(R.id.spinnerio);
+        String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
+        String mesei=al;
+        int g= mesei.length();
+        String mesi = mesei.substring(0,2);
+
+        String  idalmacenactivo=mesi.trim();
+
+        String mesio = mesei.substring(3,g);
+        String almacenactivo=mesio.trim();
+editor.putString("facebook","no");
+        editor.putString("sessionnombre",nombre);
+        editor.putString("idusuario",idusuario);
+        editor.putString("almacenactivo",almacenactivo);
+        editor.putString("idalmacenactivo",idalmacenactivo);
+
+
+        editor.commit();
+
+    }
+
 private void leershare(){
     SharedPreferences sharedPreferences=getSharedPreferences(FileName,Context.MODE_PRIVATE);
       String session=sharedPreferences.getString("sessionid","");
@@ -492,7 +524,14 @@ private void leershare(){
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                guardarshare(sessionusuario, sessionnombre, sessionapepat, sessionapemat);
+
+                final TextView nombreuser=(TextView) findViewById(R.id.phpnombreusuario);
+                final TextView claveusuario=(TextView) findViewById(R.id.phpclaveusuario);
+                final Spinner spinerio=(Spinner) findViewById(R.id.spinnerio);
+
+
+
+                guardarsharesinfacebook(nombreuser.getText().toString(),claveusuario.getText().toString() );
                 leershare();
 ir();
 
@@ -875,7 +914,22 @@ public void mueveimagen(){
     Animation animation =AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
     i.startAnimation(animation);
 
+
 }
+
+    private  void limpiarshare(){
+        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("sessionid","");
+        editor.putString("sessionnombre","");
+        editor.putString("sessionapepat","");
+        editor.putString("sessionapemat","");
+        editor.putString("almacenactivo","");
+        editor.putString("facebook","");
+        editor.commit();
+
+    }
+
 }
 
 
