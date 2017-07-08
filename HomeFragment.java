@@ -114,7 +114,7 @@ public class HomeFragment extends  Fragment implements View.OnClickListener {
                     String nombre = prefs.getString("sessionnombre", "");
                     String almacenactivo = prefs.getString("almacenactivo", "");
                     String idalmacenactivo = prefs.getString("idalmacenactivo", "");
-                    Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
                     new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"4");
 
 
@@ -124,7 +124,7 @@ public class HomeFragment extends  Fragment implements View.OnClickListener {
                     String claveusuario=prefs.getString("claveusuario","");
                     idalmacensf=prefs.getString("idalmacenactivosf","");
 
-                    Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
+                   // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
 
 
 
@@ -579,7 +579,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         @Override
         protected void onPostExecute(String result) {
             Log.d("valoresult",result);
-
+people.clear();
 
 
             ArrayList<String> dataList = new ArrayList<String>();
