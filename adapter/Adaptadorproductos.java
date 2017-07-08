@@ -51,6 +51,8 @@ public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.
                     imgUrl = "https://graph.facebook.com/"+facebookUserId+"/picture?type=large";
                     Picasso.with(getApplicationContext()) .load(imgUrl).transform(new CropCircleTransformation()).resize(70, 70)
                             .into( viewHolder.productoimagen);
+        //holder.
+
     }
     @Override
     public int getItemCount() {
