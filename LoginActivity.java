@@ -348,67 +348,6 @@ else{
         });
         alertDialog.show();
     }
-      private  void guardarshare(String idusuario,String nombre,String apepat,String apemat){
-        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-          Spinner s=(Spinner)findViewById(R.id.spinnerio);
-          String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
-          String mesei=al;
-          int g= mesei.length();
-          String mesi = mesei.substring(0,2);
-          String  idalmacenactivo=mesi.trim();
-
-
-
-          String mesio = mesei.substring(3,g);
-          String almacenactivo=mesio.trim();
-
-          editor.putString("facebook","si");
-        editor.putString("sessionid",idusuario);
-        editor.putString("sessionnombre",nombre);
-        editor.putString("sessionapepat",apepat);
-        editor.putString("sessionapemat",apemat);
-          editor.putString("almacenactivo",almacenactivo);
-
-
-        editor.commit();
-
-    }
-    private  void guardarsharesinfacebook(String idusuario,String nombre){
-        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        Spinner s=(Spinner)findViewById(R.id.spinnerio);
-        String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
-        String mesei=al;
-        int g= mesei.length();
-        String mesi = mesei.substring(0,2);
-
-        String  idalmacenactivo=mesi.trim();
-
-        String mesio = mesei.substring(3,g);
-        String almacenactivo=mesio.trim();
-editor.putString("facebook","no");
-        editor.putString("sessionnombre",nombre);
-        editor.putString("idusuario",idusuario);
-        editor.putString("almacenactivo",almacenactivo);
-        editor.putString("idalmacenactivo",idalmacenactivo);
-
-
-        editor.commit();
-
-    }
-
-private void leershare(){
-    SharedPreferences sharedPreferences=getSharedPreferences(FileName,Context.MODE_PRIVATE);
-      String session=sharedPreferences.getString("sessionid","");
-    String nomb=sharedPreferences.getString("sessionnombre","");
-    String apepa=sharedPreferences.getString("sessionapepat","");
-    String apema=sharedPreferences.getString("sessionapemat","");
-    if (session.equals(null) || session.equals("")){
-        //Toast.makeText(this,"no existe session::::::"+session,Toast.LENGTH_LONG).show();
-    }else {
-
-    }}
 
 
 
@@ -909,13 +848,69 @@ ir();
         }
 
     }
-public void mueveimagen(){
-    ImageView i=(ImageView) findViewById(R.id.ima);
-    Animation animation =AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
-    i.startAnimation(animation);
+    private  void guardarshare(String idusuario,String nombre,String apepat,String apemat){
+        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        Spinner s=(Spinner)findViewById(R.id.spinnerio);
+        String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
+        String mesei=al;
+        int g= mesei.length();
+        String mesi = mesei.substring(0,2);
+        String  idalmacenactivo=mesi.trim();
 
 
-}
+
+        String mesio = mesei.substring(3,g);
+        String almacenactivo=mesio.trim();
+
+        editor.putString("facebook","si");
+        editor.putString("sessionid",idusuario);
+        editor.putString("sessionnombre",nombre);
+        editor.putString("sessionapepat",apepat);
+        editor.putString("sessionapemat",apemat);
+        editor.putString("almacenactivo",almacenactivo);
+        editor.putString("idalmacenactivo",idalmacenactivo);
+
+
+        editor.commit();
+
+    }
+    private  void guardarsharesinfacebook(String nombreusuario,String claveusuario){
+        SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        Spinner s=(Spinner)findViewById(R.id.spinnerio);
+        String al =s.getItemAtPosition(s.getSelectedItemPosition()).toString();
+        String mesei=al;
+        int g= mesei.length();
+        String mesi = mesei.substring(0,2);
+
+        String  idalmacenactivosf=mesi.trim();
+
+        String mesio = mesei.substring(3,g);
+        String almacenactivosf=mesio.trim();
+        editor.putString("facebook","no");
+        editor.putString("nombreusuario",nombreusuario);
+        editor.putString("claveusuario",claveusuario);
+        editor.putString("almacenactivosf",almacenactivosf);
+        editor.putString("idalmacenactivosf",idalmacenactivosf);
+
+
+        editor.commit();
+
+    }
+
+    private void leershare(){
+        SharedPreferences sharedPreferences=getSharedPreferences(FileName,Context.MODE_PRIVATE);
+        String session=sharedPreferences.getString("sessionid","");
+        String nomb=sharedPreferences.getString("sessionnombre","");
+        String apepa=sharedPreferences.getString("sessionapepat","");
+        String apema=sharedPreferences.getString("sessionapemat","");
+        if (session.equals(null) || session.equals("")){
+            //Toast.makeText(this,"no existe session::::::"+session,Toast.LENGTH_LONG).show();
+        }else {
+
+        }}
+
 
     private  void limpiarshare(){
         SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
@@ -927,6 +922,13 @@ public void mueveimagen(){
         editor.putString("almacenactivo","");
         editor.putString("facebook","");
         editor.commit();
+
+    }
+    public void mueveimagen(){
+        ImageView i=(ImageView) findViewById(R.id.ima);
+        Animation animation =AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        i.startAnimation(animation);
+
 
     }
 

@@ -114,16 +114,20 @@ public class CalendarFragment extends Fragment {
     List itemso = new ArrayList();
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.reciclerchat, container, false);
+
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.recicladorchat);
         lManager = new LinearLayoutManager(getContext());
-
-
         recycler.setLayoutManager(lManager);
+
+
+
+
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         nombre = prefs.getString("sessionnombre", "");
         idf=prefs.getString("sessionid","");
         editText=(EditText) view.findViewById(R.id.editto);
         Button btnemviar=(Button) view.findViewById(R.id.btnemviar);
+
         mBlogList = (RecyclerView)view.findViewById(R.id.recicladorchat);
         mBlogList.setHasFixedSize(true);
         mBlogList.setLayoutManager(new LinearLayoutManager(getContext()));

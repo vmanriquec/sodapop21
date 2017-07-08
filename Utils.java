@@ -1,7 +1,7 @@
 package com.food.sistemas.sodapopapp;
 
 
-import com.food.sistemas.sodapopapp.model.Friend;
+import com.food.sistemas.sodapopapp.special.Friend;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,20 +8,21 @@ public class Productos {
     
     
     private int idproducto;
-    private String nombreproducto,estadoproducto;
+    private String nombreproducto,estadoproducto,ingredientes;
     private Double precventa;
     
 
         
-        public Productos(int idproducto, String nombreproducto, String estadoproducto, Double precventa )
+        public Productos(int idproducto, String nombreproducto, String estadoproducto,String ingredientes, Double precventa )
     {
         super();
         this.idproducto=idproducto;
         this.nombreproducto=nombreproducto;
         this.estadoproducto=estadoproducto;
+        this.ingredientes=ingredientes;
         this.precventa=precventa;
     }
-    public int getIdproducto() {
+       public int getIdproducto() {
         return idproducto;
     }
 
@@ -44,6 +45,17 @@ public class Productos {
     public void setEstadoproducto(String estadoproducto) {
         this.estadoproducto = estadoproducto;
     }
+
+    public String getIngredientes() {
+        return ingredientes;
+    }
+
+    public void setIdproducto(String ingredientes) {
+        this.ingredientes = ingredientes;
+    }
+
+
+
 
     public Double getPrecventa() {
         return precventa;
