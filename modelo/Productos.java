@@ -5,14 +5,14 @@ package com.food.sistemas.sodapopapp.modelo;
  * Created by Perseo on 05/08/2014.
  */
 public class Productos {
-    
-    
+
+
     private int idproducto;
     private String nombreproducto,estadoproducto,ingredientes;
     private Double precventa;
-    
 
-        
+
+
         public Productos(int idproducto, String nombreproducto, String estadoproducto,String ingredientes, Double precventa )
     {
         super();
@@ -70,7 +70,7 @@ public class Productos {
     return this.idproducto+"  ."+this.nombreproducto+" S/.  "+this.precventa;
 }
 
-        
-        
+
+
 }
 

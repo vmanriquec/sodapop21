@@ -4,7 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.food.sistemas.sodapopapp.R;
 import com.food.sistemas.sodapopapp.modelo.Productos;
@@ -24,12 +27,18 @@ public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.
         protected TextView productoprecio;
         protected TextView productoingredientes;
         protected ImageView productoimagen;
+        protected TextView cantidadpedida;
+        protected CheckBox michek;
+        protected LinearLayout masmenos;
         public AdaptadorViewHolder(View v){
             super(v);
             this.productonombre=(TextView) v.findViewById(R.id.productonombre);
             this.productoprecio=(TextView) v.findViewById(R.id.productoprecio);
+            this.cantidadpedida=(TextView) v.findViewById(R.id.contidadpedida);
             this.productoingredientes=(TextView) v.findViewById(R.id.productoingredientes);
             this.productoimagen=(ImageView) v.findViewById(R.id.productoimagen);
+            this.michek=(CheckBox) v.findViewById(R.id.myCheckBox);
+            this.masmenos=(LinearLayout)v.findViewById(R.id.masmenos);
         }
     }
     @Override
@@ -45,13 +54,35 @@ public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.
         viewHolder.productonombre.setText(item.getNombreproducto());
         viewHolder.productoingredientes.setText(item.getIngredientes());
         viewHolder.productoprecio.setText(String.valueOf(item.getPrecventa()));
+        //viewHolder.michek.setVisibility(View.GONE);
+        //viewHolder.cantidadpedida.setVisibility(View.GONE);
+        viewHolder.masmenos.setVisibility(View.GONE);
 /*asignar imagen desde url*/
-        String facebookUserId = "10205968625733202";
+        String facebookUserId = "https://unareceta.com/wp-content/uploads/2016/08/receta-arroz-con-pollo-peruano.jpg";
                  String imgUrl;
-                    imgUrl = "https://graph.facebook.com/"+facebookUserId+"/picture?type=large";
-                    Picasso.with(getApplicationContext()) .load(imgUrl).transform(new CropCircleTransformation()).resize(70, 70)
+                    imgUrl = "https://unareceta.com/wp-content/uploads/2016/08/receta-arroz-con-pollo-peruano.jpg";
+                    Picasso.with(getApplicationContext()) .load(imgUrl).transform(new CropCircleTransformation()).resize(100, 100)
                             .into( viewHolder.productoimagen);
-        //holder.
+        viewHolder.michek.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked())
+                {
+                    viewHolder.cantidadpedida.setVisibility(View.VISIBLE);
+                    viewHolder.cantidadpedida.setEnabled(true);
+                    viewHolder.masmenos.setVisibility(View.VISIBLE);
+                }
+                if(!buttonView.isChecked())
+                {
+
+                    viewHolder.cantidadpedida.setEnabled(false);
+                    viewHolder.masmenos.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+
 
     }
     @Override

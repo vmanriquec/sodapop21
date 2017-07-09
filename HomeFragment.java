@@ -103,8 +103,9 @@ public class HomeFragment extends  Fragment implements View.OnClickListener {
 
 
 
-        ImageView mipo=(ImageView)view.findViewById(R.id.mipollo);
 
+
+        ImageView mipo=(ImageView)view.findViewById(R.id.mipollo);
         mipo.setOnClickListener(this);
         mipo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +116,7 @@ public class HomeFragment extends  Fragment implements View.OnClickListener {
                     String almacenactivo = prefs.getString("almacenactivo", "");
                     String idalmacenactivo = prefs.getString("idalmacenactivo", "");
                   //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
-                    new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"4");
+                    new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"7");
 
 
                 }else if(face.equals("no")){
@@ -125,6 +126,98 @@ public class HomeFragment extends  Fragment implements View.OnClickListener {
                     idalmacensf=prefs.getString("idalmacenactivosf","");
 
                    // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
+
+
+
+
+                }
+
+            }
+        });
+        ImageView migaseosa=(ImageView)view.findViewById(R.id.migaseosa);
+        migaseosa.setOnClickListener(this);
+        migaseosa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (face.equals("si")){
+
+                    String nombre = prefs.getString("sessionnombre", "");
+                    String almacenactivo = prefs.getString("almacenactivo", "");
+                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                    //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
+                    new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"2");
+
+
+                }else if(face.equals("no")){
+                    String nombre = prefs.getString("nombreusuario", "");
+                    String almacenactivosf = prefs.getString("almacenactivosf", "");
+                    String claveusuario=prefs.getString("claveusuario","");
+                    idalmacensf=prefs.getString("idalmacenactivosf","");
+
+                    // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
+
+
+
+
+                }
+
+            }
+        });
+
+
+        ImageView micerveza=(ImageView)view.findViewById(R.id.micerveza);
+        micerveza.setOnClickListener(this);
+        micerveza.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (face.equals("si")){
+
+                    String nombre = prefs.getString("sessionnombre", "");
+                    String almacenactivo = prefs.getString("almacenactivo", "");
+                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                    //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
+                    new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"8");
+
+
+                }else if(face.equals("no")){
+                    String nombre = prefs.getString("nombreusuario", "");
+                    String almacenactivosf = prefs.getString("almacenactivosf", "");
+                    String claveusuario=prefs.getString("claveusuario","");
+                    idalmacensf=prefs.getString("idalmacenactivosf","");
+
+                    // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
+
+
+
+
+                }
+
+            }
+        });
+
+
+
+        ImageView mihamburguesa=(ImageView)view.findViewById(R.id.mihamburguesa);
+        mihamburguesa.setOnClickListener(this);
+        mihamburguesa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (face.equals("si")){
+
+                    String nombre = prefs.getString("sessionnombre", "");
+                    String almacenactivo = prefs.getString("almacenactivo", "");
+                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                    //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
+                    new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"3");
+
+
+                }else if(face.equals("no")){
+                    String nombre = prefs.getString("nombreusuario", "");
+                    String almacenactivosf = prefs.getString("almacenactivosf", "");
+                    String claveusuario=prefs.getString("claveusuario","");
+                    idalmacensf=prefs.getString("idalmacenactivosf","");
+
+                    // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
 
 
 
@@ -509,7 +602,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         protected String doInBackground(String... params) {
 
             try {
-                url = new URL("http://sodapop.ga/sugest/apitraerproductosporfamilia.php");
+                url = new URL("http://sodapop.ga/sugest/apitraerproductosporfamiliaalmacen.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -524,7 +617,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                 conne.setDoOutput(true);
 
                 // Append parameters to URL
-                Log.d("valore","ttt");
+
 
                 Log.d("valor",params[0]);
                 Log.d("valor",params[1]);
@@ -552,9 +645,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
             }
             try {
                 int response_code = conne.getResponseCode();
-
                 if (response_code == HttpURLConnection.HTTP_OK) {
-
                     InputStream input = conne.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                     StringBuilder result = new StringBuilder();
@@ -564,21 +655,29 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                         result.append(line);
 
                     }
-                    return (result.toString());
+                    return (
+
+                            result.toString()
+
+
+                    );
 
                 } else {
                     return("Connection error");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace()                ;
+                Log.d("valorito",e.toString());
                 return e.toString();
             } finally {
                 conne.disconnect();
             }
         }
+
+
         @Override
         protected void onPostExecute(String result) {
-            Log.d("valoresult",result);
+            Log.d("valores",result);
 people.clear();
 
 
@@ -591,22 +690,24 @@ people.clear();
 
                 try {
 
+
                     JSONArray jArray = new JSONArray(result);
 
 
                     for (int i = 0; i < jArray.length(); i++) {
-                        JSONObject json_data = jArray.getJSONObject(i);
+                        JSONObject json_data = jArray.optJSONObject(i);
 
                         meso = new Productos(json_data.getInt("idproducto"), json_data.getString("nombreproducto"), json_data.getString("estadoproducto"), json_data.getString("ingredientes"),json_data.getDouble(("precventa")));
-                        people.add(meso);
-                    }
-                    strArrData = dataList.toArray(new String[dataList.size()]);
+                        people.add(meso);}
+                        strArrData = dataList.toArray(new String[dataList.size()]);
+
 
                     adapter = new Adaptadorproductos(people,getActivity().getApplicationContext());
                     recycler.setAdapter(adapter);
 
 
                 } catch (JSONException e) {
+                    Log.d("valorerror",e.toString());
                 }
 
             }
@@ -614,5 +715,6 @@ people.clear();
         }
 
     }
+
 
 }
