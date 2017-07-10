@@ -8,12 +8,12 @@ public class Productos {
 
 
     private int idproducto;
-    private String nombreproducto,estadoproducto,ingredientes;
+    private String nombreproducto,estadoproducto,ingredientes,descripcion;
     private Double precventa;
 
 
 
-        public Productos(int idproducto, String nombreproducto, String estadoproducto,String ingredientes, Double precventa )
+        public Productos(int idproducto, String nombreproducto, String estadoproducto,String ingredientes, Double precventa,String descripcion )
     {
         super();
         this.idproducto=idproducto;
@@ -21,6 +21,8 @@ public class Productos {
         this.estadoproducto=estadoproducto;
         this.ingredientes=ingredientes;
         this.precventa=precventa;
+        this.descripcion=descripcion;
+
     }
        public int getIdproducto() {
         return idproducto;
@@ -55,6 +57,13 @@ public class Productos {
     }
 
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
 
     public Double getPrecventa() {
@@ -64,6 +73,10 @@ public class Productos {
     public void setPrecventa(Double precventa) {
         this.precventa = precventa;
     }
+
+
+
+
 @Override
     public String toString(){
 

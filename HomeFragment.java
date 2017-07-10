@@ -12,14 +12,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 
 
 import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
+import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Mesas;
 import com.food.sistemas.sodapopapp.modelo.Productos;
 
@@ -52,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
 
@@ -63,14 +68,14 @@ import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
  * Time: 下午1:33
  * Mail: specialcyci@gmail.com
  */
-public class HomeFragment extends  Fragment implements View.OnClickListener {
+public class HomeFragment extends  Fragment implements   View.OnClickListener,RecyclerView.OnItemTouchListener  {
     String idalmacensf;
-    SharedPreferences prefs;
+
     String face;
     Toolbar toolbar;
     DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
-    String FileName ="myfile";
+    SharedPreferences prefs;String FileName ="myfile";
     private View view;
      private String[] strArrData = {"No Suggestions"};
     private RecyclerView recycler;
@@ -98,10 +103,6 @@ public class HomeFragment extends  Fragment implements View.OnClickListener {
         lManager = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(lManager);
 // Crear un nuevo adaptador
-
-
-
-
 
 
 
@@ -341,6 +342,21 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                     break;
 
     }}
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
 
     private class cargarmesas extends AsyncTask<String, String, String> {
 
@@ -697,7 +713,7 @@ people.clear();
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.optJSONObject(i);
 
-                        meso = new Productos(json_data.getInt("idproducto"), json_data.getString("nombreproducto"), json_data.getString("estadoproducto"), json_data.getString("ingredientes"),json_data.getDouble(("precventa")));
+                        meso = new Productos(json_data.getInt("idproducto"), json_data.getString("nombreproducto"), json_data.getString("estadoproducto"), json_data.getString("ingredientes"),json_data.getDouble(("precventa")),json_data.getString("descripcion"));
                         people.add(meso);}
                         strArrData = dataList.toArray(new String[dataList.size()]);
 
