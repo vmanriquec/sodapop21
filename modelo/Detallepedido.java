@@ -9,8 +9,9 @@ public class Detallepedido {
     private int idproducto;
     private int cantidad;
     private Double precventa;
-    private String nombreproducto;
+    private String nombreproducto,imagen;
     private int idalmacen;
+
 
       public String getNombreproducto() {
         return nombreproducto;
@@ -75,7 +76,19 @@ public int getIdalmacen(){return  idalmacen;}
     private Double subtotal ;
     private int idpedido;
 
-    public Detallepedido(int iddetallepedido, int idproducto, int cantidad, Double precventa, Double subtotal, int idpedido, String nombreproducto, int idalmacen )
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
+
+
+
+    public Detallepedido(int iddetallepedido, int idproducto, int cantidad, Double precventa, Double subtotal, int idpedido, String nombreproducto, int idalmacen ,String imagen)
     {
         super();
         this.iddetallepedido=iddetallepedido;
@@ -86,9 +99,9 @@ public int getIdalmacen(){return  idalmacen;}
         this.idpedido=idpedido;
         this.nombreproducto=nombreproducto;
         this.idalmacen=idalmacen;
-
+this.imagen=imagen;
     }
-    public Detallepedido(int idproducto, int cantidad, Double precventa, Double subtotal, int idalmacen )
+    /*public Detallepedido(int idproducto, int cantidad, Double precventa, Double subtotal, int idalmacen )
     {
         super();
 
@@ -98,7 +111,7 @@ public int getIdalmacen(){return  idalmacen;}
         this.subtotal=subtotal;
         this.idalmacen=idalmacen;
 
-    }
+    }*/
 
 
 }

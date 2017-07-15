@@ -26,7 +26,13 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.widget.ProfilePictureView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class Menuprincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
    String idd;
@@ -37,7 +43,13 @@ public class Menuprincipal extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menuprincipal);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(getApplicationContext())
+                .name("cars.realm")
+                .deleteRealmIfMigrationNeeded()
+                .schemaVersion(1)
+                .build();
 
+        Realm.setDefaultConfiguration(realmConfiguration);
         SharedPreferences sharedPreferences=getSharedPreferences(FileName, Context.MODE_PRIVATE);
         session=sharedPreferences.getString("sessionid","");
         nombreususrio=sharedPreferences.getString("sessionnombre","");

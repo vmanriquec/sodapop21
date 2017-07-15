@@ -30,6 +30,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
+import com.food.sistemas.sodapopapp.Realm.Operacionescondetallepedido;
+import com.food.sistemas.sodapopapp.adapter.Adaptadordetallepedido;
 import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Mesas;
@@ -56,6 +59,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
@@ -71,6 +77,7 @@ import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
 public class HomeFragment extends  Fragment implements   View.OnClickListener,RecyclerView.OnItemTouchListener  {
     String idalmacensf;
 
+    Realm realm = Realm.getDefaultInstance();
     String face;
     Toolbar toolbar;
     DrawerLayout mDrawer;
@@ -78,10 +85,11 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     SharedPreferences prefs;String FileName ="myfile";
     private View view;
      private String[] strArrData = {"No Suggestions"};
-    private RecyclerView recycler;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager lManager;
+    private RecyclerView recycler,recycler2;
+    private RecyclerView.Adapter adapter,adapter2;
+    private RecyclerView.LayoutManager lManager,lManager2;
     ArrayList<Productos> people=new ArrayList<>();
+    ArrayList<Detallepedido> people2=new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,13 +104,54 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
 
 
-// Obtener el Recycler
+
+// Obtener el Recycler PRODUCTOS
         recycler = (RecyclerView) view.findViewById(R.id.cardproductos);
         recycler.setHasFixedSize(true);
-// Usar un administrador para LinearLayout
         lManager = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(lManager);
-// Crear un nuevo adaptador
+// RECICLER DETALLE PEDIDO
+        recycler2 = (RecyclerView) view.findViewById(R.id.carddetallepedido);
+        recycler2.setHasFixedSize(true);
+        lManager2 = new LinearLayoutManager(getActivity());
+        recycler2.setLayoutManager(lManager2);
+
+        final TabHost tabs = (TabHost) view.findViewById(android.R.id.tabhost);
+
+
+        ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+
+        RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+        resulta.toArray(new CarDb[resulta.size()]);
+
+        if(resulta.size()>0){
+
+
+for(int u=0;u<resulta.size();u++){
+   int cnt= resulta.get(u).getcantidadapedir();
+    int idal=1;
+    int idpro=resulta.get(u).getidproducto();
+    String nombrprod=resulta.get(u).getnombreproducto();
+    Double prevta=resulta.get(u).getprecio();
+    String img=resulta.get(u).getimagen();
+
+   Detallepedido meso2 = new Detallepedido(idpro,idpro,cnt,prevta,0.0,0,nombrprod,idal,img);
+   people2.add(meso2);
+}
+                        adapter2 = new Adaptadordetallepedido(people2,getActivity().getApplicationContext());
+            recycler2.setAdapter(adapter2);
+
+            Toast.makeText(HomeFragment.this.getActivity(),"ha<pasooooo"+String.valueOf(resulta.size()),Toast.LENGTH_LONG).show();
+
+
+
+        }else {
+           Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+
+        }
+
+
+
 
 
 
@@ -273,27 +322,27 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
 
 
-        final TabHost tabs = (TabHost) view.findViewById(android.R.id.tabhost);
+
         tabs.setup();
         TabHost.TabSpec spec = tabs.newTabSpec("mitabs1");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Orden", ContextCompat.getDrawable(getActivity(), R.drawable.beer));
+        spec.setIndicator("Pedido", ContextCompat.getDrawable(getActivity(), R.drawable.beer));
 
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Menu ", res.getDrawable(R.drawable.ic_menu_send));
+        spec.setIndicator("Productos", res.getDrawable(R.drawable.ic_menu_send));
         tabs.addTab(spec);
         tabs.setCurrentTab(0);
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("Mesa ", res.getDrawable(android.R.drawable.ic_dialog_map));
+        spec.setIndicator("Mesas", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
         tabs.setCurrentTab(1);
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab4);
-        spec.setIndicator("Mov ", res.getDrawable(android.R.drawable.ic_dialog_map));
+        spec.setIndicator("Camb Mesa", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
         tabs.setCurrentTab(2);
         /*spec = tabs.newTabSpec("mitabs2");
@@ -322,21 +371,14 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                         String almacenactivo = prefs.getString("almacenactivo", "");
 
                         Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo,Toast.LENGTH_LONG).show();
-
-
-
-                    }else if(face.equals("no")){
+         }else if(face.equals("no")){
                         String nombre = prefs.getString("nombreusuario", "");
                         String almacenactivosf = prefs.getString("almacenactivosf", "");
                         String claveusuario=prefs.getString("claveusuario","");
                         idalmacensf=prefs.getString("idalmacenactivosf","");
 
                         Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
-
-
-
-
-                    }
+ }
                    //Toast.makeText(HomeFragment.this,"carga pollos de almacen",Toast.LENGTH_LONG).show();
                     // tareaporproductosporfamiliapollo.execute(listajson1);
                     break;
@@ -731,6 +773,20 @@ people.clear();
         }
 
     }
+    public void realmgrbarenbasedatos(String nombre, int cantidad, Double precio,int idproducto,String imagen){
 
+        Detallepedidorealm det=new Detallepedidorealm();
+
+        //CarDb car = new CarDb();
+        det.setCantidadrealm(cantidad);
+        det.setNombreproductorealm(nombre);
+        det.setPrecventarealm(precio);
+        det.setIdproductorealm(idproducto);
+        det.setImagenrealm(imagen);
+        realm.beginTransaction();
+        realm.commitTransaction();
+
+
+    }
 
 }

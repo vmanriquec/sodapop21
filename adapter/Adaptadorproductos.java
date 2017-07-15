@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.food.sistemas.sodapopapp.CarDb;
 import com.food.sistemas.sodapopapp.R;
+import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Productos;
 import com.squareup.picasso.Picasso;
@@ -24,15 +25,18 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import static com.facebook.FacebookSdk.getApplicationContext;
 public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.AdaptadorViewHolder> {
     private Context mainContext;
+    String foto;
     SharedPreferences prefs;String FileName ="myfile";
     private List<Productos> items;
     ArrayList<Detallepedido> detallepedido=new ArrayList<>();
     Detallepedido objdetallepedido;
+    Realm realm = Realm.getDefaultInstance();
     public Adaptadorproductos(List<Productos> items, Context contexto){
         this.mainContext=contexto;
         this.items=items;
@@ -87,7 +91,7 @@ public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.
         viewHolder.masmenos.setVisibility(View.GONE);
         viewHolder.botonok.setVisibility(View.GONE);
 /*asignar imagen desde url*/
-String foto=item.getDescripcion().toString();
+ foto=item.getDescripcion().toString();
 
                     Picasso.with(getApplicationContext()) .load(foto).transform(new CropCircleTransformation()).resize(100, 100)
                             .into( viewHolder.productoimagen);
@@ -172,16 +176,47 @@ c=c+1;viewHolder.cantidadpedida.setText( String.valueOf(c));
                 prefs = getApplicationContext().getSharedPreferences(FileName, Context.MODE_PRIVATE);
                 String idalmacenactiv = prefs.getString("idalmacenactivo", "");
                 int i=Integer.parseInt(idalmacenactiv);
-                 objdetallepedido= new Detallepedido(0,idp,cantped,pr,subto,0,t,i);
-               realmgrbarenbasedatos(t,cantped,pr,idp);
 
-                realmrecuperarundato();
+                if (verificarsiexiste(idp)){
+
+                  /*CarDb results = realm.where(CarDb.class)
+                            .equalTo(CarDb.K_CAR_PLATE_NUMBER, idp)
+                            .findFirst();
+                    results.setcantidadapedir(cantped);
+                    realm.beginTransaction();
+                    realm.commitTransaction();*/
+                     Toast.makeText(getApplicationContext(),"ya existe el producto en el pedido",Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+
+                //   Toast.makeText(getApplicationContext(),idp,Toast.LENGTH_SHORT).show();
+                  realmgrbarenbasedatosa(idp,t,cantped,pr,idp,foto);
+                  /* CarDb car = new CarDb();
+
+
+                   //car.setidproducto(idproducto);
+
+                   car.setnombreproducto(t);
+
+                   car.setcantidadapedir(cantped);car.setprecio(pr);car.setImagen(foto);
+
+                   realm.beginTransaction();
+                   realm.copyToRealm(car);
+
+                   realm.commitTransaction();
+                   Toast.makeText(getApplicationContext(),"grabo",Toast.LENGTH_SHORT).show();
+*/
+
+                }
+
                 detallepedido.add(objdetallepedido);
-                viewHolder.cantidadpedida.setEnabled(false);
+               // viewHolder.cantidadpedida.setEnabled(false);
                 viewHolder.masmenos.setVisibility(View.GONE);
                 viewHolder.botonok.setVisibility(View.GONE);
-                viewHolder.cantidadpedida.setText( "0");
+
                 viewHolder.michek.setChecked(false);
+                viewHolder.cantidadpedida.setText( String.valueOf(cantped));
                 for (int x = 0; x < detallepedido.size(); x++)
                 {
 
@@ -193,45 +228,51 @@ c=c+1;viewHolder.cantidadpedida.setText( String.valueOf(c));
             }
         });
 
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(getApplicationContext())
-                .name("cars.realm")
-                .deleteRealmIfMigrationNeeded()
-                .schemaVersion(1)
-                .build();
 
-        Realm.setDefaultConfiguration(realmConfiguration);
     }
 
-public void realmgrbarenbasedatos(String nombre, int cantidad, Double precio,int idproducto){
+public void realmgrbarenbasedatosa(int iddet,String nombre, int cantidad, Double precio,int idproducto,String imagen){
 
-    Realm realm = Realm.getDefaultInstance();
+
 
 //Init the element
+
+
     CarDb car = new CarDb();
 
+
     car.setidproducto(idproducto);
+car.setIddetallepedido(iddet);
+car.setnombreproducto(nombre);
 
-    car.setnombreproducto(nombre);
-
-    car.setcantidadapedir(cantidad);
-    car.setprecio(precio);
+  car.setcantidadapedir(cantidad);car.setprecio(precio);car.setImagen(imagen);
 
     realm.beginTransaction();
-
     realm.copyToRealm(car);
 
-    realm.commitTransaction();
-
+   realm.commitTransaction();
+    Toast.makeText(getApplicationContext(),"grabo",Toast.LENGTH_SHORT).show();
 
 }
-public void realmrecuperarundato(){
+    public Boolean  verificarsiexiste(int r){
+
+        RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",r).findAll();
+        Toast.makeText(getApplicationContext(),"valor unitario"+String.valueOf(results.size()),Toast.LENGTH_SHORT).show();
+
+
+        if(results.size()>0){
+            return  true;
+
+            }else {
+            return false;
+            }
+
+}
+    public void realmrecuperarundato(){
 
     Realm realm = Realm.getDefaultInstance();
 
     RealmResults<CarDb> results = realm.where(CarDb.class)
-            //.equalTo(CarDb.K_CAR_PLATE_NUMBER, idproducto)
-            //.or()
-            //.equalTo(CarDb.K_CAR_PLATE_NUMBER, "3333-XXX")
             .findAll();
 
     Toast.makeText(getApplicationContext(),"cantidad de datos"+String.valueOf(results.size()),Toast.LENGTH_SHORT).show();

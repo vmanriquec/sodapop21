@@ -10,9 +10,7 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class CarDb extends RealmObject {
-
-        public static final String K_CAR_PLATE_NUMBER = "idproducto";
-
+      private   int iddetallepedido ;
         @PrimaryKey
 
 
@@ -24,9 +22,10 @@ public class CarDb extends RealmObject {
   
  
     private String nombreproducto;
-    
 
-        public CarDb() {
+    private String imagen;
+
+    public CarDb() {
         }
 
         private CarDb(Builder builder) {
@@ -36,8 +35,9 @@ public class CarDb extends RealmObject {
             this.idproducto = builder.idproducto;
 
             this.nombreproducto = builder.nombreproducto;
-
+            this.imagen = builder.imagen;
             this.precio = builder.precio;
+            this.iddetallepedido=builder.iddetallepedido;
 
         }
 
@@ -49,15 +49,27 @@ public class CarDb extends RealmObject {
             this.precio = precio;
         }
 
-        public int getidproducto() {
-            return idproducto;
+        public int getIddetallepedido() {
+            return iddetallepedido;
         }
 
-        public void setidproducto(int idproducto) {
-            this.idproducto = idproducto;
+        public void setIddetallepedido(int iddetallepedido) {
+            this.iddetallepedido = iddetallepedido;
         }
 
-        public String getnombreproducto() {
+    public int getidproducto() {
+        return idproducto;
+    }
+
+    public void setidproducto(int idproducto) {
+        this.idproducto = idproducto;
+    }
+
+
+
+
+
+    public String getnombreproducto() {
             return nombreproducto;
         }
 
@@ -73,14 +85,27 @@ public class CarDb extends RealmObject {
             this.cantidadapedir = cantidadapedir;
         }
 
+    public String getimagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
+
+
+
+
         public static class Builder {
 
             private int cantidadapedir;
 
             private int idproducto;
+            private int iddetallepedido;
 
             private String nombreproducto;
-
+            private String imagen;
             private Double precio;
 
             public Builder setprecio(Double precio) {
@@ -97,9 +122,16 @@ public class CarDb extends RealmObject {
                 this.nombreproducto = nombreproducto;
                 return this;
             }
-
+            public Builder setimagen(String imagen) {
+                this.imagen = imagen;
+                return this;
+            }
             public Builder setcantidadapedir(int cantidadapedir) {
                 this.cantidadapedir = cantidadapedir;
+                return this;
+            }
+            public Builder setiddetallepedido(int iddetallepedido) {
+                this.iddetallepedido = iddetallepedido;
                 return this;
             }
 
