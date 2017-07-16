@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.food.sistemas.sodapopapp.CarDb;
 import com.food.sistemas.sodapopapp.R;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.squareup.picasso.Picasso;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -36,14 +38,8 @@ public class Adaptadordetallepedido extends RecyclerView.Adapter<Adaptadordetall
         this.items=items;
         prefs = getApplicationContext().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         String idalmacenactiv = prefs.getString("idalmacenactivo", "");
-
-
     }
     static class AdaptadorViewHolder extends RecyclerView.ViewHolder{
-
-
-
-
         protected TextView productonombre;
         protected TextView idproducto;
         protected TextView productoprecio;
@@ -98,20 +94,22 @@ public class Adaptadordetallepedido extends RecyclerView.Adapter<Adaptadordetall
         viewHolder.masmenos.setVisibility(View.GONE);
         viewHolder.botonok.setVisibility(View.GONE);
         viewHolder.eliminar.setVisibility(View.GONE);
-/*asignar imagen desde url*/
-        
+        double pr =item.getPrecventa();
+        int cantped=Integer.parseInt( viewHolder.cantidadpedida.getText().toString());
 
-        
+        double j=cantped;
+        Double subto=pr*j;
+
+        viewHolder.productoingredientes.setText(String.valueOf(subto));
+
+
+/*asignar imagen desde url*/
+
 String foto=item.getImagen().toString();
 
         Picasso.with(getApplicationContext()) .load(foto).transform(new CropCircleTransformation()).resize(100, 100)
                 .into( viewHolder.productoimagen);
-
-
-
-
-
-        /*boton mas o menos cantidad*/
+  /*boton mas o menos cantidad*/
         viewHolder.mas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,14 +117,37 @@ String foto=item.getImagen().toString();
                 int c=Integer.parseInt(cantidad);
                 if(c>=0){
                     c=c+1;viewHolder.cantidadpedida.setText( String.valueOf(c));
+                    double pr =item.getPrecventa();
+                    int cantped=Integer.parseInt( viewHolder.cantidadpedida.getText().toString());
 
+                    double j=cantped;
+                    Double subto=pr*j;
+
+                    viewHolder.productoingredientes.setText(String.valueOf(subto));
                     // Toast.makeText(getApplicationContext(),item.getNombreproducto()+viewHolder.cantidadpedida.getText(),Toast.LENGTH_LONG).show();
 
 
                 }            }
         });
 
+        viewHolder.eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+
+                realm.where(CarDb.class).equalTo("iddetallepedidorealm", item.getIdproducto()).findFirst().deleteFromRealm();
+                realm.beginTransaction();
+                realm.commitTransaction();
+
+
+
+                items.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+
+
+                }
+        });
         viewHolder.menos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +157,13 @@ String foto=item.getImagen().toString();
                     c=c-1;
 
                     viewHolder.cantidadpedida.setText( String.valueOf(c));
+                    double pr =item.getPrecventa();
+                    int cantped=Integer.parseInt( viewHolder.cantidadpedida.getText().toString());
+
+                    double j=cantped;
+                    Double subto=pr*j;
+
+                    viewHolder.productoingredientes.setText(String.valueOf(subto));
                     //   Toast.makeText(getApplicationContext(),item.getNombreproducto()+viewHolder.cantidadpedida.getText(),Toast.LENGTH_LONG).show();
 
                 }            }
@@ -184,6 +212,7 @@ String foto=item.getImagen().toString();
 
                 double j=cantped;
                 Double subto=pr*j;
+
                 String t=item.getNombreproducto().toString();
                 prefs = getApplicationContext().getSharedPreferences(FileName, Context.MODE_PRIVATE);
                 String idalmacenactiv = prefs.getString("idalmacenactivo", "");
@@ -266,6 +295,8 @@ String foto=item.getImagen().toString();
     
     //Commit transaction
     realm.commitTransaction();*/
+
+
     @Override
     public int getItemCount() {
         return items.size();

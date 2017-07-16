@@ -119,37 +119,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
         final TabHost tabs = (TabHost) view.findViewById(android.R.id.tabhost);
 
 
-        ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
-
-        RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
-        resulta.toArray(new CarDb[resulta.size()]);
-
-        if(resulta.size()>0){
-
-
-for(int u=0;u<resulta.size();u++){
-   int cnt= resulta.get(u).getcantidadapedir();
-    int idal=1;
-    int idpro=resulta.get(u).getidproducto();
-    String nombrprod=resulta.get(u).getnombreproducto();
-    Double prevta=resulta.get(u).getprecio();
-    String img=resulta.get(u).getimagen();
-
-   Detallepedido meso2 = new Detallepedido(idpro,idpro,cnt,prevta,0.0,0,nombrprod,idal,img);
-   people2.add(meso2);
-}
-                        adapter2 = new Adaptadordetallepedido(people2,getActivity().getApplicationContext());
-            recycler2.setAdapter(adapter2);
-
-            Toast.makeText(HomeFragment.this.getActivity(),"ha<pasooooo"+String.valueOf(resulta.size()),Toast.LENGTH_LONG).show();
-
-
-
-        }else {
-           Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
-
-        }
-
+       //cargardetalle();
 
 
 
@@ -322,19 +292,17 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
 
 
-
         tabs.setup();
         TabHost.TabSpec spec = tabs.newTabSpec("mitabs1");
         spec.setContent(R.id.tab1);
         spec.setIndicator("Pedido", ContextCompat.getDrawable(getActivity(), R.drawable.beer));
-
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("mitabs2");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Productos", res.getDrawable(R.drawable.ic_menu_send));
         tabs.addTab(spec);
         tabs.setCurrentTab(0);
+        spec = tabs.newTabSpec("mitabs2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Menu", res.getDrawable(R.drawable.ic_menu_send));
+        tabs.addTab(spec);
+        tabs.setCurrentTab(1);
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab3);
         spec.setIndicator("Mesas", res.getDrawable(android.R.drawable.ic_dialog_map));
@@ -342,14 +310,26 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         tabs.setCurrentTab(1);
         spec = tabs.newTabSpec("mitabs2");
         spec.setContent(R.id.tab4);
-        spec.setIndicator("Camb Mesa", res.getDrawable(android.R.drawable.ic_dialog_map));
+        spec.setIndicator("Cambio", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
-        tabs.setCurrentTab(2);
-        /*spec = tabs.newTabSpec("mitabs2");
-        spec.setContent(R.id.tab5);
-        spec.setIndicator("Est ", res.getDrawable(android.R.drawable.ic_dialog_map));
-        tabs.addTab(spec);
-        tabs.setCurrentTab(3);*/
+        tabs.setCurrentTab(1);
+
+
+
+
+
+       tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+           @Override public void onTabChanged(String tabId) {
+               int iy;
+               iy = tabs.getCurrentTab();
+
+               if (iy == 0) {
+                   cargardetalle();
+
+
+               } else if (iy ==1)
+               {
+               } } });
 
         return view;
 
@@ -788,5 +768,49 @@ people.clear();
 
 
     }
+public void cargardetalle(){
 
+int pp=recycler2.getChildCount();
+    for(int ee=0;ee<pp;ee++){
+
+
+    }
+    people2.clear();
+    ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+
+    RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+    resulta.toArray(new CarDb[resulta.size()]);
+
+    if(resulta.size()>0){
+
+
+        for(int u=0;u<resulta.size();u++){
+            int cnt= resulta.get(u).getcantidadapedir();
+            int idal=1;
+            int idpro=resulta.get(u).getidproducto();
+            String nombrprod=resulta.get(u).getnombreproducto();
+            Double prevta=resulta.get(u).getprecio();
+            String img=resulta.get(u).getimagen();
+
+            Detallepedido meso2 = new Detallepedido(idpro,idpro,cnt,prevta,0.0,0,nombrprod,idal,img);
+            people2.add(meso2);
+        }
+
+        recycler2.setAdapter(null);
+
+        adapter2 = new Adaptadordetallepedido(people2,getActivity().getApplicationContext());
+        recycler2.setAdapter(adapter2);
+        adapter2.notifyDataSetChanged();
+
+
+
+    }else {
+        Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+
+    }
+
+
+
+
+}
 }

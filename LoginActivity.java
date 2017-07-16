@@ -203,7 +203,8 @@ leershare();
             @Override
             protected void onCurrentAccessTokenChanged(
                     AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
+                    AccessToken currentAccessToken)
+            {
 
                 if (currentAccessToken == null){
                 }

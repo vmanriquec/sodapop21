@@ -1,19 +1,28 @@
 package com.food.sistemas.sodapopapp.adapter;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.annotation.DrawableRes;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.food.sistemas.sodapopapp.CarDb;
+import com.food.sistemas.sodapopapp.HomeFragment;
 import com.food.sistemas.sodapopapp.R;
 import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
@@ -22,12 +31,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+import jp.wasabeef.picasso.transformations.CropSquareTransformation;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.AdaptadorViewHolder> {
     private Context mainContext;
@@ -96,9 +108,40 @@ public class Adaptadorproductos extends RecyclerView.Adapter<Adaptadorproductos.
                     Picasso.with(getApplicationContext()) .load(foto).transform(new CropCircleTransformation()).resize(100, 100)
                             .into( viewHolder.productoimagen);
 
+        viewHolder.productoimagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Toast ImageToast = new Toast(getApplicationContext());
+                LinearLayout toastLayout = new LinearLayout(getApplicationContext());
+                toastLayout.setOrientation(LinearLayout.VERTICAL);
+
+                ImageView image = new ImageView(getApplicationContext());
+                TextView text = new TextView(getApplicationContext());
+                foto=item.getDescripcion().toString();
+
+                Picasso.with(getApplicationContext()) .load(foto).transform(new CropSquareTransformation())
+                        .resize(350, 350)
+                                               .into( image);
+text.setText(item.getIngredientes());
+                text.setTextColor(Color.RED);
+                text.setBackgroundColor(Color.WHITE);
+                text.setGravity(12);
+                toastLayout.addView(image);
+                toastLayout.addView(text);
+                ImageToast.setView(toastLayout);
+                ImageToast.setGravity (Gravity.TOP | Gravity.LEFT, 40, 40);
+                ImageToast.setDuration(Toast.LENGTH_LONG);
+                ImageToast.show();
+
+
+                ImageToast.getView().setPadding( 20, 100, 20, 20);
 
 
 
+                        }
+        });
 
         /*boton mas o menos cantidad*/
        viewHolder.mas.setOnClickListener(new View.OnClickListener() {
@@ -179,34 +222,13 @@ c=c+1;viewHolder.cantidadpedida.setText( String.valueOf(c));
 
                 if (verificarsiexiste(idp)){
 
-                  /*CarDb results = realm.where(CarDb.class)
-                            .equalTo(CarDb.K_CAR_PLATE_NUMBER, idp)
-                            .findFirst();
-                    results.setcantidadapedir(cantped);
-                    realm.beginTransaction();
-                    realm.commitTransaction();*/
-                     Toast.makeText(getApplicationContext(),"ya existe el producto en el pedido",Toast.LENGTH_SHORT).show();
+                       Toast.makeText(getApplicationContext(),"ya existe el producto en el pedido",Toast.LENGTH_SHORT).show();
 
                 }
                 else {
 
                 //   Toast.makeText(getApplicationContext(),idp,Toast.LENGTH_SHORT).show();
                   realmgrbarenbasedatosa(idp,t,cantped,pr,idp,foto);
-                  /* CarDb car = new CarDb();
-
-
-                   //car.setidproducto(idproducto);
-
-                   car.setnombreproducto(t);
-
-                   car.setcantidadapedir(cantped);car.setprecio(pr);car.setImagen(foto);
-
-                   realm.beginTransaction();
-                   realm.copyToRealm(car);
-
-                   realm.commitTransaction();
-                   Toast.makeText(getApplicationContext(),"grabo",Toast.LENGTH_SHORT).show();
-*/
 
                 }
 
@@ -230,7 +252,6 @@ c=c+1;viewHolder.cantidadpedida.setText( String.valueOf(c));
 
 
     }
-
 public void realmgrbarenbasedatosa(int iddet,String nombre, int cantidad, Double precio,int idproducto,String imagen){
 
 
@@ -293,6 +314,11 @@ car.setModel("ZX");
 
 //Commit transaction
 realm.commitTransaction();*/
+
+
+
+
+
     @Override
     public int getItemCount() {
         return items.size();
