@@ -124,8 +124,11 @@ String foto=item.getImagen().toString();
                     Double subto=pr*j;
 
                     viewHolder.productoingredientes.setText(String.valueOf(subto));
-                    // Toast.makeText(getApplicationContext(),item.getNombreproducto()+viewHolder.cantidadpedida.getText(),Toast.LENGTH_LONG).show();
+                      realm.beginTransaction();
+                    RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",item.getIdproducto()).findAll();
+                    results.get(0).setcantidadapedir(c);
 
+                    realm.commitTransaction();
 
                 }            }
         });
@@ -134,9 +137,9 @@ String foto=item.getImagen().toString();
             @Override
             public void onClick(View v) {
 
-
-                realm.where(CarDb.class).equalTo("iddetallepedidorealm", item.getIdproducto()).findFirst().deleteFromRealm();
                 realm.beginTransaction();
+                RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",item.getIdproducto()).findAll();
+results.deleteAllFromRealm();
                 realm.commitTransaction();
 
 
@@ -164,7 +167,17 @@ String foto=item.getImagen().toString();
                     Double subto=pr*j;
 
                     viewHolder.productoingredientes.setText(String.valueOf(subto));
-                    //   Toast.makeText(getApplicationContext(),item.getNombreproducto()+viewHolder.cantidadpedida.getText(),Toast.LENGTH_LONG).show();
+
+
+
+
+                 realm.beginTransaction();
+                    RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",item.getIdproducto()).findAll();
+results.get(0).setcantidadapedir(c);
+
+                    realm.commitTransaction();
+
+
 
                 }            }
         });

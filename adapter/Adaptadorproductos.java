@@ -272,13 +272,12 @@ car.setnombreproducto(nombre);
     realm.copyToRealm(car);
 
    realm.commitTransaction();
-    Toast.makeText(getApplicationContext(),"grabo",Toast.LENGTH_SHORT).show();
+
 
 }
     public Boolean  verificarsiexiste(int r){
 
         RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",r).findAll();
-        Toast.makeText(getApplicationContext(),"valor unitario"+String.valueOf(results.size()),Toast.LENGTH_SHORT).show();
 
 
         if(results.size()>0){
@@ -298,25 +297,6 @@ car.setnombreproducto(nombre);
 
     Toast.makeText(getApplicationContext(),"cantidad de datos"+String.valueOf(results.size()),Toast.LENGTH_SHORT).show();
 }
-
-
-/* Realm realm = Realm.getDefaultInstance();Begin transaction
-realm.beginTransaction();
-
-    //Init the element
-    CarDb car = realm.createObject(CarDb.class);
-
-car.setPlateNumber("1111-SSS");
-
-car.setBrand("Citroen");
-
-car.setModel("ZX");
-
-//Commit transaction
-realm.commitTransaction();*/
-
-
-
 
 
     @Override

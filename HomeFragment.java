@@ -1,9 +1,13 @@
 package com.food.sistemas.sodapopapp;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -331,6 +336,23 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                {
                } } });
 
+
+
+        TextView ty=(TextView) view.findViewById(R.id.txtobseravciones);
+
+
+        ty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showDialog(HomeFragment.this.getActivity(),"mensaje a");
+
+
+
+
+
+            }
+        });
         return view;
 
 
@@ -768,6 +790,7 @@ people.clear();
 
 
     }
+
 public void cargardetalle(){
 
 int pp=recycler2.getChildCount();
@@ -813,4 +836,26 @@ int pp=recycler2.getChildCount();
 
 
 }
+
+        public void showDialog(Activity activity, String msg){
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.observaciones);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            TextView text = (TextView) dialog.findViewById(R.id.descri);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+
+
+    }
 }
