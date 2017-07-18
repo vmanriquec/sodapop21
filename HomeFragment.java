@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -85,6 +86,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     Realm realm = Realm.getDefaultInstance();
     String face;
     Toolbar toolbar;
+    Typeface typeface;
     DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
     SharedPreferences prefs;String FileName ="myfile";
@@ -105,7 +107,8 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
        face=prefs.getString("facebook","");
 
 
-
+        String customFont = "Arbutus.ttf";
+         typeface = Typeface.createFromAsset(getApplicationContext().getAssets(), customFont);
 
 
 
@@ -828,7 +831,7 @@ int pp=recycler2.getChildCount();
 
 
     }else {
-        Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+       // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
 
     }
 
@@ -839,12 +842,15 @@ int pp=recycler2.getChildCount();
 
         public void showDialog(Activity activity, String msg){
             final Dialog dialog = new Dialog(activity);
+
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.observaciones);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             TextView text = (TextView) dialog.findViewById(R.id.descri);
-            text.setText(msg);
+            TextView text2= (TextView) dialog.findViewById(R.id.txtenviar);
+            text2.setTypeface(typeface);
+
 
             Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
             dialogButton.setOnClickListener(new View.OnClickListener() {
