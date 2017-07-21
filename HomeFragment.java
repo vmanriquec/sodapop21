@@ -42,6 +42,7 @@ import com.food.sistemas.sodapopapp.adapter.Adaptadordetallepedido;
 import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Mesas;
+import com.food.sistemas.sodapopapp.modelo.Pedido;
 import com.food.sistemas.sodapopapp.modelo.Productos;
 
 
@@ -60,6 +61,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +70,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static android.R.attr.format;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
@@ -81,8 +84,8 @@ import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
  * Mail: specialcyci@gmail.com
  */
 public class HomeFragment extends  Fragment implements   View.OnClickListener,RecyclerView.OnItemTouchListener  {
-    String idalmacensf;
-
+    String idalmacensf,idfacebook;
+    Date fecharegistro;
     Realm realm = Realm.getDefaultInstance();
     String face;
     Toolbar toolbar;
@@ -105,7 +108,6 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
         Resources res = getResources();
         prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
        face=prefs.getString("facebook","");
-
 
         String customFont = "Arbutus.ttf";
          typeface = Typeface.createFromAsset(getApplicationContext().getAssets(), customFont);
@@ -793,7 +795,175 @@ people.clear();
 
 
     }
+    private class grabarpedido extends AsyncTask<Pedido, Void, String> {
+        String resultado;
+        HttpURLConnection conne;
+        URL url = null;
+        Pedido ped;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(Pedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.ga/sugest/apigrabapedido.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+                Log.d("valor",String.valueOf(ped.getIdcliente()));
+                Log.d("valor",String.valueOf(ped.getIdmesa()));
+                Uri.Builder builder = new Uri.Builder()
+
+
+                        .appendQueryParameter("idcliente",String.valueOf(ped.getIdcliente()))
+                        .appendQueryParameter("idmesa", String.valueOf(ped.getIdmesa()))
+                       .appendQueryParameter("totalpedido", String.valueOf(ped.getTotalpedido()))
+                        .appendQueryParameter("estadopedido", String.valueOf(ped.getEstadopedido()))
+                        .appendQueryParameter("fecharegistro",ped.getFechapedido().toString())
+                        .appendQueryParameter("idusuario",String.valueOf(ped.getIdusuario()))
+                        .appendQueryParameter("idalmacen", String.valueOf(ped.getIdalmacen()))
+                        .appendQueryParameter("idfacebook", String.valueOf(ped.getIdfacebook()));
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return null;
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    resultado=result.toString();
+                    return resultado;
+
+                } else {
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+                Log.d("valorito",e.toString());
+                return null;
+            } finally {
+                conne.disconnect();
+            }
+            return resultado;
+        }
+
+
+        @Override
+        protected void onPostExecute(String resultado) {
+
+            super.onPostExecute(resultado);
+            Log.d("paso",resultado.toString());
+            if(resultado.equals("true")){
+                Log.d("ii", "insertado");
+
+
+            }else{
+                String ii =resultado.toString();
+                Log.d("jj", "usuario valido");
+
+
+                // lanzarsistema();
+            }
+
+
+
+        }
+
+
+    }
+    public void ejecutarcapturaryguardarpedido(){
+        ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+        RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+        resulta.toArray(new CarDb[resulta.size()]);
+        if(resulta.size()>0){
+double st=0.0;
+            double tq=0.0;
+            for(int u=0;u<resulta.size();u++){
+                Double prevta=resulta.get(u).getprecio();
+                int cnt= resulta.get(u).getcantidadapedir();
+                int idal=1;
+                int idpro=resulta.get(u).getidproducto();
+                String img=resulta.get(u).getimagen();
+                String nombrprod=resulta.get(u).getnombreproducto();
+ tq=cnt* prevta;
+                st=st+tq;
+            }
+             String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+
+
+            Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+            String valToSet = spinner.getSelectedItem().toString();
+             String mesei=valToSet;
+            int g= mesei.length();
+            String mesi = mesei.substring(0,1);
+            String  idi=mesi.trim();
+
+            SimpleDateFormat sdff = new SimpleDateFormat("yyyyMMdd");
+            String hj = sdff.format(new Date());
+            try {
+                fecharegistro= sdff.parse(hj);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
+            idfacebook=prefs.getString("sessionid","");
+          Pedido pedido = new Pedido(2, Integer.parseInt(idi), st, "generado", fecharegistro, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+
+            new grabarpedido().execute(pedido);
+
+
+
+
+        }else {
+            // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+
+        }
+
+
+
+
+    }
 public void cargardetalle(){
 
 int pp=recycler2.getChildCount();
@@ -856,6 +1026,7 @@ int pp=recycler2.getChildCount();
             dialogButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ejecutarcapturaryguardarpedido();
                     dialog.dismiss();
                 }
             });

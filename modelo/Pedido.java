@@ -13,9 +13,9 @@ private int idpedido;
     private Date fechapedido;
     private int idusuario;
     private int idalmacen;
+    private String idfacebook ;
 
-
-    public Pedido(int idpedido,int idcliente,int idmesa,Double totalpedido,String estadopedido,Date fechapedido,int idusuario,int idalmacen )
+    public Pedido(int idpedido,int idcliente,int idmesa,Double totalpedido,String estadopedido,Date fechapedido,int idusuario,int idalmacen,String idfacebook )
     {
         super();
         this.idpedido=idpedido;
@@ -26,9 +26,10 @@ private int idpedido;
         this.fechapedido=fechapedido;
         this.idusuario=idusuario;
         this.idalmacen=idalmacen;
+        this.idfacebook=idfacebook;
     }
 
-    public Pedido(int idcliente,int idmesa,Double totalpedido,String estadopedido,Date fechapedido,int idusuario,int idalmacen )
+    public Pedido(int idcliente,int idmesa,Double totalpedido,String estadopedido,Date fechapedido,int idusuario,int idalmacen,String idfacebook )
     {
         super();
         this.idcliente=idcliente;
@@ -38,6 +39,7 @@ private int idpedido;
         this.fechapedido=fechapedido;
         this.idusuario=idusuario;
         this.idalmacen=idalmacen;
+        this.idfacebook=idfacebook;
     }
 
 
@@ -100,6 +102,13 @@ public int getIdalmacen(){return  idalmacen;}
 
     public void setIdusuario(int idusuario) {
         this.idusuario = idusuario;
+    }
+    public String getIdfacebook() {
+        return idfacebook;
+    }
+
+    public void setIdfacebook(String idusuario) {
+        this.idfacebook = idfacebook;
     }
 
 
