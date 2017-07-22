@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -123,7 +124,8 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 // RECICLER DETALLE PEDIDO
         recycler2 = (RecyclerView) view.findViewById(R.id.carddetallepedido);
         recycler2.setHasFixedSize(true);
-        lManager2 = new LinearLayoutManager(getActivity());
+        lManager2=new LinearLayoutManager(getActivity());
+        //lManager2 = new GridLayoutManager(getActivity(),2);
         recycler2.setLayoutManager(lManager2);
 
         final TabHost tabs = (TabHost) view.findViewById(android.R.id.tabhost);
