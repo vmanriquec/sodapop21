@@ -7,8 +7,10 @@ package com.food.sistemas.sodapopapp.modelo;
 public class dashboardpedido {
     private int iddashboard;
     private double totalpedido;
-    private;
-    private String correoalm;
+    private double neto;
+    private double registrosalida;
+private double registro entrada;
+
     public Almacen(int idalmacen, String nombrealm, String telfonoalm, String correoalm )
     {
         super();
