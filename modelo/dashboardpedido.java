@@ -20,6 +20,7 @@ public class dashboardpedido {
 
 
 
+
     public int getIdalmacen() {
         return idalmacen;
     }
