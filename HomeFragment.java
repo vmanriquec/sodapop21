@@ -39,8 +39,10 @@ import android.widget.Toast;
 
 import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
 import com.food.sistemas.sodapopapp.Realm.Operacionescondetallepedido;
+import com.food.sistemas.sodapopapp.adapter.Adaptadordashboard;
 import com.food.sistemas.sodapopapp.adapter.Adaptadordetallepedido;
 import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
+import com.food.sistemas.sodapopapp.modelo.Dashboardpedido;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Mesas;
 import com.food.sistemas.sodapopapp.modelo.Pedido;
@@ -62,6 +64,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,9 +102,10 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     private RecyclerView recycler,recycler2,recycler3;
     private RecyclerView.Adapter adapter,adapter2,adapter3;
     private RecyclerView.LayoutManager lManager,lManager2,lManager3;
+    TextView fechadehoy;
     ArrayList<Productos> people=new ArrayList<>();
     ArrayList<Detallepedido> people2=new ArrayList<>();
-    ArrayList<Pedido> people3=new ArrayList<>();
+    ArrayList<Dashboardpedido> people3=new ArrayList<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout, container, false);
@@ -128,13 +132,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
         //lManager2 = new GridLayoutManager(getActivity(),2);
         recycler2.setLayoutManager(lManager2);
 
-// RECICLER  PEDIDO
-        recycler3 = (RecyclerView) view.findViewById(R.id.cardalmacenesis);
-        recycler3.setHasFixedSize(true);
-       lManager3 = new GridLayoutManager(getActivity(),2);
-        recycler3.setLayoutManager(lManager3);
-
-
+//
 
 
         final TabHost tabs = (TabHost) view.findViewById(android.R.id.tabhost);
@@ -304,7 +302,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         }
 
 
-        TextView fechadehoy =(TextView)view.findViewById(R.id.textViewfechadehoy);
+         fechadehoy =(TextView)view.findViewById(R.id.textViewfechadehoy);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String currentDateandTime = sdf.format(new Date());
         fechadehoy.setText(currentDateandTime);
@@ -823,7 +821,7 @@ people.clear();
         protected String doInBackground(Pedido... params) {
             ped=params[0];
             try {
-                url = new URL("http://sodapop.ga/sugest/apigrabapedido.php");
+                url = new URL("http://sodapop.ga/androidinsertarpedido.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -839,7 +837,7 @@ people.clear();
 
                 // Append parameters to URL
 
-                Log.d("valor",String.valueOf(ped.getIdcliente()));
+
                 Log.d("valor",String.valueOf(ped.getIdmesa()));
                 Uri.Builder builder = new Uri.Builder()
 
@@ -848,7 +846,7 @@ people.clear();
                         .appendQueryParameter("idmesa", String.valueOf(ped.getIdmesa()))
                        .appendQueryParameter("totalpedido", String.valueOf(ped.getTotalpedido()))
                         .appendQueryParameter("estadopedido", String.valueOf(ped.getEstadopedido()))
-                        .appendQueryParameter("fecharegistro",ped.getFechapedido().toString())
+
                         .appendQueryParameter("idusuario",String.valueOf(ped.getIdusuario()))
                         .appendQueryParameter("idalmacen", String.valueOf(ped.getIdalmacen()))
                         .appendQueryParameter("idfacebook", String.valueOf(ped.getIdfacebook()));
@@ -883,6 +881,7 @@ people.clear();
 
                     }
                     resultado=result.toString();
+                    Log.d("paso",resultado.toString());
                     return resultado;
 
                 } else {
@@ -903,7 +902,7 @@ people.clear();
         protected void onPostExecute(String resultado) {
 
             super.onPostExecute(resultado);
-            Log.d("paso",resultado.toString());
+
             if(resultado.equals("true")){
                 Log.d("ii", "insertado");
 
@@ -949,17 +948,22 @@ double st=0.0;
             String mesi = mesei.substring(0,1);
             String  idi=mesi.trim();
 
-            SimpleDateFormat sdff = new SimpleDateFormat("yyyyMMdd");
-            String hj = sdff.format(new Date());
+
+            Date date = null;
+            String str_date=fechadehoy.getText().toString();
+            DateFormat formatter ;
+
+            formatter = new SimpleDateFormat("dd-MMM-yy");
             try {
-                fecharegistro= sdff.parse(hj);
+                date = formatter.parse(str_date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
+
+            //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
             idfacebook=prefs.getString("sessionid","");
-          Pedido pedido = new Pedido(2, Integer.parseInt(idi), st, "generado", fecharegistro, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+          Pedido pedido = new Pedido(2, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
 
             new grabarpedido().execute(pedido);
 
@@ -1047,137 +1051,6 @@ int pp=recycler2.getChildCount();
 
     }
 
-
-
-    private class traerpedidosadashboard extends AsyncTask<String, String, String> {
-
-        HttpURLConnection conne;
-        URL url = null;
-        ArrayList<Pedido> listaalmaceno = new ArrayList<Pedido>();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                url = new URL("http://sodapop.ga/sugest/apitraeralmacenes.php");
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return e.toString();
-            }
-            try {
-                conne = (HttpURLConnection) url.openConnection();
-                conne.setReadTimeout(READ_TIMEOUT);
-                conne.setConnectTimeout(CONNECTION_TIMEOUT);
-                conne.setRequestMethod("POST");
-                conne.setDoInput(true);
-                conne.setDoOutput(true);
-
-                // Append parameters to URL
-
-
-
-                Uri.Builder builder = new Uri.Builder()
-
-                        .appendQueryParameter("idalmacen", params[0])
-                        .appendQueryParameter("idfamilia",params[1]);
-
-                String query = builder.build().getEncodedQuery();
-
-                // Open connection for sending data
-                OutputStream os = conne.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conne.connect();
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return e1.toString();
-            }
-            try {
-                int response_code = conne.getResponseCode();
-                if (response_code == HttpURLConnection.HTTP_OK) {
-                    InputStream input = conne.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-
-                    }
-                    return (
-
-                            result.toString()
-
-
-                    );
-
-                } else {
-                    return("Connection error");
-                }
-            } catch (IOException e) {
-                e.printStackTrace()                ;
-                Log.d("valorito",e.toString());
-                return e.toString();
-            } finally {
-                conne.disconnect();
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("valores",result);
-            people.clear();
-
-
-            ArrayList<String> dataList = new ArrayList<String>();
-            Productos meso;
-            if(result.equals("no rows")) {
-                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
-
-            }else{
-
-                try {
-
-
-                    JSONArray jArray = new JSONArray(result);
-
-
-                    for (int i = 0; i < jArray.length(); i++) {
-                        JSONObject json_data = jArray.optJSONObject(i);
-
-                        meso = new Productos(json_data.getInt("idproducto"), json_data.getString("nombreproducto"), json_data.getString("estadoproducto"), json_data.getString("ingredientes"),json_data.getDouble(("precventa")),json_data.getString("descripcion"));
-                        people.add(meso);}
-                    strArrData = dataList.toArray(new String[dataList.size()]);
-
-
-                    adapter = new Adaptadorproductos(people,getActivity().getApplicationContext());
-                    recycler.setAdapter(adapter);
-
-
-                } catch (JSONException e) {
-                    Log.d("valorerror",e.toString());
-                }
-
-            }
-
-        }
-
-    }
 
 
 

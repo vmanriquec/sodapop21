@@ -2,6 +2,8 @@ package com.food.sistemas.sodapopapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,6 +14,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -24,18 +28,50 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.ProfilePictureView;
+import com.food.sistemas.sodapopapp.adapter.Adaptadordashboard;
+import com.food.sistemas.sodapopapp.modelo.Dashboardpedido;
+import com.food.sistemas.sodapopapp.modelo.Detallepedido;
+import com.food.sistemas.sodapopapp.modelo.Pedido;
+import com.food.sistemas.sodapopapp.modelo.Productos;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
+import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
 
 public class Menuprincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
    String idd;
+
+    private RecyclerView recycler,recycler2,recycler3;
+    private RecyclerView.Adapter adapter,adapter2,adapter3;
+    private RecyclerView.LayoutManager lManager,lManager2,lManager3;
+    ArrayList<Productos> people=new ArrayList<>();
+    ArrayList<Detallepedido> people2=new ArrayList<>();
+    ArrayList<Dashboardpedido> people3=new ArrayList<>();
+    private String[] strArrData = {"No Suggestions"};
+
     String session,nombreususrio,almacenactivo;
     String FileName ="myfile";
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
@@ -99,7 +135,19 @@ public class Menuprincipal extends AppCompatActivity
         View hView = navigationView.getHeaderView(0);
         TextView correo = (TextView) hView.findViewById(R.id.nombreuser);
 
+        //RECICLER  PEDIDO
+        recycler3 = (RecyclerView) findViewById(R.id.cardalmacenesis);
+        recycler3.setHasFixedSize(true);
+        lManager3 = new GridLayoutManager(this,2);
+        recycler3.setLayoutManager(lManager3);
 
+
+        for (int w=1;w<4;w++ ){
+
+            new traerpedidosadashboard().execute(String.valueOf(w));
+
+
+        }
 
         correo.setText(nombreususrio);
         ImageView toto = (ImageView) hView.findViewById(R.id.fotos);
@@ -218,6 +266,135 @@ public class Menuprincipal extends AppCompatActivity
         editor.commit();
         Toast.makeText(this,"Session Cerrada",Toast.LENGTH_LONG).show();
     }
+
+    private class traerpedidosadashboard extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("http://sodapop.ga/sugest/traerpedidosalmacenes.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("idalmacen", params[0]);
+                Log.d("pedozazova",params[0]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (
+
+                            result.toString()
+
+
+                    );
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+                Log.d("pedo",e.toString());
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("ped",result);
+
+
+
+            ArrayList<String> dataList = new ArrayList<String>();
+            Dashboardpedido meso;
+            if(result.equals("no rows")) {
+                Toast.makeText(getApplicationContext(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+
+            }else{
+
+                try {
+
+
+                    JSONArray jArray = new JSONArray(result);
+
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        JSONObject json_data = jArray.optJSONObject(i);
+                        Log.d("pedoooosito",json_data.toString());
+
+
+                        meso = new Dashboardpedido( json_data.getDouble("totalentradas"), json_data.getString("nombrealm"),json_data.getDouble("totalsalidas"),json_data.getDouble("totalpedidos"));
+                        people3.add(meso);
+                        adapter3 = new Adaptadordashboard(people3,getApplicationContext());
+                    }
+
+                    recycler3.setAdapter(adapter3);
+
+                } catch (JSONException e) {
+                    Log.d("pedoooo",e.toString());
+                }
+
+            }
+
+        }
+
+    }
+
 
 
 }
