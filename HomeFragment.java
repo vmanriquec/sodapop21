@@ -1069,7 +1069,7 @@ int pp=recycler2.getChildCount();
              st=st+tq;
              Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
              //  detalledebasededatos.add(f);
-             detalle.setText(resulta.get(u).getcantidadapedir()+" ---  "+resulta.get(u).getnombreproducto());
+             detalle.append(resulta.get(u).getcantidadapedir()+" ---  "+resulta.get(u).getnombreproducto()+"\n");
          }
 
          total.setText("Total:  "+st);
