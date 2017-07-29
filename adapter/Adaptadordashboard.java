@@ -82,9 +82,9 @@ public class Adaptadordashboard extends RecyclerView.Adapter<Adaptadordashboard.
         final Dashboardpedido item = items.get(position);
 
         viewHolder.totalentradas.setText(String.valueOf(item.getTotalentradas()));
-        viewHolder.totalpedido.setText(String.valueOf(item.gettotalpedidos()));
+        viewHolder.totalpedido.setText(String.valueOf(item.gettotalpedidos()/2));
         viewHolder.totalsalidas.setText(String.valueOf(item.getTotalsalidas()));
-        viewHolder.totalneto.setText(String.valueOf((item.getTotalentradas()+item.getTotalentradas()-item.getTotalsalidas())));
+        viewHolder.totalneto.setText(String.valueOf((item.getTotalentradas()+(item.gettotalpedidos()/2)-item.getTotalsalidas())));
         viewHolder.nombrealmacen.setText(item.getNombrealm());
 
 

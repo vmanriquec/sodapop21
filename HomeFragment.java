@@ -448,9 +448,9 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                 conne.setDoOutput(true);
 
                 // Append parameters to URL
-                Log.d("valore","ttt");
 
-                Log.d("valor",params[0]);
+
+
                 Uri.Builder builder = new Uri.Builder()
 
                         .appendQueryParameter("nombre", params[0]);
@@ -569,9 +569,9 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                 conne.setDoOutput(true);
 
                 // Append parameters to URL
-                Log.d("valore","ttt");
 
-                Log.d("valor",params[0]);
+
+
                 Uri.Builder builder = new Uri.Builder()
 
                         .appendQueryParameter("nombre", params[0])
@@ -693,8 +693,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                 // Append parameters to URL
 
 
-                Log.d("valor",params[0]);
-                Log.d("valor",params[1]);
+
                 Uri.Builder builder = new Uri.Builder()
 
                         .appendQueryParameter("idalmacen", params[0])
@@ -741,7 +740,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                 }
             } catch (IOException e) {
                 e.printStackTrace()                ;
-                Log.d("valorito",e.toString());
+
                 return e.toString();
             } finally {
                 conne.disconnect();
@@ -751,7 +750,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("valores",result);
+
 people.clear();
 
 
@@ -781,7 +780,7 @@ people.clear();
 
 
                 } catch (JSONException e) {
-                    Log.d("valorerror",e.toString());
+
                 }
 
             }
@@ -838,7 +837,7 @@ people.clear();
                 // Append parameters to URL
 
 
-                Log.d("valor",String.valueOf(ped.getIdmesa()));
+
                 Uri.Builder builder = new Uri.Builder()
 
 
@@ -850,6 +849,296 @@ people.clear();
                         .appendQueryParameter("idusuario",String.valueOf(ped.getIdusuario()))
                         .appendQueryParameter("idalmacen", String.valueOf(ped.getIdalmacen()))
                         .appendQueryParameter("idfacebook", String.valueOf(ped.getIdfacebook()));
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return null;
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    resultado=result.toString();
+
+                    return resultado;
+
+                } else {
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+
+                return null;
+            } finally {
+                conne.disconnect();
+            }
+            return resultado;
+        }
+
+
+        @Override
+        protected void onPostExecute(String resultado) {
+
+            super.onPostExecute(resultado);
+
+            if(resultado.equals("true")){
+                Log.d("ii", "insertado");
+
+
+            }else{
+                String ii =resultado.toString();
+                Log.d("jj", "usuario valido");
+
+
+                // lanzarsistema();
+            }
+
+
+
+        }
+
+
+    }
+    public void ejecutarcapturaryguardarpedido(){
+        ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+        RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+
+        String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+        resulta.toArray(new CarDb[resulta.size()]);
+        if(resulta.size()>0){
+            double st=0.0;
+            double tq=0.0;
+            ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
+
+            for(int u=0;u<resulta.size();u++){
+                Double prevta=resulta.get(u).getprecio();
+                int cnt= resulta.get(u).getcantidadapedir();
+                int idal=1;
+                int idpro=resulta.get(u).getidproducto();
+                String img=resulta.get(u).getimagen();
+                String nombrprod=resulta.get(u).getnombreproducto();
+                tq=cnt* prevta;
+                st=st+tq;
+                Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+                //  detalledebasededatos.add(f);
+                new grabardetallepedido().execute(f);
+            }
+
+            for(int u=0;u<resulta.size();u++){
+                Double prevta=resulta.get(u).getprecio();
+                int cnt= resulta.get(u).getcantidadapedir();
+                int idal=1;
+                int idpro=resulta.get(u).getidproducto();
+                String img=resulta.get(u).getimagen();
+                String nombrprod=resulta.get(u).getnombreproducto();
+                tq=cnt* prevta;
+                st=st+tq;
+               }
+
+            Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+            String valToSet = spinner.getSelectedItem().toString();
+             String mesei=valToSet;
+            int g= mesei.length();
+            String mesi = mesei.substring(0,1);
+            String  idi=mesi.trim();
+
+
+            Date date = null;
+            String str_date=fechadehoy.getText().toString();
+            DateFormat formatter ;
+
+            formatter = new SimpleDateFormat("dd-MMM-yy");
+            try {
+                date = formatter.parse(str_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
+            idfacebook=prefs.getString("sessionid","");
+          Pedido pedido = new Pedido(2, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+
+            new grabarpedido().execute(pedido);
+
+
+
+
+
+        }else {
+            // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+
+        }
+
+
+
+
+    }
+    public void cargardetalle(){
+
+int pp=recycler2.getChildCount();
+    for(int ee=0;ee<pp;ee++){
+
+
+    }
+    people2.clear();
+    ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+
+    RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+    resulta.toArray(new CarDb[resulta.size()]);
+
+    if(resulta.size()>0){
+
+
+        for(int u=0;u<resulta.size();u++){
+            int cnt= resulta.get(u).getcantidadapedir();
+            int idal=1;
+            int idpro=resulta.get(u).getidproducto();
+            String nombrprod=resulta.get(u).getnombreproducto();
+            Double prevta=resulta.get(u).getprecio();
+            String img=resulta.get(u).getimagen();
+
+            Detallepedido meso2 = new Detallepedido(idpro,idpro,cnt,prevta,0.0,0,nombrprod,idal,img);
+            people2.add(meso2);
+        }
+
+        recycler2.setAdapter(null);
+
+        adapter2 = new Adaptadordetallepedido(people2,getActivity().getApplicationContext());
+        recycler2.setAdapter(adapter2);
+        adapter2.notifyDataSetChanged();
+
+
+
+    }else {
+       // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+
+    }
+
+
+
+
+}
+     public void showDialog(Activity activity, String msg){
+            final Dialog dialog = new Dialog(activity);
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.observaciones);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            TextView text = (TextView) dialog.findViewById(R.id.descri);
+         TextView detalle = (TextView) dialog.findViewById(R.id.txtdetalle);
+         TextView total = (TextView) dialog.findViewById(R.id.txttotalpedido);
+            TextView text2= (TextView) dialog.findViewById(R.id.txtenviar);
+         ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+         RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+
+         String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+         resulta.toArray(new CarDb[resulta.size()]);
+         double st=0.0;
+         double tq=0.0;
+         for(int u=0;u<resulta.size();u++){
+             Double prevta=resulta.get(u).getprecio();
+             int cnt= resulta.get(u).getcantidadapedir();
+             int idal=1;
+             int idpro=resulta.get(u).getidproducto();
+             String img=resulta.get(u).getimagen();
+             String nombrprod=resulta.get(u).getnombreproducto();
+             tq=cnt* prevta;
+             st=st+tq;
+             Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+             //  detalledebasededatos.add(f);
+             detalle.setText(resulta.get(u).getcantidadapedir()+" ---  "+resulta.get(u).getnombreproducto());
+         }
+
+         total.setText("Total:  "+st);
+            text2.setTypeface(typeface);
+
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ejecutarcapturaryguardarpedido();
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+
+
+    }
+
+    private class grabardetallepedido extends AsyncTask<Detallepedido, Void, String> {
+        String resultado;
+        HttpURLConnection conne;
+        URL url = null;
+        Detallepedido ped;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(Detallepedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.ga/sugest/androidinsertardetalledepedido.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+                Log.d("valor",String.valueOf(ped.getNombreproducto()));
+                Uri.Builder builder = new Uri.Builder()
+
+
+
+                        .appendQueryParameter("idproducto",String.valueOf(ped.getIdproducto()))
+
+                        .appendQueryParameter("cantidad", String.valueOf
+
+                                (ped.getCantidad()))
+                        .appendQueryParameter("precventa", String.valueOf(ped.getPrecventa()))
+                        .appendQueryParameter("subtotal", String.valueOf(ped.getSubtotal()))
+                        .appendQueryParameter("idalmacen",String.valueOf(ped.getIdalmacen()));
+
+
 
                 String query = builder.build().getEncodedQuery();
 
@@ -896,15 +1185,13 @@ people.clear();
             }
             return resultado;
         }
-
-
         @Override
         protected void onPostExecute(String resultado) {
 
             super.onPostExecute(resultado);
 
             if(resultado.equals("true")){
-                Log.d("ii", "insertado");
+                Log.d("ii", resultado);
 
 
             }else{
@@ -918,140 +1205,6 @@ people.clear();
 
 
         }
-
-
     }
-    public void ejecutarcapturaryguardarpedido(){
-        ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
-        RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
-        resulta.toArray(new CarDb[resulta.size()]);
-        if(resulta.size()>0){
-double st=0.0;
-            double tq=0.0;
-            for(int u=0;u<resulta.size();u++){
-                Double prevta=resulta.get(u).getprecio();
-                int cnt= resulta.get(u).getcantidadapedir();
-                int idal=1;
-                int idpro=resulta.get(u).getidproducto();
-                String img=resulta.get(u).getimagen();
-                String nombrprod=resulta.get(u).getnombreproducto();
- tq=cnt* prevta;
-                st=st+tq;
-            }
-             String idalmacenactivo = prefs.getString("idalmacenactivo", "");
-
-
-            Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
-            String valToSet = spinner.getSelectedItem().toString();
-             String mesei=valToSet;
-            int g= mesei.length();
-            String mesi = mesei.substring(0,1);
-            String  idi=mesi.trim();
-
-
-            Date date = null;
-            String str_date=fechadehoy.getText().toString();
-            DateFormat formatter ;
-
-            formatter = new SimpleDateFormat("dd-MMM-yy");
-            try {
-                date = formatter.parse(str_date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-
-            //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
-            idfacebook=prefs.getString("sessionid","");
-          Pedido pedido = new Pedido(2, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
-
-            new grabarpedido().execute(pedido);
-
-
-
-
-        }else {
-            // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
-
-        }
-
-
-
-
-    }
-public void cargardetalle(){
-
-int pp=recycler2.getChildCount();
-    for(int ee=0;ee<pp;ee++){
-
-
-    }
-    people2.clear();
-    ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
-
-    RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
-    resulta.toArray(new CarDb[resulta.size()]);
-
-    if(resulta.size()>0){
-
-
-        for(int u=0;u<resulta.size();u++){
-            int cnt= resulta.get(u).getcantidadapedir();
-            int idal=1;
-            int idpro=resulta.get(u).getidproducto();
-            String nombrprod=resulta.get(u).getnombreproducto();
-            Double prevta=resulta.get(u).getprecio();
-            String img=resulta.get(u).getimagen();
-
-            Detallepedido meso2 = new Detallepedido(idpro,idpro,cnt,prevta,0.0,0,nombrprod,idal,img);
-            people2.add(meso2);
-        }
-
-        recycler2.setAdapter(null);
-
-        adapter2 = new Adaptadordetallepedido(people2,getActivity().getApplicationContext());
-        recycler2.setAdapter(adapter2);
-        adapter2.notifyDataSetChanged();
-
-
-
-    }else {
-       // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
-
-    }
-
-
-
-
-}
-
-        public void showDialog(Activity activity, String msg){
-            final Dialog dialog = new Dialog(activity);
-
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setCancelable(false);
-            dialog.setContentView(R.layout.observaciones);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            TextView text = (TextView) dialog.findViewById(R.id.descri);
-            TextView text2= (TextView) dialog.findViewById(R.id.txtenviar);
-            text2.setTypeface(typeface);
-
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ejecutarcapturaryguardarpedido();
-                    dialog.dismiss();
-                }
-            });
-
-            dialog.show();
-
-
-    }
-
-
-
 
 }
