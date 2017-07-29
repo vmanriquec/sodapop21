@@ -1084,6 +1084,14 @@ int pp=recycler2.getChildCount();
                     dialog.dismiss();
                 }
             });
+         Button dialogButtonatras = (Button) dialog.findViewById(R.id.atras);
+         dialogButtonatras.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+
+                 dialog.dismiss();
+             }
+         });
 
             dialog.show();
 
