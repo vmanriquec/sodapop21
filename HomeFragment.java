@@ -64,6 +64,8 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.RED;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
@@ -86,6 +88,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
     SharedPreferences prefs;String FileName ="myfile";
+    int em1,em2,em3,em4,em5,em6,em7,em8,em9,em10,em11,em12,em13,em14,em15;
     private View view;
      private String[] strArrData = {"No Suggestions"};
     private RecyclerView recycler,recycler2,recycler3;
@@ -96,10 +99,25 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     ArrayList<Productos> people=new ArrayList<>();
     ArrayList<Detallepedido> people2=new ArrayList<>();
     ArrayList<Dashboardpedido> people3=new ArrayList<>();
+    Button boton1,boton2,boton3,boton4,boton5,boton6,boton7,boton8,boton9,boton10,boton11,boton12,boton13,boton14,boton15;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout, container, false);
-
+        boton1 = (Button) view.findViewById(R.id.buno);
+        boton2 = (Button) view.findViewById(R.id.bdos);
+        boton3 = (Button) view.findViewById(R.id.btres);
+        boton4 = (Button) view.findViewById(R.id.bcuatro);
+        boton5 = (Button) view.findViewById(R.id.bcinco);
+        boton6 = (Button) view.findViewById(R.id.bseis);
+        boton7 = (Button) view.findViewById(R.id.bsiete);
+        boton8 = (Button) view.findViewById(R.id.bocho);
+        boton9 = (Button) view.findViewById(R.id.bnueve);
+        boton10 = (Button) view.findViewById(R.id.bdiez);
+        boton11 = (Button) view.findViewById(R.id.bonce);
+        boton12 = (Button) view.findViewById(R.id.bdoce);
+        boton13 = (Button) view.findViewById(R.id.btrece);
+        boton14 = (Button) view.findViewById(R.id.bcatorce);
+        boton15 = (Button) view.findViewById(R.id.bquince);
         Resources res = getResources();
         prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
        face=prefs.getString("facebook","");
@@ -170,17 +188,17 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             public void onClick(View v) {
                 if (face.equals("si")){
 
-                    String nombre = prefs.getString("sessionnombre", "");
-                    String almacenactivo = prefs.getString("almacenactivo", "");
-                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+          nombre = prefs.getString("sessionnombre", "");
+                     almacenactivo = prefs.getString("almacenactivo", "");
+                     idalmacenactivo = prefs.getString("idalmacenactivo", "");
                     //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
                     new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"2");
 
 
                 }else if(face.equals("no")){
-                    String nombre = prefs.getString("nombreusuario", "");
-                    String almacenactivosf = prefs.getString("almacenactivosf", "");
-                    String claveusuario=prefs.getString("claveusuario","");
+                     nombre = prefs.getString("nombreusuario", "");
+                     almacenactivosf = prefs.getString("almacenactivosf", "");
+                    claveusuario=prefs.getString("claveusuario","");
                     idalmacensf=prefs.getString("idalmacenactivosf","");
 
                     // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
@@ -201,17 +219,17 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             public void onClick(View v) {
                 if (face.equals("si")){
 
-                    String nombre = prefs.getString("sessionnombre", "");
-                    String almacenactivo = prefs.getString("almacenactivo", "");
-                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                     nombre = prefs.getString("sessionnombre", "");
+                     almacenactivo = prefs.getString("almacenactivo", "");
+                     idalmacenactivo = prefs.getString("idalmacenactivo", "");
                     //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
                     new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"8");
 
 
                 }else if(face.equals("no")){
-                    String nombre = prefs.getString("nombreusuario", "");
-                    String almacenactivosf = prefs.getString("almacenactivosf", "");
-                    String claveusuario=prefs.getString("claveusuario","");
+                     nombre = prefs.getString("nombreusuario", "");
+                     almacenactivosf = prefs.getString("almacenactivosf", "");
+                     claveusuario=prefs.getString("claveusuario","");
                     idalmacensf=prefs.getString("idalmacenactivosf","");
 
                     // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
@@ -233,17 +251,17 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             public void onClick(View v) {
                 if (face.equals("si")){
 
-                    String nombre = prefs.getString("sessionnombre", "");
-                    String almacenactivo = prefs.getString("almacenactivo", "");
-                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                     nombre = prefs.getString("sessionnombre", "");
+                     almacenactivo = prefs.getString("almacenactivo", "");
+                     idalmacenactivo = prefs.getString("idalmacenactivo", "");
                     //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
                     new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"3");
 
 
                 }else if(face.equals("no")){
-                    String nombre = prefs.getString("nombreusuario", "");
-                    String almacenactivosf = prefs.getString("almacenactivosf", "");
-                    String claveusuario=prefs.getString("claveusuario","");
+                     nombre = prefs.getString("nombreusuario", "");
+                     almacenactivosf = prefs.getString("almacenactivosf", "");
+                     claveusuario=prefs.getString("claveusuario","");
                     idalmacensf=prefs.getString("idalmacenactivosf","");
 
                     // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
@@ -268,8 +286,8 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
         if (face.equals("si")){
 
-            String nombre = prefs.getString("sessionnombre", "");
-            String almacenactivo = prefs.getString("almacenactivo", "");
+             nombre = prefs.getString("sessionnombre", "");
+             almacenactivo = prefs.getString("almacenactivo", "");
 
             TextView mesero=(TextView)view.findViewById(R.id.textViewmesero);
             mesero.setText(nombre);
@@ -277,12 +295,13 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             almacen.setText(almacenactivo);
 
             new cargarmesas().execute(nombre);
+            new cargarmesasdisponibilidad().execute(nombre);
         }else if(face.equals("no")){
 
 
-            String nombre = prefs.getString("nombreusuario", "");
-            String almacenactivosf = prefs.getString("almacenactivosf", "");
-            String claveusuario=prefs.getString("claveusuario","");
+             nombre = prefs.getString("nombreusuario", "");
+             almacenactivosf = prefs.getString("almacenactivosf", "");
+             claveusuario=prefs.getString("claveusuario","");
             idalmacensf=prefs.getString("idalmacenactivosf","");
 
 
@@ -364,21 +383,17 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
 
 
-        final Button boton1 = (Button) view.findViewById(R.id.buno);
-        Button boton2 = (Button) view.findViewById(R.id.bdos);
-        Button boton3 = (Button) view.findViewById(R.id.btres);
-        Button boton4 = (Button) view.findViewById(R.id.bcuatro);
-        Button boton5 = (Button) view.findViewById(R.id.bcinco);
-        Button boton6 = (Button) view.findViewById(R.id.bseis);
-        Button boton7 = (Button) view.findViewById(R.id.bsiete);
-        Button boton8 = (Button) view.findViewById(R.id.bocho);
-        Button boton9 = (Button) view.findViewById(R.id.bnueve);
-        Button boton10 = (Button) view.findViewById(R.id.bdiez);
-        Button boton11 = (Button) view.findViewById(R.id.bonce);
-        Button boton12 = (Button) view.findViewById(R.id.bdoce);
-        Button boton13 = (Button) view.findViewById(R.id.btrece);
-        Button boton14 = (Button) view.findViewById(R.id.bcatorce);
-        Button boton15 = (Button) view.findViewById(R.id.bquince);
+
+       /* boton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em1==1){
+                    showDialog(1);}
+                else{
+                    Toast.makeText(Otromenu.this, "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });*/
         return view;
 
 
@@ -541,6 +556,288 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
                     spin.setAdapter(adaptadorl);
 
+
+                        } catch (JSONException e) {
+                }
+
+            }
+
+        }
+
+    }
+    private class cargarmesasdisponibilidad extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+        ArrayList<Mesas> listaalmaceno = new ArrayList<Mesas>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("http://sodapop.ga/sugest/apimesasdealmacen.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("nombre", params[0]);
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("waaaaaaa",result);
+            Spinner spin=(Spinner)view.findViewById(R.id.spinnermesas);
+
+
+            ArrayList<String> dataList = new ArrayList<String>();
+            Mesas meso;
+            if(result.equals("no rows")) {
+                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+
+            }else{
+
+                try {
+
+                    JSONArray jArray = new JSONArray(result);
+
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        JSONObject json_data = jArray.getJSONObject(i);
+                        dataList.add(json_data.getString("estadomesa"));
+                        meso = new Mesas(json_data.getInt("idmesa"), json_data.getInt("numeromesa"), json_data.getString("estadomesa"), json_data.getInt("sillasmesa"));
+
+                        listaalmaceno.add(meso);
+
+                    }
+                    strArrData = dataList.toArray(new String[dataList.size()]);
+
+
+
+
+                    int cc = listaalmaceno.size();
+                    for (int i = 0; i < cc; i++) {
+                        int nummesa = listaalmaceno.get(i).getNumeromesa();
+                        String estadomesa = listaalmaceno.get(i).getEstadomesa().toString();
+
+                        switch (nummesa) {
+                            case 1:
+                                if (estadomesa.equals("generado")) {
+
+                                    boton1.setBackgroundColor(RED);
+
+                                    em1=1;
+                                } else {
+
+                                    boton1.setBackgroundColor(GREEN);
+                                    em1=0;
+                                }
+
+                                break;
+                            case 2:
+                                if (estadomesa.equals("generado")) {
+                                    em2=1;
+                                    boton2.setBackgroundColor(RED);
+                                } else {
+                                    em2=0;
+                                    boton2.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 3:
+                                if (estadomesa.equals("generado")) {
+                                    em3=1;
+                                    boton3.setBackgroundColor(RED);
+                                } else {
+                                    em3=0;
+                                    boton3.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 4:
+                                if (estadomesa.equals("generado")) {
+                                    em4=1;
+                                    boton4.setBackgroundColor(RED);
+                                } else {
+                                    em4=0;
+                                    boton4.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 5:
+                                if (estadomesa.equals("generado")) {
+                                    em5=1;
+                                    boton5.setBackgroundColor(RED);
+                                } else {
+                                    em5=0;
+                                    boton5.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 6:
+                                if (estadomesa.equals("generado")) {
+                                    em6=1;
+                                    boton6.setBackgroundColor(RED);
+                                } else {
+                                    em6=0;
+                                    boton6.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 7:
+                                if (estadomesa.equals("generado")) {
+                                    em7=1;
+                                    boton7.setBackgroundColor(RED);
+                                } else {
+                                    em7=0;
+                                    boton7.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 8:
+                                if (estadomesa.equals("generado")) {
+                                    em8=1;
+                                    boton8.setBackgroundColor(RED);
+                                } else {
+                                    em8=0;
+                                    boton8.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 9:
+                                if (estadomesa.equals("generado")) {
+                                    em9=1;
+                                    boton9.setBackgroundColor(RED);
+                                } else {
+                                    em9=0;
+                                    boton9.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 10:
+                                if (estadomesa.equals("generado")) {
+                                    em10=1;
+                                    boton10.setBackgroundColor(RED);
+                                } else {
+                                    em10=0;
+                                    boton10.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 11:
+                                if (estadomesa.equals("generado")) {
+                                    em11=1;
+                                    boton11.setBackgroundColor(RED);
+                                } else {
+                                    em11=0;
+                                    boton11.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 12:
+                                if (estadomesa.equals("generado")) {
+                                    em12=1;
+                                    boton12.setBackgroundColor(RED);
+                                } else {
+                                    em12=0;
+                                    boton12.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 13:
+                                if (estadomesa.equals("generado")) {
+                                    em13=1;
+                                    boton13.setBackgroundColor(RED);
+                                } else {
+                                    em13=0;
+                                    boton13.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 14:
+                                if (estadomesa.equals("generado")) {
+                                    em14=1;
+                                    boton14.setBackgroundColor(RED);
+                                } else {
+                                    em14=0;
+                                    boton14.setBackgroundColor(GREEN);
+                                }
+                                break;
+
+                            case 15:
+                                if (estadomesa.equals("generado")) {
+                                    em15=1;
+                                    boton15.setBackgroundColor(RED);
+                                } else {
+                                    em15=0;
+                                    boton15.setBackgroundColor(GREEN);
+                                }
+
+                                break;
+                        }}
                 } catch (JSONException e) {
                 }
 
@@ -1002,9 +1299,10 @@ people.clear();
 
             realm.commitTransaction();
             recycler2.setAdapter(null);
-            adapter2.notifyDataSetChanged();
+            adapter2.notifyDataSetChanged();Toast.makeText(HomeFragment.this.getActivity(),"nombre"+nombre,Toast.LENGTH_LONG).show();
 
             new cargarmesas().execute(nombre);
+            new cargarmesasdisponibilidad().execute(nombre);
 
         }else {
             // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
