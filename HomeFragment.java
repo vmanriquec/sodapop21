@@ -2,7 +2,6 @@ package com.food.sistemas.sodapopapp;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -12,13 +11,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -36,10 +32,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
-import com.food.sistemas.sodapopapp.Realm.Operacionescondetallepedido;
-import com.food.sistemas.sodapopapp.adapter.Adaptadordashboard;
 import com.food.sistemas.sodapopapp.adapter.Adaptadordetallepedido;
 import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
 import com.food.sistemas.sodapopapp.modelo.Dashboardpedido;
@@ -48,14 +41,12 @@ import com.food.sistemas.sodapopapp.modelo.Mesas;
 import com.food.sistemas.sodapopapp.modelo.Pedido;
 import com.food.sistemas.sodapopapp.modelo.Productos;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,12 +60,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-import static android.R.attr.format;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
@@ -88,7 +77,7 @@ import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
  * Mail: specialcyci@gmail.com
  */
 public class HomeFragment extends  Fragment implements   View.OnClickListener,RecyclerView.OnItemTouchListener  {
-    String idalmacensf,idfacebook;
+    String idfacebook;
     Date fecharegistro;
     Realm realm = Realm.getDefaultInstance();
     String face;
@@ -103,6 +92,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     private RecyclerView.Adapter adapter,adapter2,adapter3;
     private RecyclerView.LayoutManager lManager,lManager2,lManager3;
     TextView fechadehoy;
+    String nombre,almacenactivosf,claveusuario,idalmacensf,idalmacenactivo,almacenactivo;
     ArrayList<Productos> people=new ArrayList<>();
     ArrayList<Detallepedido> people2=new ArrayList<>();
     ArrayList<Dashboardpedido> people3=new ArrayList<>();
@@ -151,17 +141,17 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             public void onClick(View v) {
                 if (face.equals("si")){
 
-                    String nombre = prefs.getString("sessionnombre", "");
-                    String almacenactivo = prefs.getString("almacenactivo", "");
-                    String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+               nombre = prefs.getString("sessionnombre", "");
+                     almacenactivo = prefs.getString("almacenactivo", "");
+                     idalmacenactivo = prefs.getString("idalmacenactivo", "");
                   //  Toast.makeText(HomeFragment.this.getActivity(),"con facebook"+nombre+almacenactivo+idalmacenactivo,Toast.LENGTH_LONG).show();
                     new traerproductosporidalmacenidfamilia().execute(idalmacenactivo,"7");
 
 
                 }else if(face.equals("no")){
-                    String nombre = prefs.getString("nombreusuario", "");
-                    String almacenactivosf = prefs.getString("almacenactivosf", "");
-                    String claveusuario=prefs.getString("claveusuario","");
+                    nombre = prefs.getString("nombreusuario", "");
+                     almacenactivosf = prefs.getString("almacenactivosf", "");
+                     claveusuario=prefs.getString("claveusuario","");
                     idalmacensf=prefs.getString("idalmacenactivosf","");
 
                    // Toast.makeText(HomeFragment.this.getActivity(),"login normal"+nombre+almacenactivosf+claveusuario+idalmacensf,Toast.LENGTH_LONG).show();
@@ -262,6 +252,10 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
 
                 }
+
+
+
+
 
             }
         });
@@ -367,6 +361,24 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
             }
         });
+
+
+
+        final Button boton1 = (Button) view.findViewById(R.id.buno);
+        Button boton2 = (Button) view.findViewById(R.id.bdos);
+        Button boton3 = (Button) view.findViewById(R.id.btres);
+        Button boton4 = (Button) view.findViewById(R.id.bcuatro);
+        Button boton5 = (Button) view.findViewById(R.id.bcinco);
+        Button boton6 = (Button) view.findViewById(R.id.bseis);
+        Button boton7 = (Button) view.findViewById(R.id.bsiete);
+        Button boton8 = (Button) view.findViewById(R.id.bocho);
+        Button boton9 = (Button) view.findViewById(R.id.bnueve);
+        Button boton10 = (Button) view.findViewById(R.id.bdiez);
+        Button boton11 = (Button) view.findViewById(R.id.bonce);
+        Button boton12 = (Button) view.findViewById(R.id.bdoce);
+        Button boton13 = (Button) view.findViewById(R.id.btrece);
+        Button boton14 = (Button) view.findViewById(R.id.bcatorce);
+        Button boton15 = (Button) view.findViewById(R.id.bquince);
         return view;
 
 
@@ -946,6 +958,7 @@ people.clear();
             }
 
             for(int u=0;u<resulta.size();u++){
+
                 Double prevta=resulta.get(u).getprecio();
                 int cnt= resulta.get(u).getcantidadapedir();
                 int idal=1;
@@ -982,9 +995,16 @@ people.clear();
 
             new grabarpedido().execute(pedido);
 
+            ArrayList<CarDb> listu = new ArrayList(realm.where(CarDb.class).findAll());
+            realm.beginTransaction();
+            boolean resultau=realm.where(CarDb.class).findAll().deleteFirstFromRealm();
 
 
+            realm.commitTransaction();
+            recycler2.setAdapter(null);
+            adapter2.notifyDataSetChanged();
 
+            new cargarmesas().execute(nombre);
 
         }else {
             // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
@@ -1097,7 +1117,6 @@ int pp=recycler2.getChildCount();
 
 
     }
-
     private class grabardetallepedido extends AsyncTask<Detallepedido, Void, String> {
         String resultado;
         HttpURLConnection conne;

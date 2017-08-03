@@ -1,7 +1,5 @@
 package com.food.sistemas.sodapopapp;
-import  android.content.Context;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,20 +8,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Window;
 import android.widget.Toast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 
 /**
  * Created by Perseo on 03/08/2014.
@@ -40,7 +33,7 @@ public class Pruebaconexio  extends AppCompatActivity {
 
 
 
-      /* COMPROBAR KEYHASSH
+       //COMPROBAR KEYHASSH
         try {
               PackageInfo info = getPackageManager().getPackageInfo(
                     "com.food.sistemas.sodapopapp",
@@ -54,7 +47,7 @@ public class Pruebaconexio  extends AppCompatActivity {
 
         } catch (NoSuchAlgorithmException e) {
 
-        }*/
+        }
         setContentView(R.layout.splashverifica);
           if (verificarinternet()) {
                espera();
