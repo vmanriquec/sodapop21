@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,12 +65,9 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-import static android.graphics.Color.GREEN;
-import static android.graphics.Color.RED;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
-
 
 
 /**
@@ -384,16 +382,172 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
 
 
-       /* boton1.setOnClickListener(new View.OnClickListener() {
+        boton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (em1==1){
-                    showDialog(1);}
+                   showDialogomesas(HomeFragment.this.getActivity(),"1");
+                    }
                 else{
-                    Toast.makeText(Otromenu.this, "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
             }
 
-        });*/
+        });
+
+        boton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em2==1){
+                    showDialogomesas(HomeFragment.this.getActivity(),"2");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em3==3){
+                    showDialogomesas(HomeFragment.this.getActivity(),"3");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em4==4){
+                    showDialogomesas(HomeFragment.this.getActivity(),"4");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton15.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em5==5){
+                    showDialogomesas(HomeFragment.this.getActivity(),"5");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em6==6){
+                    showDialogomesas(HomeFragment.this.getActivity(),"6");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em7==7){
+                    showDialogomesas(HomeFragment.this.getActivity(),"7");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em8==8){
+                    showDialogomesas(HomeFragment.this.getActivity(),"8");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em9==9){
+                    showDialogomesas(HomeFragment.this.getActivity(),"9");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em10==10){
+                    showDialogomesas(HomeFragment.this.getActivity(),"10");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em11==11){
+                    showDialogomesas(HomeFragment.this.getActivity(),"11");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em12==12){
+                    showDialogomesas(HomeFragment.this.getActivity(),"12");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton13.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em13==13){
+                    showDialogomesas(HomeFragment.this.getActivity(),"13");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton14.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em14==14){
+                    showDialogomesas(HomeFragment.this.getActivity(),"14");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
+        boton15.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (em15==15){
+                    showDialogomesas(HomeFragment.this.getActivity(),"15");
+                }
+                else{
+                    Toast.makeText(HomeFragment.this.getActivity(), "esta mesa no tiene pedidos", Toast.LENGTH_SHORT).show();}
+            }
+
+        });
         return view;
 
 
@@ -675,7 +829,8 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                     }
                     strArrData = dataList.toArray(new String[dataList.size()]);
 
-
+                    Drawable mesalibre = getResources().getDrawable(R.drawable.buttonmesasbackground);
+                    Drawable mesaocupada = getResources().getDrawable(R.drawable.buttonmesasocupadasbackground);
 
 
                     int cc = listaalmaceno.size();
@@ -687,12 +842,13 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                             case 1:
                                 if (estadomesa.equals("generado")) {
 
-                                    boton1.setBackgroundColor(RED);
+                                    boton1.setBackground(mesaocupada);
+
 
                                     em1=1;
                                 } else {
 
-                                    boton1.setBackgroundColor(GREEN);
+                                    boton1.setBackground(mesalibre);
                                     em1=0;
                                 }
 
@@ -700,140 +856,140 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                             case 2:
                                 if (estadomesa.equals("generado")) {
                                     em2=1;
-                                    boton2.setBackgroundColor(RED);
+                                    boton2.setBackground(mesaocupada);
                                 } else {
                                     em2=0;
-                                    boton2.setBackgroundColor(GREEN);
+                                    boton2.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 3:
                                 if (estadomesa.equals("generado")) {
                                     em3=1;
-                                    boton3.setBackgroundColor(RED);
+                                    boton3.setBackground(mesaocupada);
                                 } else {
                                     em3=0;
-                                    boton3.setBackgroundColor(GREEN);
+                                    boton3.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 4:
                                 if (estadomesa.equals("generado")) {
                                     em4=1;
-                                    boton4.setBackgroundColor(RED);
+                                    boton4.setBackground(mesaocupada);
                                 } else {
                                     em4=0;
-                                    boton4.setBackgroundColor(GREEN);
+                                    boton4.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 5:
                                 if (estadomesa.equals("generado")) {
                                     em5=1;
-                                    boton5.setBackgroundColor(RED);
+                                    boton5.setBackground(mesaocupada);
                                 } else {
                                     em5=0;
-                                    boton5.setBackgroundColor(GREEN);
+                                    boton5.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 6:
                                 if (estadomesa.equals("generado")) {
                                     em6=1;
-                                    boton6.setBackgroundColor(RED);
+                                    boton6.setBackground(mesaocupada);
                                 } else {
                                     em6=0;
-                                    boton6.setBackgroundColor(GREEN);
+                                    boton6.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 7:
                                 if (estadomesa.equals("generado")) {
                                     em7=1;
-                                    boton7.setBackgroundColor(RED);
+                                    boton7.setBackground(mesaocupada);
                                 } else {
                                     em7=0;
-                                    boton7.setBackgroundColor(GREEN);
+                                    boton7.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 8:
                                 if (estadomesa.equals("generado")) {
                                     em8=1;
-                                    boton8.setBackgroundColor(RED);
+                                    boton8.setBackground(mesaocupada);
                                 } else {
                                     em8=0;
-                                    boton8.setBackgroundColor(GREEN);
+                                    boton8.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 9:
                                 if (estadomesa.equals("generado")) {
                                     em9=1;
-                                    boton9.setBackgroundColor(RED);
+                                    boton9.setBackground(mesaocupada);
                                 } else {
                                     em9=0;
-                                    boton9.setBackgroundColor(GREEN);
+                                    boton9.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 10:
                                 if (estadomesa.equals("generado")) {
                                     em10=1;
-                                    boton10.setBackgroundColor(RED);
+                                    boton10.setBackground(mesaocupada);
                                 } else {
                                     em10=0;
-                                    boton10.setBackgroundColor(GREEN);
+                                    boton10.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 11:
                                 if (estadomesa.equals("generado")) {
                                     em11=1;
-                                    boton11.setBackgroundColor(RED);
+                                    boton11.setBackground(mesaocupada);
                                 } else {
                                     em11=0;
-                                    boton11.setBackgroundColor(GREEN);
+                                    boton11.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 12:
                                 if (estadomesa.equals("generado")) {
                                     em12=1;
-                                    boton12.setBackgroundColor(RED);
+                                    boton12.setBackground(mesaocupada);
                                 } else {
                                     em12=0;
-                                    boton12.setBackgroundColor(GREEN);
+                                    boton12.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 13:
                                 if (estadomesa.equals("generado")) {
                                     em13=1;
-                                    boton13.setBackgroundColor(RED);
+                                    boton13.setBackground(mesaocupada);
                                 } else {
                                     em13=0;
-                                    boton13.setBackgroundColor(GREEN);
+                                    boton13.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 14:
                                 if (estadomesa.equals("generado")) {
                                     em14=1;
-                                    boton14.setBackgroundColor(RED);
+                                    boton14.setBackground(mesaocupada);
                                 } else {
                                     em14=0;
-                                    boton14.setBackgroundColor(GREEN);
+                                    boton14.setBackground(mesalibre);
                                 }
                                 break;
 
                             case 15:
                                 if (estadomesa.equals("generado")) {
                                     em15=1;
-                                    boton15.setBackgroundColor(RED);
+                                    boton15.setBackground(mesaocupada);
                                 } else {
                                     em15=0;
-                                    boton15.setBackgroundColor(GREEN);
+                                    boton15.setBackground(mesalibre);
                                 }
 
                                 break;
@@ -1402,6 +1558,7 @@ int pp=recycler2.getChildCount();
                     dialog.dismiss();
                 }
             });
+
          Button dialogButtonatras = (Button) dialog.findViewById(R.id.atras);
          dialogButtonatras.setOnClickListener(new View.OnClickListener() {
              @Override
@@ -1530,6 +1687,168 @@ int pp=recycler2.getChildCount();
 
 
         }
+    }
+    public void showDialogomesas(Activity activity, final String msgo){
+        final Dialog dialog = new Dialog(activity);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.popupmesasopcion);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button dialogButton = (Button) dialog.findViewById(R.id.btnatrasmnumesa);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
+        Button cobrar = (Button) dialog.findViewById(R.id.btncobrarpedido);
+        cobrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date = null;
+                String str_date=fechadehoy.getText().toString();
+                DateFormat formatter ;
+
+                formatter = new SimpleDateFormat("dd-MMM-yy");
+                try {
+                    date = formatter.parse(str_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+                String valToSet = spinner.getSelectedItem().toString();
+                String mesei=valToSet;
+                int g= mesei.length();
+                String mesi = mesei.substring(0,1);
+                String  idi=mesi.trim();
+                Pedido pedido = new Pedido( 0, Integer.parseInt(msgo), 0.0, "",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+                new cobrarpedido().execute(pedido);
+
+
+                new cargarmesasdisponibilidad().execute(nombre);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+
+    }
+
+
+    private class cobrarpedido extends AsyncTask<Pedido, Void, String> {
+        String resultado;
+        HttpURLConnection conne;
+        URL url = null;
+        Pedido ped;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(Pedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.ga/sugest/apicobrarpedido.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+
+                        .appendQueryParameter("idmesa",String.valueOf(ped.getIdmesa()))
+
+                        .appendQueryParameter("idalmacen", String.valueOf(ped.getIdalmacen()));
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return null;
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    resultado=result.toString();
+                    Log.d("muestra",resultado);
+                    return resultado;
+
+                } else {
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+
+                return null;
+            } finally {
+                conne.disconnect();
+            }
+            return resultado;
+        }
+
+
+        @Override
+        protected void onPostExecute(String resultado) {
+
+            super.onPostExecute(resultado);
+
+            if(resultado.equals("true")){
+                Log.d("ii", "insertado");
+
+
+            }else{
+                String ii =resultado.toString();
+                Log.d("jj", "usuario valido");
+
+
+                // lanzarsistema();
+            }
+
+
+
+        }
+
+
     }
 
 }
