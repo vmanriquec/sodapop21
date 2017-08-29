@@ -1,72 +1,40 @@
 package com.food.sistemas.sodapopapp;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.PopupWindow;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Activity;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import com.android.volley.RequestQueue;
+
 import com.food.sistemas.sodapopapp.adapter.Adaptadorsqlite;
 import com.food.sistemas.sodapopapp.database.DBHelper;
-import com.food.sistemas.sodapopapp.database.UsuarioHelper;
-import com.food.sistemas.sodapopapp.database.Usuariosql;
 import com.food.sistemas.sodapopapp.modelo.Almacen;
 import com.food.sistemas.sodapopapp.modelo.Usuarios;
-import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
-import com.food.sistemas.sodapopapp.response.ResponsableResponse;
-import com.food.sistemas.sodapopapp.ui.CircleTransform;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static com.food.sistemas.sodapopapp.R.id.edit_query;
 
 import static com.food.sistemas.sodapopapp.R.id.nuevo;
 
 
 public class ProfileFragment extends Fragment {
-    String showUrl = "http://www.sodapop1978.pe.hu/apiandroidrecuperaalmacenes.php";
+    String showUrl = "http://www.sodapop.space/apiandroidrecuperaalmacenes.php";
     String imagePath="";
     TextView result;
     private Button showDialog,alert_edittext;

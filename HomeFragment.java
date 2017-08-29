@@ -358,6 +358,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
 
 
                } else if (iy ==1)
+
                {
                } } });
 
@@ -614,7 +615,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         protected String doInBackground(String... params) {
 
             try {
-                url = new URL("http://sodapop.ga/sugest/apimesas.php");
+                url = new URL("http://sodapop.space/sugest/apimesas.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -736,7 +737,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         protected String doInBackground(String... params) {
 
             try {
-                url = new URL("http://sodapop.ga/sugest/apimesasdealmacen.php");
+                url = new URL("http://sodapop.space/sugest/apimesasdealmacen.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -891,6 +892,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
                                     em5=0;
                                     boton5.setBackground(mesalibre);
                                 }
+
                                 break;
 
                             case 6:
@@ -1019,7 +1021,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         protected String doInBackground(String... params) {
 
             try {
-                url = new URL("http://sodapop.ga/sugest/apimesassinfacebook.php");
+                url = new URL("http://sodapop.space/sugest/apimesassinfacebook.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1141,7 +1143,7 @@ new cargarmesassinfacebook().execute(nombre,claveusuario);
         protected String doInBackground(String... params) {
 
             try {
-                url = new URL("http://sodapop.ga/sugest/apitraerproductosporfamiliaalmacen.php");
+                url = new URL("http://sodapop.space/sugest/apitraerproductosporfamiliaalmacen.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1285,7 +1287,7 @@ people.clear();
         protected String doInBackground(Pedido... params) {
             ped=params[0];
             try {
-                url = new URL("http://sodapop.ga/androidinsertarpedido.php");
+                url = new URL("http://sodapop.space/androidinsertarpedido.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1444,7 +1446,7 @@ people.clear();
 
             //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
             idfacebook=prefs.getString("sessionid","");
-          Pedido pedido = new Pedido(2, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+          Pedido pedido = new Pedido(1, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
 
             new grabarpedido().execute(pedido);
 
@@ -1455,7 +1457,11 @@ people.clear();
 
             realm.commitTransaction();
             recycler2.setAdapter(null);
-            adapter2.notifyDataSetChanged();Toast.makeText(HomeFragment.this.getActivity(),"nombre"+nombre,Toast.LENGTH_LONG).show();
+            adapter2.notifyDataSetChanged();
+
+
+
+
 
             new cargarmesas().execute(nombre);
             new cargarmesasdisponibilidad().execute(nombre);
@@ -1589,7 +1595,7 @@ int pp=recycler2.getChildCount();
         protected String doInBackground(Detallepedido... params) {
             ped=params[0];
             try {
-                url = new URL("http://sodapop.ga/sugest/androidinsertardetalledepedido.php");
+                url = new URL("http://sodapop.space/sugest/androidinsertardetalledepedido.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1732,12 +1738,46 @@ int pp=recycler2.getChildCount();
                 dialog.dismiss();
             }
         });
+
+
+
+        Button edit = (Button) dialog.findViewById(R.id.btneditarpedido);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date = null;
+                String str_date=fechadehoy.getText().toString();
+                DateFormat formatter ;
+
+                formatter = new SimpleDateFormat("dd-MMM-yy");
+                try {
+                    date = formatter.parse(str_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+                String valToSet = spinner.getSelectedItem().toString();
+                String mesei=valToSet;
+                int g= mesei.length();
+                String mesi = mesei.substring(0,1);
+                String  idi=mesi.trim();
+
+                Pedido pedido = new Pedido( 0, Integer.parseInt(msgo), 0.0, "",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+                new cobrarpedido().execute(pedido);
+
+
+                new cargarmesasdisponibilidad().execute(nombre);
+                dialog.dismiss();
+            }
+        });
+
+
         dialog.show();
 
 
     }
-
-
     private class cobrarpedido extends AsyncTask<Pedido, Void, String> {
         String resultado;
         HttpURLConnection conne;
@@ -1755,7 +1795,7 @@ int pp=recycler2.getChildCount();
         protected String doInBackground(Pedido... params) {
             ped=params[0];
             try {
-                url = new URL("http://sodapop.ga/sugest/apicobrarpedido.php");
+                url = new URL("http://sodapop.space/sugest/apicobrarpedido.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1851,4 +1891,400 @@ int pp=recycler2.getChildCount();
 
     }
 
+    private class eliminarpedido extends AsyncTask<Pedido, Void, String> {
+        String resultado;
+        HttpURLConnection conne;
+        URL url = null;
+        Pedido ped;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(Pedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.space/sugest/apianularpedido.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+
+                        .appendQueryParameter("numerodemesa",String.valueOf(ped.getIdmesa()))
+
+                        .appendQueryParameter("idalmacen", String.valueOf(ped.getIdalmacen()));
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return null;
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    resultado=result.toString();
+                    Log.d("muestra",resultado);
+                    return resultado;
+
+                } else {
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+
+                return null;
+            } finally {
+                conne.disconnect();
+            }
+            return resultado;
+        }
+
+
+        @Override
+        protected void onPostExecute(String resultado) {
+
+            super.onPostExecute(resultado);
+
+            if(resultado.equals("true")){
+                Log.d("ii", "insertado");
+
+
+            }else{
+                String ii =resultado.toString();
+                Log.d("jj", "usuario valido");
+
+
+                // lanzarsistema();
+            }
+
+
+
+        }
+
+
+    }
+    private class editarpedido extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+        ArrayList<Mesas> listaalmaceno = new ArrayList<Mesas>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("http://sodapop.space/sugest/apimesasdealmacen.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("nombre", params[0]);
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("waaaaaaa",result);
+            Spinner spin=(Spinner)view.findViewById(R.id.spinnermesas);
+
+
+            ArrayList<String> dataList = new ArrayList<String>();
+            Mesas meso;
+            if(result.equals("no rows")) {
+                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+
+            }else{
+
+                try {
+
+                    JSONArray jArray = new JSONArray(result);
+
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        JSONObject json_data = jArray.getJSONObject(i);
+                        dataList.add(json_data.getString("estadomesa"));
+                        meso = new Mesas(json_data.getInt("idmesa"), json_data.getInt("numeromesa"), json_data.getString("estadomesa"), json_data.getInt("sillasmesa"));
+
+                        listaalmaceno.add(meso);
+
+                    }
+                    strArrData = dataList.toArray(new String[dataList.size()]);
+
+                    Drawable mesalibre = getResources().getDrawable(R.drawable.buttonmesasbackground);
+                    Drawable mesaocupada = getResources().getDrawable(R.drawable.buttonmesasocupadasbackground);
+
+
+                    int cc = listaalmaceno.size();
+                    for (int i = 0; i < cc; i++) {
+                        int nummesa = listaalmaceno.get(i).getNumeromesa();
+                        String estadomesa = listaalmaceno.get(i).getEstadomesa().toString();
+
+                        switch (nummesa) {
+                            case 1:
+                                if (estadomesa.equals("generado")) {
+
+                                    boton1.setBackground(mesaocupada);
+
+
+                                    em1=1;
+                                } else {
+
+                                    boton1.setBackground(mesalibre);
+                                    em1=0;
+                                }
+
+                                break;
+                            case 2:
+                                if (estadomesa.equals("generado")) {
+                                    em2=1;
+                                    boton2.setBackground(mesaocupada);
+                                } else {
+                                    em2=0;
+                                    boton2.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 3:
+                                if (estadomesa.equals("generado")) {
+                                    em3=1;
+                                    boton3.setBackground(mesaocupada);
+                                } else {
+                                    em3=0;
+                                    boton3.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 4:
+                                if (estadomesa.equals("generado")) {
+                                    em4=1;
+                                    boton4.setBackground(mesaocupada);
+                                } else {
+                                    em4=0;
+                                    boton4.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 5:
+                                if (estadomesa.equals("generado")) {
+                                    em5=1;
+                                    boton5.setBackground(mesaocupada);
+                                } else {
+                                    em5=0;
+                                    boton5.setBackground(mesalibre);
+                                }
+
+                                break;
+
+                            case 6:
+                                if (estadomesa.equals("generado")) {
+                                    em6=1;
+                                    boton6.setBackground(mesaocupada);
+                                } else {
+                                    em6=0;
+                                    boton6.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 7:
+                                if (estadomesa.equals("generado")) {
+                                    em7=1;
+                                    boton7.setBackground(mesaocupada);
+                                } else {
+                                    em7=0;
+                                    boton7.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 8:
+                                if (estadomesa.equals("generado")) {
+                                    em8=1;
+                                    boton8.setBackground(mesaocupada);
+                                } else {
+                                    em8=0;
+                                    boton8.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 9:
+                                if (estadomesa.equals("generado")) {
+                                    em9=1;
+                                    boton9.setBackground(mesaocupada);
+                                } else {
+                                    em9=0;
+                                    boton9.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 10:
+                                if (estadomesa.equals("generado")) {
+                                    em10=1;
+                                    boton10.setBackground(mesaocupada);
+                                } else {
+                                    em10=0;
+                                    boton10.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 11:
+                                if (estadomesa.equals("generado")) {
+                                    em11=1;
+                                    boton11.setBackground(mesaocupada);
+                                } else {
+                                    em11=0;
+                                    boton11.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 12:
+                                if (estadomesa.equals("generado")) {
+                                    em12=1;
+                                    boton12.setBackground(mesaocupada);
+                                } else {
+                                    em12=0;
+                                    boton12.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 13:
+                                if (estadomesa.equals("generado")) {
+                                    em13=1;
+                                    boton13.setBackground(mesaocupada);
+                                } else {
+                                    em13=0;
+                                    boton13.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 14:
+                                if (estadomesa.equals("generado")) {
+                                    em14=1;
+                                    boton14.setBackground(mesaocupada);
+                                } else {
+                                    em14=0;
+                                    boton14.setBackground(mesalibre);
+                                }
+                                break;
+
+                            case 15:
+                                if (estadomesa.equals("generado")) {
+                                    em15=1;
+                                    boton15.setBackground(mesaocupada);
+                                } else {
+                                    em15=0;
+                                    boton15.setBackground(mesalibre);
+                                }
+
+                                break;
+                        }}
+                } catch (JSONException e) {
+                }
+
+            }
+
+        }
+
+    }
 }

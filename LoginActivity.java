@@ -376,7 +376,7 @@ else{
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://sodapop.ga/sugest/apilogin.php");
+                url = new URL("http://sodapop.space/sugest/apilogin.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -509,7 +509,7 @@ ir();
         protected String doInBackground(String... params) {
             spin=(Spinner) findViewById(R.id.spinnerio);
             try {
-                url = new URL("http://sodapop.ga/sugest/fetch-all-fish.php");
+                url = new URL("http://sodapop.space/sugest/fetch-all-fish.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -612,7 +612,7 @@ ir();
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://sodapop.ga/sugest/apisiexisteenfacebook.php");
+                url = new URL("http://sodapop.space/sugest/apisiexisteenfacebook.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -741,7 +741,7 @@ ir();
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://sodapop.ga/sugest/apigrabarnombreidfacebook.php");
+                url = new URL("http://sodapop.space/sugest/apigrabarnombreidfacebook.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block

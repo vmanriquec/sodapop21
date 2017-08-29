@@ -1,25 +1,16 @@
 package com.food.sistemas.sodapopapp;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,27 +18,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
-import com.food.sistemas.sodapopapp.Realm.Operacionescondetallepedido;
 import com.food.sistemas.sodapopapp.adapter.Adaptadordashboard;
-import com.food.sistemas.sodapopapp.adapter.Adaptadordetallepedido;
-import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
 import com.food.sistemas.sodapopapp.modelo.Dashboardpedido;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
-import com.food.sistemas.sodapopapp.modelo.Mesas;
-import com.food.sistemas.sodapopapp.modelo.Pedido;
 import com.food.sistemas.sodapopapp.modelo.Productos;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +32,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,17 +40,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
-import static android.R.attr.format;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
@@ -177,7 +147,7 @@ public class Dashboard extends  Fragment implements   View.OnClickListener,Recyc
         protected String doInBackground(String... params) {
 
             try {
-                url = new URL("http://sodapop.ga/sugest/traerpedidosalmacenes.php");
+                url = new URL("http://sodapop.space/sugest/traerpedidosalmacenes.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
