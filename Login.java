@@ -4,9 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -20,19 +18,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.food.sistemas.sodapopapp.modelo.Almacen;
 import com.food.sistemas.sodapopapp.modelo.Usuarios;
-import com.food.sistemas.sodapopapp.response.RedemnorteApiAdapter;
-import com.food.sistemas.sodapopapp.response.ResponsableResponse;
-import com.vansuita.library.Icon;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 
 //import com.google.android.gms.appindexing.Action;
 //import com.google.android.gms.appindexing.AppIndex;
@@ -44,8 +35,8 @@ public class Login extends AppCompatActivity {
     private EditText nombreusuario,claveusuario;
     private EditText clave;
     private ProgressDialog loading;
-    String showAlmacen = "https://sodapop.000webhostapp.com/apiandroidrecuperaalmacenes.php";
-    String showUsuario = "https://sodapop.000webhostapp.com/apiandroidrecuperausuarios.php";
+    String showAlmacen = "https://sodapop.space.com/apiandroidrecuperaalmacenes.php";
+    String showUsuario = "https://sodapop.space/apiandroidrecuperausuarios.php";
     RequestQueue requestQueue;
     Almacen mes;
     private  Spinner listar;

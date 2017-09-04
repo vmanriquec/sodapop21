@@ -10,16 +10,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-
 import android.support.v7.app.ActionBarActivity;
-
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -188,7 +183,7 @@ iramenu();
         protected String doInBackground(String... params) {
             spin=(Spinner) findViewById(R.id.spinnertask);
             try {
-                url = new URL("http://sodapop.ga/sugest/fetch-all-fish.php");
+                url = new URL("http://sodapop.space/sugest/fetch-all-fish.php");
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
