@@ -120,7 +120,7 @@ public class Menuprincipal extends AppCompatActivity
             imgUrl = "https://graph.facebook.com/"+session+"/picture?type=large";
 
            Picasso.with(this) .load(imgUrl).transform(new CropCircleTransformation()).resize(120, 120)
-                    .into(toto);;
+                    .into(toto);
    } catch (Exception e) {
              System.out.println("Error esta aqui " + e.getMessage());
 
@@ -231,6 +231,8 @@ public class Menuprincipal extends AppCompatActivity
         editor.putString("sessionapemat","");
         editor.putString("almacenactivo","");
         editor.putString("facebook","");
+        editor.putString("editandopedido","no");
+
         editor.commit();
         Toast.makeText(this,"Session Cerrada",Toast.LENGTH_LONG).show();
     }

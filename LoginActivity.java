@@ -871,6 +871,7 @@ ir();
         editor.putString("sessionapemat",apemat);
         editor.putString("almacenactivo",almacenactivo);
         editor.putString("idalmacenactivo",idalmacenactivo);
+        editor.putString("editandopedido","no");
 
 
         editor.commit();
@@ -894,7 +895,7 @@ ir();
         editor.putString("claveusuario",claveusuario);
         editor.putString("almacenactivosf",almacenactivosf);
         editor.putString("idalmacenactivosf",idalmacenactivosf);
-
+        editor.putString("editandopedido","no");
 
         editor.commit();
 
@@ -916,12 +917,14 @@ ir();
     private  void limpiarshare(){
         SharedPreferences sharedPreferences =getSharedPreferences(FileName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sharedPreferences.edit();
+
         editor.putString("sessionid","");
         editor.putString("sessionnombre","");
         editor.putString("sessionapepat","");
         editor.putString("sessionapemat","");
         editor.putString("almacenactivo","");
         editor.putString("facebook","");
+        editor.putString("editandopedido","no");
         editor.commit();
 
     }

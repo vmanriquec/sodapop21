@@ -1,5 +1,4 @@
 package com.food.sistemas.sodapopapp;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -63,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.Realm;
+import io.realm.RealmModel;
 import io.realm.RealmResults;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -95,6 +95,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     TextView fechadehoy;
     String nombre,almacenactivosf,claveusuario,idalmacensf,idalmacenactivo,almacenactivo;
     ArrayList<Productos> people=new ArrayList<>();
+    ArrayList<Pedido> people4=new ArrayList<>();
     ArrayList<Detallepedido> people2=new ArrayList<>();
     ArrayList<Dashboardpedido> people3=new ArrayList<>();
     Button boton1,boton2,boton3,boton4,boton5,boton6,boton7,boton8,boton9,boton10,boton11,boton12,boton13,boton14,boton15;
@@ -1259,7 +1260,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
         Detallepedidorealm det=new Detallepedidorealm();
 
-        //CarDb car = new CarDb();
+        CarDb car = new CarDb();
         det.setCantidadrealm(cantidad);
         det.setNombreproductorealm(nombre);
         det.setPrecventarealm(precio);
@@ -1775,6 +1776,38 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             }
         });
 
+        Button edit = (Button) dialog.findViewById(R.id.btneditarpedido);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date = null;
+                String str_date=fechadehoy.getText().toString();
+                DateFormat formatter ;
+
+                formatter = new SimpleDateFormat("dd-MMM-yy");
+                try {
+                    date = formatter.parse(str_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+                Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+                String valToSet = spinner.getSelectedItem().toString();
+                String mesei=valToSet;
+                int g= mesei.length();
+                String mesi = mesei.substring(0,1);
+                String  idi=mesi.trim();
+
+                Pedido pedido = new Pedido( 0, Integer.parseInt(msgo), 0.0, "",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+                new traerpedidoaeditar().execute(pedido);
+                new traerdetallepedidoaeditar().execute(pedido);
+
+                //new cargarmesasdisponibilidad().execute(nombre);
+                //new cargarmesas().execute(nombre);
+                dialog.dismiss();
+            }
+        });
 
         dialog.show();
 
@@ -2006,11 +2039,13 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
 
     }
+
     private class traerpedidoaeditar extends AsyncTask<Pedido, Void, String> {
-        String resultado;
+        Pedido ped;
+
         HttpURLConnection conne;
         URL url = null;
-        Pedido ped;
+        ArrayList<Pedido> listaalmaceno = new ArrayList<Pedido>();
 
         @Override
         protected void onPreExecute() {
@@ -2023,11 +2058,12 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
         protected String doInBackground(Pedido... params) {
             ped=params[0];
             try {
-                url = new URL("http://sodapop.space/sugest/apitraerpedido.php");
+                url = new URL("http://sodapop.space/sugest/apieditarpedido.php");
+
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                return null;
+                return e.toString();
             }
             try {
                 conne = (HttpURLConnection) url.openConnection();
@@ -2039,15 +2075,14 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
                 // Append parameters to URL
 
-                Log.d("iooo", String.valueOf(ped.getIdmesa()));
-                Log.d("iooo", String.valueOf(ped.getIdalmacen()));
 
+                Log.d("ioooo",String.valueOf(ped.getIdmesa()));
+                Log.d("iooooo",String.valueOf(ped.getIdalmacen()));
                 Uri.Builder builder = new Uri.Builder()
 
+                        .appendQueryParameter("numerodemesa", String.valueOf(ped.getIdmesa()))
 
-                        .appendQueryParameter("numerodemesa",String.valueOf(ped.getIdmesa()))
-
-                        .appendQueryParameter("idalmacen", String.valueOf(ped.getIdalmacen()));
+                        .appendQueryParameter("idalmacen",String.valueOf(ped.getIdalmacen()));
 
                 String query = builder.build().getEncodedQuery();
 
@@ -2064,7 +2099,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
-                return null;
+                return e1.toString();
             }
             try {
                 int response_code = conne.getResponseCode();
@@ -2078,45 +2113,284 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
                         result.append(line);
 
                     }
-                    resultado=result.toString();
-                    Log.d("ioooo",resultado);
-                    return resultado;
+                    return (
+
+                            result.toString()
+
+
+                    );
 
                 } else {
-
+                    return("Connection error");
                 }
             } catch (IOException e) {
                 e.printStackTrace()                ;
 
-                return null;
+                return e.toString();
             } finally {
                 conne.disconnect();
             }
-            return resultado;
         }
 
 
         @Override
-        protected void onPostExecute(String resultado) {
+        protected void onPostExecute(String result) {
 
-            super.onPostExecute(resultado);
+//            people.clear();
 
-            if(resultado.equals("true")){
-                Log.d("ioooo", "eliminado");
-
+            Log.d("ioooo",result);
+            ArrayList<String> dataList = new ArrayList<String>();
+            Pedido meso;
+            if(result.equals("no rows")) {
+                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
 
             }else{
-                String ii =resultado.toString();
-                Log.d("ioooo", "usuario valido");
+
+                try {
 
 
-                // lanzarsistema();
+                    JSONArray jArray = new JSONArray(result);
+
+
+                    Date date = null;
+                    String str_date=fechadehoy.getText().toString();
+                    DateFormat formatter ;
+
+                    formatter = new SimpleDateFormat("dd-MMM-yy");
+                    try {
+                        date = formatter.parse(str_date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        JSONObject json_data = jArray.optJSONObject(i);
+                        meso   = new Pedido( json_data.getInt("idpedido"),json_data.getInt("idcliente"),json_data.getInt("idmesa"),json_data.getDouble("totalpedido"),json_data.getString("estadopedido"),date,json_data.getInt("idusuario"),
+                                json_data.getInt("idalmacen"),json_data.getString("idfacebook"));
+
+
+
+
+
+
+//                        people4.add(meso);
+                    }
+                    //strArrData = dataList.toArray(new String[dataList.size()]);
+
+
+                    //  adapter = new Adaptadorproductos(people,getActivity().getApplicationContext());
+                    //recycler.setAdapter(adapter);
+
+
+                } catch (JSONException e) {
+
+                }
+
             }
 
+        }
+
+    }
+    private class traerdetallepedidoaeditar extends AsyncTask<Pedido, Void, String> {
+        Pedido ped;
+
+        HttpURLConnection conne;
+        URL url = null;
+        ArrayList<Pedido> listaalmaceno = new ArrayList<Pedido>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
 
         }
 
+        @Override
+        protected String doInBackground(Pedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.space/sugest/apieditardetallepedido.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+                Log.d("ioooo",String.valueOf(ped.getIdmesa()));
+                Log.d("iooooo",String.valueOf(ped.getIdalmacen()));
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("numerodemesa", String.valueOf(ped.getIdmesa()))
+
+                        .appendQueryParameter("idalmacen",String.valueOf(ped.getIdalmacen()));
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (
+
+                            result.toString()
+
+
+                    );
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+
+//            people.clear();
+
+            Log.d("ioooo",result);
+            ArrayList<String> dataList = new ArrayList<String>();
+            Detallepedido meso;
+            if(result.equals("no rows")) {
+                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+
+            }else{
+
+                try {
+
+
+                    JSONArray jArray = new JSONArray(result);
+
+
+                    Date date = null;
+                    String str_date=fechadehoy.getText().toString();
+                    DateFormat formatter ;
+
+                    formatter = new SimpleDateFormat("dd-MMM-yy");
+                    try {
+                        date = formatter.parse(str_date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    vaciardatosdedetallepedidorealm();
+                    Log.d("ioooo","vaciado");
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        Log.d("ioooooooo",String.valueOf(jArray.get(0)));
+
+                        JSONObject json_data = jArray.optJSONObject(i);
+                        Log.d("iooooooooooooooo",String.valueOf(json_data.get("nombreproducto")));
+
+                        meso   = new Detallepedido( json_data.getInt("iddetallepedido"),json_data.getInt("idproducto"),json_data.getInt("cantidad"),json_data.getDouble("precventa"),json_data.getDouble("subtotal"),json_data.getInt("idpedido"),
+                                json_data.getString("nombreproducto"),json_data.getInt("idalmacen"),json_data.getString("descripcion"));
+
+
+//llenar datos a la base de datos
+                        //  realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());
+                        //realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
+                        Realm realm = Realm.getDefaultInstance();
+
+                        realm.beginTransaction();
+                        CarDb car = realm.createObject(CarDb.class);
+
+
+                        car.setprecio(meso.getPrecventa());
+                        car.setidproducto(meso.getIdproducto());
+                        car.setIddetallepedido(meso.getIddetallepedido());
+                        car.setcantidadapedir(meso.getCantidad());
+                        car.setImagen(meso.getImagen());
+                        car.setnombreproducto(meso.getNombreproducto());
+                        realm.commitTransaction();
+
+
+
+
+//                        people4.add(meso);
+                    }
+
+
+                    Log.d("iooooe","orejacargardetalle");
+
+                    cargardetalle();
+
+                } catch (JSONException e) {
+
+                }
+
+            }
+
+        }
+
+    }
+    private void  vaciardatosdedetallepedidorealm(){
+
+        realm.beginTransaction();
+        RealmResults<CarDb> results = realm.where(CarDb.class).findAll();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
+
+
+    }
+    public void realmgrbarenbasedatos(int iddetallepedido, int idproducto, int cantidad, Double precventa,  String nombreproducto, int idalmacen )
+    {
+
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Detallepedidorealm det = new Detallepedidorealm();
+
+        det.setIddetallepedidorealm(idproducto);
+        det.setIdproductorealm(idproducto);
+        det.setCantidadrealm(cantidad);
+        det.setPrecventarealm(precventa);
+        det.setNombreproductorealm(nombreproducto);
+        det.setIdalmacenrealm(idalmacen);
+
+        realm.beginTransaction();
+        realm.copyToRealm((Iterable<RealmModel>) det);
+        realm.commitTransaction();
 
     }
 }
