@@ -85,7 +85,10 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     Typeface typeface;
     DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
-    SharedPreferences prefs;String FileName ="myfile";
+    SharedPreferences prefs;
+    SharedPreferences prefse;
+    String correo;
+    String FileName ="myfile";
     int em1,em2,em3,em4,em5,em6,em7,em8,em9,em10,em11,em12,em13,em14,em15;
     private View view;
     private String[] strArrData = {"No Suggestions"};
@@ -102,6 +105,14 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout, container, false);
+  prefse =getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
+         correo = prefse.getString("editando", "");
+
+
+
+
+
+
         boton1 = (Button) view.findViewById(R.id.buno);
         boton2 = (Button) view.findViewById(R.id.bdos);
         boton3 = (Button) view.findViewById(R.id.btres);
@@ -1388,84 +1399,117 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
 
     }
+
     public void ejecutarcapturaryguardarpedido(){
+
+
+
+
+
+
         ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
         RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
 
         String idalmacenactivo = prefs.getString("idalmacenactivo", "");
         resulta.toArray(new CarDb[resulta.size()]);
+
+
         if(resulta.size()>0){
-            double st=0.0;
-            double tq=0.0;
-            ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
 
-            for(int u=0;u<resulta.size();u++){
-                Double prevta=resulta.get(u).getprecio();
-                int cnt= resulta.get(u).getcantidadapedir();
-                int idal=1;
-                int idpro=resulta.get(u).getidproducto();
-                String img=resulta.get(u).getimagen();
-                String nombrprod=resulta.get(u).getnombreproducto();
-                tq=cnt* prevta;
-                st=st+tq;
-                Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
-                //  detalledebasededatos.add(f);
-                new grabardetallepedido().execute(f);
+            if (correo.equals("")){
+
+                Log.d("ioooojojo","nulo");
+                double st=0.0;
+                double tq=0.0;
+                ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
+
+                for(int u=0;u<resulta.size();u++){
+                    Double prevta=resulta.get(u).getprecio();
+                    int cnt= resulta.get(u).getcantidadapedir();
+                    int idal=1;
+                    int idpro=resulta.get(u).getidproducto();
+                    String img=resulta.get(u).getimagen();
+                    String nombrprod=resulta.get(u).getnombreproducto();
+                    tq=cnt* prevta;
+                    st=st+tq;
+                    Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+                    //  detalledebasededatos.add(f);
+                    new grabardetallepedido().execute(f);
+                }
+
+                for(int u=0;u<resulta.size();u++){
+
+                    Double prevta=resulta.get(u).getprecio();
+                    int cnt= resulta.get(u).getcantidadapedir();
+                    int idal=1;
+                    int idpro=resulta.get(u).getidproducto();
+                    String img=resulta.get(u).getimagen();
+                    String nombrprod=resulta.get(u).getnombreproducto();
+                    tq=cnt* prevta;
+                    st=st+tq;
+                }
+
+                Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+                String valToSet = spinner.getSelectedItem().toString();
+                String mesei=valToSet;
+                int g= mesei.length();
+                String mesi = mesei.substring(0,1);
+                String  idi=mesi.trim();
+
+
+                Date date = null;
+                String str_date=fechadehoy.getText().toString();
+                DateFormat formatter ;
+
+                formatter = new SimpleDateFormat("dd-MMM-yy");
+                try {
+                    date = formatter.parse(str_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+                //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
+                idfacebook=prefs.getString("sessionid","");
+                Pedido pedido = new Pedido(1, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+
+                new grabarpedido().execute(pedido);
+
+                ArrayList<CarDb> listu = new ArrayList(realm.where(CarDb.class).findAll());
+                realm.beginTransaction();
+                boolean resultau=realm.where(CarDb.class).findAll().deleteFirstFromRealm();
+
+
+                realm.commitTransaction();
+                recycler2.setAdapter(null);
+                adapter2.notifyDataSetChanged();
+
+
+
+
+
+                new cargarmesas().execute(nombre);
+                new cargarmesasdisponibilidad().execute(nombre);
+
+            }else{
+
+                //aqui tenemos que eliminar el detalle y grabar nuevamente con el id de pedido
+                Log.d("iooooeditat",correo);
+                Toast.makeText(getContext(),"se actualizara pedido",Toast.LENGTH_LONG).show();
+                SharedPreferences prefse =
+                        getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
+
+                SharedPreferences.Editor editor = prefse.edit();
+                editor.putString("editando", "");
+
+                editor.commit();
+
+
+
+
+
             }
 
-            for(int u=0;u<resulta.size();u++){
-
-                Double prevta=resulta.get(u).getprecio();
-                int cnt= resulta.get(u).getcantidadapedir();
-                int idal=1;
-                int idpro=resulta.get(u).getidproducto();
-                String img=resulta.get(u).getimagen();
-                String nombrprod=resulta.get(u).getnombreproducto();
-                tq=cnt* prevta;
-                st=st+tq;
-            }
-
-            Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
-            String valToSet = spinner.getSelectedItem().toString();
-            String mesei=valToSet;
-            int g= mesei.length();
-            String mesi = mesei.substring(0,1);
-            String  idi=mesi.trim();
-
-
-            Date date = null;
-            String str_date=fechadehoy.getText().toString();
-            DateFormat formatter ;
-
-            formatter = new SimpleDateFormat("dd-MMM-yy");
-            try {
-                date = formatter.parse(str_date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-
-            //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
-            idfacebook=prefs.getString("sessionid","");
-            Pedido pedido = new Pedido(1, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
-
-            new grabarpedido().execute(pedido);
-
-            ArrayList<CarDb> listu = new ArrayList(realm.where(CarDb.class).findAll());
-            realm.beginTransaction();
-            boolean resultau=realm.where(CarDb.class).findAll().deleteFirstFromRealm();
-
-
-            realm.commitTransaction();
-            recycler2.setAdapter(null);
-            adapter2.notifyDataSetChanged();
-
-
-
-
-
-            new cargarmesas().execute(nombre);
-            new cargarmesasdisponibilidad().execute(nombre);
 
         }else {
             // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
@@ -1925,7 +1969,6 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
 
     }
-
     private class anularpedido extends AsyncTask<Pedido, Void, String> {
         String resultado;
         HttpURLConnection conne;
@@ -2039,7 +2082,6 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
 
     }
-
     private class traerpedidoaeditar extends AsyncTask<Pedido, Void, String> {
         Pedido ped;
 
@@ -2167,10 +2209,16 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
                         JSONObject json_data = jArray.optJSONObject(i);
                         meso   = new Pedido( json_data.getInt("idpedido"),json_data.getInt("idcliente"),json_data.getInt("idmesa"),json_data.getDouble("totalpedido"),json_data.getString("estadopedido"),date,json_data.getInt("idusuario"),
                                 json_data.getInt("idalmacen"),json_data.getString("idfacebook"));
+Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
 
 
+                        SharedPreferences prefse =
+                                getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
 
+                        SharedPreferences.Editor editor = prefse.edit();
+                        editor.putString("editando", String.valueOf(json_data.getInt("idpedido")));
 
+                        editor.commit();
 
 
 //                        people4.add(meso);
