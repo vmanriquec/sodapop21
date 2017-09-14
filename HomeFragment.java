@@ -102,11 +102,13 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     ArrayList<Detallepedido> people2=new ArrayList<>();
     ArrayList<Dashboardpedido> people3=new ArrayList<>();
     Button boton1,boton2,boton3,boton4,boton5,boton6,boton7,boton8,boton9,boton10,boton11,boton12,boton13,boton14,boton15;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.layout, container, false);
-  prefse =getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
-         correo = prefse.getString("editando", "");
+
 
 
 
@@ -1402,23 +1404,20 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 
     public void ejecutarcapturaryguardarpedido(){
 
-
-
-
-
-
         ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
         RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
 
         String idalmacenactivo = prefs.getString("idalmacenactivo", "");
         resulta.toArray(new CarDb[resulta.size()]);
+        prefse =getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
+        correo = prefse.getString("editando", "");
 
 
         if(resulta.size()>0){
 
             if (correo.equals("")){
 
-                Log.d("ioooojojo","nulo");
+                Log.d("iooo","correo nulo");
                 double st=0.0;
                 double tq=0.0;
                 ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
@@ -1483,42 +1482,48 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
                 realm.commitTransaction();
                 recycler2.setAdapter(null);
                 adapter2.notifyDataSetChanged();
-
-
-
-
-
-                new cargarmesas().execute(nombre);
+new cargarmesas().execute(nombre);
                 new cargarmesasdisponibilidad().execute(nombre);
 
             }else{
 
-                //aqui tenemos que eliminar el detalle y grabar nuevamente con el id de pedido
-                Log.d("iooooeditat",correo);
-                Toast.makeText(getContext(),"se actualizara pedido",Toast.LENGTH_LONG).show();
-                SharedPreferences prefse =
-                        getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
+//correo no tiene nadaaaaa por qu?
+                new liminardetallepedidoparaactualizar().execute(correo);
+                Log.d("ioooojojo","correo tiene algo"+correo);
+                double st=0.0;
+                double tq=0.0;
+                ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
 
+                for(int u=0;u<resulta.size();u++){
+                    Double prevta=resulta.get(u).getprecio();
+                    int cnt= resulta.get(u).getcantidadapedir();
+                    int idal=1;
+                    int idpro=resulta.get(u).getidproducto();
+                    String img=resulta.get(u).getimagen();
+                    String nombrprod=resulta.get(u).getnombreproducto();
+                    tq=cnt* prevta;
+                    st=st+tq;
+                    Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,Integer.parseInt(correo),resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+                    //  detalledebasededatos.add(f);
+                    new grabardetallepedidoparaactualizar().execute(f);
+                }
+                ArrayList<CarDb> listu = new ArrayList(realm.where(CarDb.class).findAll());
+                realm.beginTransaction();
+                boolean resultau=realm.where(CarDb.class).findAll().deleteFirstFromRealm();
+                realm.commitTransaction();
+                recycler2.setAdapter(null);
+                adapter2.notifyDataSetChanged();
+                new cargarmesas().execute(nombre);
+                new cargarmesasdisponibilidad().execute(nombre);
+                //aqui tenemos que eliminar el detalle y grabar nuevamente con el id de pedido
                 SharedPreferences.Editor editor = prefse.edit();
                 editor.putString("editando", "");
-
                 editor.commit();
-
-
-
-
-
-            }
-
-
-        }else {
-            // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
-
+                Log.d("iooooeditat","regrabando yeliminado idpedido");
+}
+}else {
+             Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
         }
-
-
-
-
     }
     public void cargardetalle(){
 
@@ -2084,16 +2089,12 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     }
     private class traerpedidoaeditar extends AsyncTask<Pedido, Void, String> {
         Pedido ped;
-
         HttpURLConnection conne;
         URL url = null;
         ArrayList<Pedido> listaalmaceno = new ArrayList<Pedido>();
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
         }
 
         @Override
@@ -2114,20 +2115,12 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
                 conne.setRequestMethod("POST");
                 conne.setDoInput(true);
                 conne.setDoOutput(true);
-
-                // Append parameters to URL
-
-
                 Log.d("ioooo",String.valueOf(ped.getIdmesa()));
                 Log.d("iooooo",String.valueOf(ped.getIdalmacen()));
                 Uri.Builder builder = new Uri.Builder()
-
                         .appendQueryParameter("numerodemesa", String.valueOf(ped.getIdmesa()))
-
                         .appendQueryParameter("idalmacen",String.valueOf(ped.getIdalmacen()));
-
                 String query = builder.build().getEncodedQuery();
-
                 // Open connection for sending data
                 OutputStream os = conne.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
@@ -2204,32 +2197,25 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
+                    SharedPreferences.Editor editor = prefse.edit();
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.optJSONObject(i);
                         meso   = new Pedido( json_data.getInt("idpedido"),json_data.getInt("idcliente"),json_data.getInt("idmesa"),json_data.getDouble("totalpedido"),json_data.getString("estadopedido"),date,json_data.getInt("idusuario"),
                                 json_data.getInt("idalmacen"),json_data.getString("idfacebook"));
-Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
+//Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
 
 
-                        SharedPreferences prefse =
-                                getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
 
-                        SharedPreferences.Editor editor = prefse.edit();
                         editor.putString("editando", String.valueOf(json_data.getInt("idpedido")));
 
                         editor.commit();
 
-
-//                        people4.add(meso);
+                        Log.d("iooo","trallendo y grabando id pedido"+String.valueOf(json_data.getInt("idpedido")));
                     }
-                    //strArrData = dataList.toArray(new String[dataList.size()]);
 
 
-                    //  adapter = new Adaptadorproductos(people,getActivity().getApplicationContext());
-                    //recycler.setAdapter(adapter);
-
-
+                    correo = prefse.getString("editando", "");
+                    Log.d("iooo","dao gurdado  id pedido"+correo);
                 } catch (JSONException e) {
 
                 }
@@ -2441,4 +2427,215 @@ Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.L
         realm.commitTransaction();
 
     }
+
+    private class liminardetallepedidoparaactualizar extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("http://sodapop.space/sugest/apiactualizardetallepedido.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("idpedido", params[0]);
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("iooooo",result);
+
+            }
+
+        }
+    private class grabardetallepedidoparaactualizar extends AsyncTask<Detallepedido, Void, String> {
+        String resultado;
+        HttpURLConnection conne;
+        URL url = null;
+        Detallepedido ped;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(Detallepedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.space/sugest/apiactualizardetallesdepedido.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+                Log.d("valor",String.valueOf(ped.getNombreproducto()));
+                Uri.Builder builder = new Uri.Builder()
+
+
+                        .appendQueryParameter("idpedido", String.valueOf(ped.getIdpedido()))
+                        .appendQueryParameter("idproducto",String.valueOf(ped.getIdproducto()))
+
+                        .appendQueryParameter("cantidad", String.valueOf
+
+                                (ped.getCantidad()))
+                        .appendQueryParameter("precventa", String.valueOf(ped.getPrecventa()))
+                        .appendQueryParameter("subtotal", String.valueOf(ped.getSubtotal()))
+                        .appendQueryParameter("idalmacen",String.valueOf(ped.getIdalmacen()));
+
+
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return null;
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    resultado=result.toString();
+                    Log.d("paso",resultado.toString());
+                    return resultado;
+
+                } else {
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+                Log.d("valorito",e.toString());
+                return null;
+            } finally {
+                conne.disconnect();
+            }
+            return resultado;
+        }
+        @Override
+        protected void onPostExecute(String resultado) {
+
+            super.onPostExecute(resultado);
+
+            if(resultado.equals("true")){
+                Log.d("ioo", "elimiar idpedido para nuevo"+resultado);
+                SharedPreferences.Editor editor = prefse.edit();
+                editor.putString("editando", "");
+
+                editor.commit();
+
+            }else{
+                String ii =resultado.toString();
+                Log.d("jj", "usuario valido");
+
+
+                // lanzarsistema();
+            }
+
+
+
+        }
+    }
+
+
+
 }
