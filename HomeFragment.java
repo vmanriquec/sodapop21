@@ -2197,7 +2197,7 @@ new cargarmesas().execute(nombre);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    SharedPreferences.Editor editor = prefse.edit();
+
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.optJSONObject(i);
                         meso   = new Pedido( json_data.getInt("idpedido"),json_data.getInt("idcliente"),json_data.getInt("idmesa"),json_data.getDouble("totalpedido"),json_data.getString("estadopedido"),date,json_data.getInt("idusuario"),
@@ -2205,7 +2205,7 @@ new cargarmesas().execute(nombre);
 //Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
 
 
-
+                        SharedPreferences.Editor editor = prefse.edit();
                         editor.putString("editando", String.valueOf(json_data.getInt("idpedido")));
 
                         editor.commit();
@@ -2377,7 +2377,9 @@ new cargarmesas().execute(nombre);
                         car.setImagen(meso.getImagen());
                         car.setnombreproducto(meso.getNombreproducto());
                         realm.commitTransaction();
-
+                        //verificar que existe en la base de datos
+                        RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",meso.getIdproducto()).findAll();
+                        Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
 
 
 
