@@ -1279,6 +1279,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
         det.setPrecventarealm(precio);
         det.setIdproductorealm(idproducto);
         det.setImagenrealm(imagen);
+
         realm.beginTransaction();
         realm.commitTransaction();
 
@@ -1562,7 +1563,7 @@ new cargarmesas().execute(nombre);
 
 
         }else {
-            // Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
+             Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
 
         }
 
@@ -2362,9 +2363,9 @@ Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.L
 
 
 //llenar datos a la base de datos
-                         realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
+                       //  realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
 
-                        /*Realm realm = Realm.getDefaultInstance();
+                        Realm realm = Realm.getDefaultInstance();
 
                         realm.beginTransaction();
                         CarDb car = realm.createObject(CarDb.class);
@@ -2379,7 +2380,7 @@ Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.L
                         realm.commitTransaction();
                         //verificar que existe en la base de datos
                         RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",meso.getIdproducto()).findAll();
-*/                       // Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
+                        Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
 
 
 
