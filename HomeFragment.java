@@ -95,7 +95,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     private RecyclerView recycler,recycler2,recycler3;
     private RecyclerView.Adapter adapter,adapter2,adapter3;
     private RecyclerView.LayoutManager lManager,lManager2,lManager3;
-    TextView fechadehoy;
+    TextView fechadehoy,txteditarpedido;
     String nombre,almacenactivosf,claveusuario,idalmacensf,idalmacenactivo,almacenactivo;
     ArrayList<Productos> people=new ArrayList<>();
     ArrayList<Pedido> people4=new ArrayList<>();
@@ -130,6 +130,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
         boton13 = (Button) view.findViewById(R.id.btrece);
         boton14 = (Button) view.findViewById(R.id.bcatorce);
         boton15 = (Button) view.findViewById(R.id.bquince);
+        txteditarpedido=(TextView)view.findViewById(R.id.txteditarpedido);
         Resources res = getResources();
         prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         face=prefs.getString("facebook","");
@@ -2203,8 +2204,8 @@ new cargarmesas().execute(nombre);
                         JSONObject json_data = jArray.optJSONObject(i);
                         meso   = new Pedido( json_data.getInt("idpedido"),json_data.getInt("idcliente"),json_data.getInt("idmesa"),json_data.getDouble("totalpedido"),json_data.getString("estadopedido"),date,json_data.getInt("idusuario"),
                                 json_data.getInt("idalmacen"),json_data.getString("idfacebook"));
-Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
-
+//Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
+                        txteditarpedido.setText(String.valueOf(json_data.getInt("idpedido")));
 
                         //SharedPreferences.Editor editor = prefse.edit();
                         //editor.putString("editando", String.valueOf(json_data.getInt("idpedido")));
@@ -2380,7 +2381,7 @@ Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.L
                         realm.commitTransaction();
                         //verificar que existe en la base de datos
                         RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",meso.getIdproducto()).findAll();
-                        Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
+                       // Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
 
 
 
