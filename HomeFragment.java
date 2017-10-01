@@ -2202,19 +2202,19 @@ new cargarmesas().execute(nombre);
                         JSONObject json_data = jArray.optJSONObject(i);
                         meso   = new Pedido( json_data.getInt("idpedido"),json_data.getInt("idcliente"),json_data.getInt("idmesa"),json_data.getDouble("totalpedido"),json_data.getString("estadopedido"),date,json_data.getInt("idusuario"),
                                 json_data.getInt("idalmacen"),json_data.getString("idfacebook"));
-//Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
+Toast.makeText(getContext(),String.valueOf(json_data.getInt("idpedido")),Toast.LENGTH_LONG).show();
 
 
-                        SharedPreferences.Editor editor = prefse.edit();
-                        editor.putString("editando", String.valueOf(json_data.getInt("idpedido")));
+                        //SharedPreferences.Editor editor = prefse.edit();
+                        //editor.putString("editando", String.valueOf(json_data.getInt("idpedido")));
 
-                        editor.commit();
+                        //editor.commit();
 
                         Log.d("iooo","trallendo y grabando id pedido"+String.valueOf(json_data.getInt("idpedido")));
                     }
 
 
-                    correo = prefse.getString("editando", "");
+                   // correo = prefse.getString("editando", "");
                     Log.d("iooo","dao gurdado  id pedido"+correo);
                 } catch (JSONException e) {
 
@@ -2362,9 +2362,9 @@ new cargarmesas().execute(nombre);
 
 
 //llenar datos a la base de datos
-                        //  realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());
-                        //realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
-                        Realm realm = Realm.getDefaultInstance();
+                         realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
+
+                        /*Realm realm = Realm.getDefaultInstance();
 
                         realm.beginTransaction();
                         CarDb car = realm.createObject(CarDb.class);
@@ -2379,7 +2379,7 @@ new cargarmesas().execute(nombre);
                         realm.commitTransaction();
                         //verificar que existe en la base de datos
                         RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",meso.getIdproducto()).findAll();
-                        Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
+*/                       // Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
 
 
 
@@ -2425,7 +2425,7 @@ new cargarmesas().execute(nombre);
         det.setIdalmacenrealm(idalmacen);
 
         realm.beginTransaction();
-        realm.copyToRealm((Iterable<RealmModel>) det);
+        //realm.copyToRealm((Iterable<RealmModel>) det);
         realm.commitTransaction();
 
     }
