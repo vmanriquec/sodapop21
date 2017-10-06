@@ -1422,10 +1422,10 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
 
 
         if(resulta.size()>0){
+            if (txteditarpedido.getText().toString().length()==0){
+           // if (correo.equals("")){
 
-            if (correo.equals("")){
-
-                Log.d("iooo","correo nulo");
+                Log.d("iooo","texto vacio");
                 double st=0.0;
                 double tq=0.0;
                 ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
@@ -1496,8 +1496,8 @@ new cargarmesas().execute(nombre);
             }else{
 
 //correo no tiene nadaaaaa por qu?
-                new liminardetallepedidoparaactualizar().execute(correo);
-                Log.d("ioooojojo","correo tiene algo"+correo);
+                new liminardetallepedidoparaactualizar().execute(txteditarpedido.getText().toString());
+                Log.d("ioooojojo","se esta elimiknando datalle pedido");
                 double st=0.0;
                 double tq=0.0;
                 ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
@@ -1511,8 +1511,9 @@ new cargarmesas().execute(nombre);
                     String nombrprod=resulta.get(u).getnombreproducto();
                     tq=cnt* prevta;
                     st=st+tq;
-                    Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,Integer.parseInt(correo),resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+                    Detallepedido f =new Detallepedido(Integer.valueOf(txteditarpedido.getText().toString())  ,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,Integer.parseInt(correo),resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
                     //  detalledebasededatos.add(f);
+
                     new grabardetallepedidoparaactualizar().execute(f);
                 }
                 ArrayList<CarDb> listu = new ArrayList(realm.where(CarDb.class).findAll());
@@ -1679,6 +1680,7 @@ new cargarmesas().execute(nombre);
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ejecutarcapturaryguardarpedido();
                 dialog.dismiss();
             }
