@@ -386,7 +386,13 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
             @Override
             public void onClick(View v) {
 
-                showDialog(HomeFragment.this.getActivity(),"mensaje a");
+                if (txteditarpedido.getText().toString().length()>0){
+Toast.makeText(getContext(),txteditarpedido.getText(),Toast.LENGTH_LONG).show();
+showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
+                }else{
+                    showDialog(HomeFragment.this.getActivity(),"mensaje a");
+                }
+
 
 
 
@@ -1630,6 +1636,67 @@ new cargarmesas().execute(nombre);
 
 
     }
+    public void showDialogactualizar(Activity activity, String msg){
+        final Dialog dialog = new Dialog(activity);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.observacionesactualizarp);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        TextView text = (TextView) dialog.findViewById(R.id.descri);
+        TextView detalle = (TextView) dialog.findViewById(R.id.txtdetalle);
+        TextView total = (TextView) dialog.findViewById(R.id.txttotalpedido);
+        TextView text2= (TextView) dialog.findViewById(R.id.txtenviar);
+        ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
+        RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
+
+        String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+        resulta.toArray(new CarDb[resulta.size()]);
+        double st=0.0;
+        double tq=0.0;
+        for(int u=0;u<resulta.size();u++){
+            Double prevta=resulta.get(u).getprecio();
+            int cnt= resulta.get(u).getcantidadapedir();
+            int idal=1;
+            int idpro=resulta.get(u).getidproducto();
+            String img=resulta.get(u).getimagen();
+            String nombrprod=resulta.get(u).getnombreproducto();
+            tq=cnt* prevta;
+            st=st+tq;
+            Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+            //  detalledebasededatos.add(f);
+            detalle.append(resulta.get(u).getcantidadapedir()+" ---  "+resulta.get(u).getnombreproducto()+"\n");
+
+        }
+
+        total.setText("Total:  "+st);
+        text2.setTypeface(typeface);
+
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ejecutarcapturaryguardarpedido();
+                dialog.dismiss();
+            }
+        });
+
+        Button dialogButtonatras = (Button) dialog.findViewById(R.id.atras);
+        dialogButtonatras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+
+    }
     private class grabardetallepedido extends AsyncTask<Detallepedido, Void, String> {
         String resultado;
         HttpURLConnection conne;
@@ -2374,19 +2441,21 @@ new cargarmesas().execute(nombre);
 
                         car.setprecio(meso.getPrecventa());
                         car.setidproducto(meso.getIdproducto());
-                        car.setIddetallepedido(meso.getIddetallepedido());
+                        car.setIddetallepedido(meso.getIdproducto());
                         car.setcantidadapedir(meso.getCantidad());
                         car.setImagen(meso.getImagen());
                         car.setnombreproducto(meso.getNombreproducto());
+                        RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",meso.getIdproducto()).findAll();
+                        Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
+                        Log.d("iooobasedatos",String.valueOf(car.getIddetallepedido()));
                         realm.commitTransaction();
                         //verificar que existe en la base de datos
-                        RealmResults<CarDb> results = realm.where(CarDb.class).equalTo("iddetallepedido",meso.getIdproducto()).findAll();
-                       // Log.d("iooobasedatos",results.get(0).getnombreproducto().toString());
 
-
+                        Log.d("iooobasedatos",String.valueOf(meso.getIdproducto()));
 
 //                        people4.add(meso);
                     }
+
 
 
                     Log.d("iooooe","orejacargardetalle");
