@@ -1862,12 +1862,6 @@ new cargarmesas().execute(nombre);
         dialog.setContentView(R.layout.popupmesasopcion);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button dialogButton = (Button) dialog.findViewById(R.id.btnatrasmnumesa);
-
-
-
-        // add data for displaying in expandable list view
-        loadData();
-
         //get reference of the ExpandableListView
         simpleExpandableListView = (ExpandableListView) dialog.findViewById(R.id.simpleExpandableListView);
         // create the adapter by passing your ArrayList data
@@ -1875,8 +1869,39 @@ new cargarmesas().execute(nombre);
         // attach the adapter to the expandable list view
         simpleExpandableListView.setAdapter(listAdapter);
 
+
+        // add data for displaying in expandable list view
+        //loadData();
+
+
+        Date date = null;
+        String str_date=fechadehoy.getText().toString();
+        DateFormat formatter ;
+
+        formatter = new SimpleDateFormat("dd-MMM-yy");
+        try {
+            date = formatter.parse(str_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String idalmacenactivo = prefs.getString("idalmacenactivo", "");
+        Spinner spinner = (Spinner)view.findViewById(R.id.spinnermesas);
+        String valToSet = spinner.getSelectedItem().toString();
+        String mesei=valToSet;
+        int g= mesei.length();
+        String mesi = mesei.substring(0,1);
+        String  idi=mesi.trim();
+
+        Pedido pedido = new Pedido( 0, Integer.parseInt(msgo), 0.0, "",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+        new previapedido().execute(pedido);
+
+
+
+
+
+
         //expand all the Groups
-        expandAll();
+       // expandAll();
 
         // setOnChildClickListener listener for child row click
         simpleExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -1887,8 +1912,8 @@ new cargarmesas().execute(nombre);
                 //get the child info
                 ChildInfo detailInfo =  headerInfo.getProductList().get(childPosition);
                 //display it or do something with it
-                Toast.makeText(HomeFragment.this.getActivity(), " Clicked on :: " + headerInfo.getName()
-                        + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+               // Toast.makeText(HomeFragment.this.getActivity(), " Clicked on :: " + headerInfo.getName()
+                      //  + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -1899,16 +1924,13 @@ new cargarmesas().execute(nombre);
                 //get the group header
                 GroupInfo headerInfo = deptList.get(groupPosition);
                 //display it or do something with it
-                Toast.makeText(HomeFragment.this.getActivity(), " Header is :: " + headerInfo.getName(),
-                        Toast.LENGTH_LONG).show();
+              //  Toast.makeText(HomeFragment.this.getActivity(), " Header is :: " + headerInfo.getName(),
+                //        Toast.LENGTH_LONG).show();
 
                 return false;
             }
         });
         ////expandible
-
-
-
 
 
         dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -2375,6 +2397,168 @@ new cargarmesas().execute(nombre);
 
                    // correo = prefse.getString("editando", "");
                     Log.d("iooo","dao gurdado  id pedido"+correo);
+                } catch (JSONException e) {
+
+                }
+
+            }
+
+        }
+
+    }
+    private class previapedido extends AsyncTask<Pedido, Void, String> {
+        Pedido ped;
+
+        HttpURLConnection conne;
+        URL url = null;
+        ArrayList<Pedido> listaalmaceno = new ArrayList<Pedido>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(Pedido... params) {
+            ped=params[0];
+            try {
+                url = new URL("http://sodapop.space/sugest/apieditardetallepedido.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+                Log.d("ioooo",String.valueOf(ped.getIdmesa()));
+                Log.d("iooooo",String.valueOf(ped.getIdalmacen()));
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("numerodemesa", String.valueOf(ped.getIdmesa()))
+
+                        .appendQueryParameter("idalmacen",String.valueOf(ped.getIdalmacen()));
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (
+
+                            result.toString()
+
+
+                    );
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace()                ;
+
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+
+//            people.clear();
+
+            Log.d("ioooo",result);
+            ArrayList<String> dataList = new ArrayList<String>();
+            Detallepedido meso;
+            if(result.equals("no rows")) {
+                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+
+            }else{
+
+                try {
+
+
+                    JSONArray jArray = new JSONArray(result);
+
+
+                    Date date = null;
+                    String str_date=fechadehoy.getText().toString();
+                    DateFormat formatter ;
+
+                    formatter = new SimpleDateFormat("dd-MMM-yy");
+                    try {
+                        date = formatter.parse(str_date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    vaciardatosdedetallepedidorealm();
+                    Log.d("ioooo","vaciado");
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        Log.d("ioooooooo",String.valueOf(jArray.get(0)));
+
+                        JSONObject json_data = jArray.optJSONObject(i);
+                        Log.d("iooooooooooooooo",String.valueOf(json_data.get("nombreproducto")));
+
+                        meso   = new Detallepedido( json_data.getInt("iddetallepedido"),json_data.getInt("idproducto"),json_data.getInt("cantidad"),json_data.getDouble("precventa"),json_data.getDouble("subtotal"),json_data.getInt("idpedido"),
+                                json_data.getString("nombreproducto"),json_data.getInt("idalmacen"),json_data.getString("descripcion"));
+
+                        addProduct("pedido",String.valueOf(meso.getCantidad())+"  "+meso.getNombreproducto());
+
+//llenar datos a la base de datos
+                        //  realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
+
+                        //verificar que existe en la base de datos
+
+                        Log.d("iooobasedatos",String.valueOf(meso.getIdproducto()));
+
+//                        people4.add(meso);
+                    }
+
+
+
+                    Log.d("iooooe","orejacargardetalle");
+
+                    cargardetalle();
+
                 } catch (JSONException e) {
 
                 }
