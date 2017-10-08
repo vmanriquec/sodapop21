@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -35,6 +36,9 @@ import android.widget.Toast;
 import com.food.sistemas.sodapopapp.Realm.Detallepedidorealm;
 import com.food.sistemas.sodapopapp.adapter.Adaptadordetallepedido;
 import com.food.sistemas.sodapopapp.adapter.Adaptadorproductos;
+import com.food.sistemas.sodapopapp.expandible.ChildInfo;
+import com.food.sistemas.sodapopapp.expandible.CustomAdapter;
+import com.food.sistemas.sodapopapp.expandible.GroupInfo;
 import com.food.sistemas.sodapopapp.modelo.Dashboardpedido;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Mesas;
@@ -60,6 +64,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import io.realm.Realm;
 import io.realm.RealmModel;
@@ -68,7 +73,14 @@ import io.realm.RealmResults;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.food.sistemas.sodapopapp.LoginActivity.CONNECTION_TIMEOUT;
 import static com.food.sistemas.sodapopapp.LoginActivity.READ_TIMEOUT;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * User: special
@@ -103,12 +115,18 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
     ArrayList<Dashboardpedido> people3=new ArrayList<>();
     Button boton1,boton2,boton3,boton4,boton5,boton6,boton7,boton8,boton9,boton10,boton11,boton12,boton13,boton14,boton15;
 
+    private LinkedHashMap<String, GroupInfo> subjects = new LinkedHashMap<String, GroupInfo>();
+    private ArrayList<GroupInfo> deptList = new ArrayList<GroupInfo>();
+
+    private CustomAdapter listAdapter;
+    private ExpandableListView simpleExpandableListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.layout, container, false);
 
+///expandibleeee
 
 
 
@@ -570,6 +588,15 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
             }
 
         });
+
+
+
+
+
+
+
+
+
         return view;
 
 
@@ -1650,6 +1677,18 @@ new cargarmesas().execute(nombre);
         TextView detalle = (TextView) dialog.findViewById(R.id.txtdetalle);
         TextView total = (TextView) dialog.findViewById(R.id.txttotalpedido);
         TextView text2= (TextView) dialog.findViewById(R.id.txtenviar);
+
+
+
+
+
+
+
+
+
+
+
+
         ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
         RealmResults<CarDb> resulta=realm.where(CarDb.class).findAll();
 
@@ -1666,7 +1705,7 @@ new cargarmesas().execute(nombre);
             String nombrprod=resulta.get(u).getnombreproducto();
             tq=cnt* prevta;
             st=st+tq;
-            Detallepedido f =new Detallepedido( 0,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+            Detallepedido f =new Detallepedido( Integer.valueOf(txteditarpedido.getText().toString()),resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,0,resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
             //  detalledebasededatos.add(f);
             detalle.append(resulta.get(u).getcantidadapedir()+" ---  "+resulta.get(u).getnombreproducto()+"\n");
 
@@ -1823,6 +1862,55 @@ new cargarmesas().execute(nombre);
         dialog.setContentView(R.layout.popupmesasopcion);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button dialogButton = (Button) dialog.findViewById(R.id.btnatrasmnumesa);
+
+
+
+        // add data for displaying in expandable list view
+        loadData();
+
+        //get reference of the ExpandableListView
+        simpleExpandableListView = (ExpandableListView) dialog.findViewById(R.id.simpleExpandableListView);
+        // create the adapter by passing your ArrayList data
+        listAdapter = new CustomAdapter(HomeFragment.this.getActivity(), deptList);
+        // attach the adapter to the expandable list view
+        simpleExpandableListView.setAdapter(listAdapter);
+
+        //expand all the Groups
+        expandAll();
+
+        // setOnChildClickListener listener for child row click
+        simpleExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                //get the group header
+                GroupInfo headerInfo = deptList.get(groupPosition);
+                //get the child info
+                ChildInfo detailInfo =  headerInfo.getProductList().get(childPosition);
+                //display it or do something with it
+                Toast.makeText(HomeFragment.this.getActivity(), " Clicked on :: " + headerInfo.getName()
+                        + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        // setOnGroupClickListener listener for group heading click
+        simpleExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                //get the group header
+                GroupInfo headerInfo = deptList.get(groupPosition);
+                //display it or do something with it
+                Toast.makeText(HomeFragment.this.getActivity(), " Header is :: " + headerInfo.getName(),
+                        Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        });
+        ////expandible
+
+
+
+
+
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -2711,6 +2799,70 @@ new cargarmesas().execute(nombre);
         }
     }
 
+//metodos para expandible
+//method to expand all groups
+private void expandAll() {
+    int count = listAdapter.getGroupCount();
+    for (int i = 0; i < count; i++){
+        simpleExpandableListView.expandGroup(i);
+    }
+}
+
+    //method to collapse all groups
+    private void collapseAll() {
+        int count = listAdapter.getGroupCount();
+        for (int i = 0; i < count; i++){
+            simpleExpandableListView.collapseGroup(i);
+        }
+    }
+
+    //load some initial data into out list
+    private void loadData(){
+
+        addProduct("pedido","total de pedido");
+
+        addProduct("detallepedido","uno");
+        addProduct("detallepedido","dos");
+        addProduct("detallepedido","tres");
+        addProduct("detallepedido","cuatro");
+
+    }
+
+
+
+    //here we maintain our products in various departments
+    private int addProduct(String department, String product){
+
+        int groupPosition = 0;
+
+        //check the hash map if the group already exists
+        GroupInfo headerInfo = subjects.get(department);
+        //add the group if doesn't exists
+        if(headerInfo == null){
+            headerInfo = new GroupInfo();
+            headerInfo.setName(department);
+            subjects.put(department, headerInfo);
+            deptList.add(headerInfo);
+        }
+
+        //get the children for the group
+        ArrayList<ChildInfo> productList = headerInfo.getProductList();
+        //size of the children list
+        int listSize = productList.size();
+        //add to the counter
+        listSize++;
+
+        //create a new child and add that to the group
+        ChildInfo detailInfo = new ChildInfo();
+        detailInfo.setSequence(String.valueOf(listSize));
+        detailInfo.setName(product);
+        productList.add(detailInfo);
+        headerInfo.setProductList(productList);
+
+        //find the group position inside the list
+        groupPosition = deptList.indexOf(headerInfo);
+        return groupPosition;
+    }
 
 
 }
