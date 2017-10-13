@@ -2541,7 +2541,7 @@ new cargarmesas().execute(nombre);
                         meso   = new Detallepedido( json_data.getInt("iddetallepedido"),json_data.getInt("idproducto"),json_data.getInt("cantidad"),json_data.getDouble("precventa"),json_data.getDouble("subtotal"),json_data.getInt("idpedido"),
                                 json_data.getString("nombreproducto"),json_data.getInt("idalmacen"),json_data.getString("descripcion"));
 
-                        addProduct("pedido",String.valueOf(meso.getCantidad())+"  "+meso.getNombreproducto());
+                        addProduct("pedido",json_data.getString("nombreproducto")+"  "+json_data.getString("nombreproducto"));
 
 //llenar datos a la base de datos
                         //  realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
