@@ -91,6 +91,7 @@ import java.util.LinkedHashMap;
 public class HomeFragment extends  Fragment implements   View.OnClickListener,RecyclerView.OnItemTouchListener  {
     String idfacebook;
     Date fecharegistro;
+    
     Realm realm = Realm.getDefaultInstance();
     String face;
     Toolbar toolbar;
