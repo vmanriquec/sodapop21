@@ -1445,15 +1445,12 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
 
         String idalmacenactivo = prefs.getString("idalmacenactivo", "");
         resulta.toArray(new CarDb[resulta.size()]);
-        prefse =getApplicationContext().getSharedPreferences("MisPreferencias",Context.MODE_PRIVATE);
-        correo = prefse.getString("editando", "");
+
 
 
         if(resulta.size()>0){
             if (txteditarpedido.getText().toString().length()==0){
-           // if (correo.equals("")){
 
-                Log.d("iooo","texto vacio");
                 double st=0.0;
                 double tq=0.0;
                 ArrayList<Detallepedido> detalledebasededatos=new ArrayList<>();
@@ -1504,9 +1501,9 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
                 }
 
 
-                //Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+idalmacenactivo+"mesa"+idi+"fecha"+hj,Toast.LENGTH_LONG).show();
+               Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+String.valueOf(resulta.size()),Toast.LENGTH_LONG).show();
                 idfacebook=prefs.getString("sessionid","");
-                Pedido pedido = new Pedido(1, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+                Pedido pedido = new Pedido( 1, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
 
                 new grabarpedido().execute(pedido);
 
@@ -2531,18 +2528,21 @@ new cargarmesas().execute(nombre);
                     }
 
                     vaciardatosdedetallepedidorealm();
-                    Log.d("ioooo","vaciado");
-
+                    Log.d("iooooioio",result);
+limpiarProduct("VISTA PEDIDO");
                     for (int i = 0; i < jArray.length(); i++) {
                         Log.d("ioooooooo",String.valueOf(jArray.get(0)));
 
                         JSONObject json_data = jArray.optJSONObject(i);
                         Log.d("iooooooooooooooo",String.valueOf(json_data.get("nombreproducto")));
 
-                        meso   = new Detallepedido( json_data.getInt("iddetallepedido"),json_data.getInt("idproducto"),json_data.getInt("cantidad"),json_data.getDouble("precventa"),json_data.getDouble("subtotal"),json_data.getInt("idpedido"),
+                        meso   = new Detallepedido( json_data.getInt("iddetallepedido"),json_data.getInt("idproducto"),
+                                json_data.getInt("cantidad"),json_data.getDouble("precventa"),json_data.getDouble("subtotal"),
+                                json_data.getInt("idpedido"),
                                 json_data.getString("nombreproducto"),json_data.getInt("idalmacen"),json_data.getString("descripcion"));
 
-                        addProduct("pedido",json_data.getString("nombreproducto")+"  "+json_data.getString("nombreproducto"));
+                        addProduct("VISTA PEDIDO",String.valueOf(json_data.getInt("cantidad"))+"  "+json_data.getString("nombreproducto"));
+
 
 //llenar datos a la base de datos
                         //  realmgrbarenbasedatos(meso.getNombreproducto(), meso.getCantidad(), meso.getPrecventa(),meso.getIdproducto(),meso.getImagen());realmgrbarenbasedatos(meso.getIddetallepedido(), meso.getIdproducto(), meso.getCantidad(),meso.getPrecventa(),meso.getNombreproducto(), meso.getIdalmacen());
@@ -3002,16 +3002,6 @@ private void expandAll() {
     }
 
     //load some initial data into out list
-    private void loadData(){
-
-        addProduct("pedido","total de pedido");
-
-        addProduct("detallepedido","uno");
-        addProduct("detallepedido","dos");
-        addProduct("detallepedido","tres");
-        addProduct("detallepedido","cuatro");
-
-    }
 
 
 
@@ -3034,12 +3024,14 @@ private void expandAll() {
         ArrayList<ChildInfo> productList = headerInfo.getProductList();
         //size of the children list
         int listSize = productList.size();
+
         //add to the counter
         listSize++;
 
         //create a new child and add that to the group
         ChildInfo detailInfo = new ChildInfo();
-        detailInfo.setSequence(String.valueOf(listSize));
+
+        //detailInfo.setSequence(String.valueOf(listSize));
         detailInfo.setName(product);
         productList.add(detailInfo);
         headerInfo.setProductList(productList);
@@ -3049,5 +3041,28 @@ private void expandAll() {
         return groupPosition;
     }
 
+    private int limpiarProduct(String department){
+
+        int groupPosition = 0;
+
+        //check the hash map if the group already exists
+        GroupInfo headerInfo = subjects.get(department);
+        //add the group if doesn't exists
+        if(headerInfo == null){
+            headerInfo = new GroupInfo();
+            headerInfo.setName(department);
+            subjects.put(department, headerInfo);
+            deptList.add(headerInfo);
+        }
+
+        //get the children for the group
+        ArrayList<ChildInfo> productList = headerInfo.getProductList();
+        //size of the children list
+        int listSize = productList.size();
+
+        //add to the counter
+        productList.clear();
+        return groupPosition;
+    }
 
 }
