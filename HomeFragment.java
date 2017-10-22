@@ -130,7 +130,7 @@ public class HomeFragment extends  Fragment implements   View.OnClickListener,Re
 ///expandibleeee
 
 
-
+        vaciardatosdedetallepedidorealm();
 
 
 
@@ -1175,6 +1175,107 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         }
 
     }
+
+
+    private class actualizartotalpedido extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("http://sodapop.space/sugest/apiactualizarsolototal.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+
+                // Append parameters to URL
+
+
+
+                Uri.Builder builder = new Uri.Builder()
+
+                        .appendQueryParameter("idpedido", params[0])
+                        .appendQueryParameter("totalpedido",params[1]);
+                Log.d("iooo",params[0]+params[1]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+Log.d("iooo",result);
+            if(result.equals("si")) {
+                Toast.makeText(HomeFragment.this.getActivity(),"Pedido actualizado",Toast.LENGTH_LONG).show();
+
+            }else{
+
+
+
+            }
+
+        }
+
+    }
     private class traerproductosporidalmacenidfamilia extends AsyncTask<String, String, String> {
 
         HttpURLConnection conne;
@@ -1503,7 +1604,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
 
                Toast.makeText(HomeFragment.this.getActivity(),"TOTAL DE PEDIDO"+String.valueOf(st)+"alma"+String.valueOf(resulta.size()),Toast.LENGTH_LONG).show();
                 idfacebook=prefs.getString("sessionid","");
-                Pedido pedido = new Pedido( 1, Integer.parseInt(idi), st, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
+                Pedido pedido = new Pedido( 1, Integer.parseInt(idi), st/2, "generado",  date, 0,Integer.parseInt(idalmacenactivo),idfacebook);
 
                 new grabarpedido().execute(pedido);
 
@@ -1513,6 +1614,12 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
 
 
                 realm.commitTransaction();
+
+                Toast.makeText(HomeFragment.this.getActivity(),"vaciando datos",Toast.LENGTH_LONG).show();
+                vaciardatosdedetallepedidorealm();
+
+
+
                 recycler2.setAdapter(null);
                 adapter2.notifyDataSetChanged();
 new cargarmesas().execute(nombre);
@@ -1536,11 +1643,30 @@ new cargarmesas().execute(nombre);
                     String nombrprod=resulta.get(u).getnombreproducto();
                     tq=cnt* prevta;
                     st=st+tq;
-                    Detallepedido f =new Detallepedido(Integer.valueOf(txteditarpedido.getText().toString())  ,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,Integer.parseInt(correo),resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
+                    Toast.makeText(HomeFragment.this.getActivity(),"datos de detalle a actualizar "+txteditarpedido.getText().toString() +"idproducto"+String.valueOf(resulta.get(u).getidproducto())+"cantidad"+String.valueOf(resulta.get(u).getcantidadapedir())+"precio"+String.valueOf(resulta.get(u).getprecio())+"subt"+tq+resulta.get(u).getnombreproducto(),Toast.LENGTH_LONG).show();
+
+                    Detallepedido f =new Detallepedido(Integer.valueOf(txteditarpedido.getText().toString())  ,resulta.get(u).getidproducto(),resulta.get(u).getcantidadapedir(),resulta.get(u).getprecio(),tq,Integer.parseInt(txteditarpedido.getText().toString()),resulta.get(u).getnombreproducto(), Integer.parseInt(idalmacenactivo),"" );
                     //  detalledebasededatos.add(f);
 
                     new grabardetallepedidoparaactualizar().execute(f);
                 }
+                for(int u=0;u<resulta.size();u++){
+
+                    Double prevta=resulta.get(u).getprecio();
+                    int cnt= resulta.get(u).getcantidadapedir();
+                    int idal=1;
+                    int idpro=resulta.get(u).getidproducto();
+                    String img=resulta.get(u).getimagen();
+                    String nombrprod=resulta.get(u).getnombreproducto();
+                    tq=cnt* prevta;
+                    st=st+tq;
+                }
+                new actualizartotalpedido().execute(txteditarpedido.getText().toString(),String.valueOf(st/2));
+                txteditarpedido.setText("");
+
+
+
+
                 ArrayList<CarDb> listu = new ArrayList(realm.where(CarDb.class).findAll());
                 realm.beginTransaction();
                 boolean resultau=realm.where(CarDb.class).findAll().deleteFirstFromRealm();
@@ -1550,10 +1676,9 @@ new cargarmesas().execute(nombre);
                 new cargarmesas().execute(nombre);
                 new cargarmesasdisponibilidad().execute(nombre);
                 //aqui tenemos que eliminar el detalle y grabar nuevamente con el id de pedido
-                SharedPreferences.Editor editor = prefse.edit();
-                editor.putString("editando", "");
-                editor.commit();
+
                 Log.d("iooooeditat","regrabando yeliminado idpedido");
+                vaciardatosdedetallepedidorealm();
 }
 }else {
              Toast.makeText(HomeFragment.this.getActivity(),"aun no hay datos",Toast.LENGTH_LONG).show();
@@ -2351,6 +2476,8 @@ new cargarmesas().execute(nombre);
         protected void onPostExecute(String result) {
 
 //            people.clear();
+            vaciardatosdedetallepedidorealm();
+            Toast.makeText(HomeFragment.this.getActivity(),"vaciando datos para editar",Toast.LENGTH_LONG).show();
 
             Log.d("ioooo",result);
             ArrayList<String> dataList = new ArrayList<String>();
@@ -2506,7 +2633,7 @@ new cargarmesas().execute(nombre);
             ArrayList<String> dataList = new ArrayList<String>();
             Detallepedido meso;
             if(result.equals("no rows")) {
-                Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+               // Toast.makeText(HomeFragment.this.getActivity(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
 
             }else{
 
