@@ -449,7 +449,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em3==3){
+                if (em3==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"3");
                 }
                 else{
@@ -460,7 +460,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em4==4){
+                if (em4==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"4");
                 }
                 else{
@@ -471,7 +471,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton15.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em5==5){
+                if (em5==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"5");
                 }
                 else{
@@ -482,7 +482,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em6==6){
+                if (em6==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"6");
                 }
                 else{
@@ -493,7 +493,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em7==7){
+                if (em7==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"7");
                 }
                 else{
@@ -504,7 +504,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em8==8){
+                if (em8==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"8");
                 }
                 else{
@@ -515,7 +515,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em9==9){
+                if (em9==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"9");
                 }
                 else{
@@ -526,7 +526,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em10==10){
+                if (em10==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"10");
                 }
                 else{
@@ -537,7 +537,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton11.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em11==11){
+                if (em11==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"11");
                 }
                 else{
@@ -548,7 +548,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em12==12){
+                if (em12==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"12");
                 }
                 else{
@@ -559,7 +559,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton13.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em13==13){
+                if (em13==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"13");
                 }
                 else{
@@ -570,7 +570,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton14.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em14==14){
+                if (em14==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"14");
                 }
                 else{
@@ -581,7 +581,7 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         boton15.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (em15==15){
+                if (em15==1){
                     showDialogomesas(HomeFragment.this.getActivity(),"15");
                 }
                 else{
@@ -590,20 +590,8 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
 
         });
 
-
-
-
-
-
-
-
-
-        return view;
-
-
+ return view;
     }
-
-
 
     @Override
     public void onClick(View v) {
@@ -1175,8 +1163,6 @@ showDialogactualizar(HomeFragment.this.getActivity(),"mensaje a");
         }
 
     }
-
-
     private class actualizartotalpedido extends AsyncTask<String, String, String> {
 
         HttpURLConnection conne;
@@ -1538,7 +1524,6 @@ Log.d("iooo",result);
 
 
     }
-
     public void ejecutarcapturaryguardarpedido(){
 
         ArrayList<CarDb> list = new ArrayList(realm.where(CarDb.class).findAll());
