@@ -151,7 +151,7 @@ public class Menuprincipal extends AppCompatActivity
         // Handle action bar actions click
         switch (item.getItemId()) {
             case R.id.mapaaction:
-                startActivity(new Intent(Menuprincipal.this, MapsActivity.class));
+                startActivity(new Intent(Menuprincipal.this, Map.class));
                 return true;
            // case R.id.action_notification:
              //   inflateInboxLayout();
