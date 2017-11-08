@@ -55,6 +55,7 @@ public class Chatfirebase extends Activity implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
         if(location!=null)
