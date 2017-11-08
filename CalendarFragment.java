@@ -1,12 +1,23 @@
-package  com.food.sistemas.sodapopapp;
+package com.food.sistemas.sodapopapp;
+
+import android.*;
+import android.Manifest;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import com.google.android.gms.location.LocationListener;
+
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
 import android.support.v7.app.NotificationCompat;
@@ -29,6 +40,11 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.food.sistemas.sodapopapp.Menuprincipal;
 import com.food.sistemas.sodapopapp.Message;
 import com.food.sistemas.sodapopapp.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,6 +101,7 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.food.sistemas.sodapopapp.LocationActivity.REQUEST_LOCATION;
 import static com.food.sistemas.sodapopapp.R.layout.profile;
 import static com.food.sistemas.sodapopapp.R.layout.tarjetacardview;
 
@@ -94,25 +111,35 @@ import static com.food.sistemas.sodapopapp.R.layout.tarjetacardview;
  * Time: 下午3:26
  * Mail: specialcyci@gmail.com
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
     private RecyclerView.LayoutManager lManager;
     private View parentView;
     private DatabaseReference chat_data_ref;
     private DatabaseReference user_name_ref;
     private ListView listView;
     private FirebaseAuth mAuth;
-    private String dato="",name="",nombre,idf;
-
+    private String dato = "", name = "", nombre, idf;
+    private Location mLastLocation;
+    // Google client to interact with Google API
+    private GoogleApiClient mGoogleApiClient;
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth firebaseAuth;
     private RecyclerView mBlogList;
+    private boolean mRequestingLocationUpdates = false;
     private DatabaseReference userIdRef;
-    HashMap<String,String> map;
+    HashMap<String, String> map;
+    private LocationRequest mLocationRequest;
     private EditText editText;
-    String FileName ="myfile";
+    double latitude;
+    double longitude;
+
+    String FileName = "myfile";
     List itemso = new ArrayList();
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.reciclerchat, container, false);
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.recicladorchat);
@@ -120,27 +147,26 @@ public class CalendarFragment extends Fragment {
         recycler.setLayoutManager(lManager);
 
 
-
-
         SharedPreferences prefs = getActivity().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         nombre = prefs.getString("sessionnombre", "");
-        idf=prefs.getString("sessionid","");
-        editText=(EditText) view.findViewById(R.id.editto);
-        Button btnemviar=(Button) view.findViewById(R.id.btnemviar);
+        idf = prefs.getString("sessionid", "");
+        editText = (EditText) view.findViewById(R.id.editto);
+        Button btnemviar = (Button) view.findViewById(R.id.btnemviar);
 
-        mBlogList = (RecyclerView)view.findViewById(R.id.recicladorchat);
+        mBlogList = (RecyclerView) view.findViewById(R.id.recicladorchat);
         mBlogList.setHasFixedSize(true);
         mBlogList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("chat_data");
-        mAuth= FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
-        chat_data_ref= FirebaseDatabase.getInstance().getReference().child("chat_data");
 
-        user_name_ref=FirebaseDatabase.getInstance().getReference().child("chat_users").child(mAuth.getCurrentUser().getUid()).child("name").child("idfacebook");
+        chat_data_ref = FirebaseDatabase.getInstance().getReference().child("chat_data");
 
-        map=new HashMap<>();
+        user_name_ref = FirebaseDatabase.getInstance().getReference().child("chat_users");
+
+        map = new HashMap<>();
         lManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(lManager);
 
@@ -148,26 +174,46 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
             }
         });
 
 
-
-
-
-
         btnemviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String f=editText.getText().toString();
-                if (editText.getText().toString().length() == 0 ){
-                    Toast.makeText(getContext(),"no has ingresado tu mensaje",Toast.LENGTH_LONG).show();
+                String f = editText.getText().toString();
+                if (editText.getText().toString().length() == 0) {
+                    Toast.makeText(getContext(), "no has ingresado tu mensaje", Toast.LENGTH_LONG).show();
 
-                }
-                else
-                {  chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre,idf));//storing actual msg with name of the user
+                } else {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+
+                    mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                            .addApi(LocationServices.API)
+                            .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) getApplicationContext())
+                            .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) getApplicationContext())
+                            .build();
+                    mGoogleApiClient.connect();
+                    mLastLocation = LocationServices.FusedLocationApi
+                            .getLastLocation(mGoogleApiClient);
+                    double latitude = mLastLocation.getLatitude();
+                    double longitude = mLastLocation.getLongitude();
+
+                    String imgUrl = "https://graph.facebook.com/"+idf+"/picture?type=large";
+                    chat_data_ref.push().setValue(new Message(editText.getText().toString(),nombre,idf,String.valueOf(latitude),String.valueOf(longitude),imgUrl));
+                    user_name_ref.push().setValue(new Message(editText.getText().toString(),nombre,idf,String.valueOf(latitude),String.valueOf(longitude),imgUrl));
                     editText.setText("");//clear the msg in edittext
                 }
 
@@ -220,12 +266,69 @@ public class CalendarFragment extends Fragment {
 
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+//        startLocationUpdates();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getServicesAvailable();
+
+        // Resuming the periodic location updates
 
     }
+    protected void startLocationUpdates() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Check Permissions Now
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION);
+        } else {
+
+        }
+    }
+
+    //Stopping location updates
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    public boolean getServicesAvailable() {
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int isAvailable = api.isGooglePlayServicesAvailable(getActivity());
+        if (isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+        } else if (api.isUserResolvableError(isAvailable)) {
+
+            Dialog dialog = api.getErrorDialog(getActivity(), isAvailable, 0);
+            dialog.show();
+        } else {
+            Toast.makeText(getActivity(), "Cannot Connect To Play Services", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
     private void mostrarnotificacionb(String title, String body) {
 
         Intent targetIntent = new Intent(getContext(), Menuprincipal.class);
@@ -249,6 +352,21 @@ public class CalendarFragment extends Fragment {
 
 
         notifi.notify(0,noti.build());
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
@@ -285,6 +403,7 @@ public class CalendarFragment extends Fragment {
 
 
     }
+
 
 
 }

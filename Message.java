@@ -6,7 +6,7 @@ package com.food.sistemas.sodapopapp;
 
 
 public class Message {
-    private String message,user_name,facebook;
+    private String message,user_name,facebook,latitud,longitud,foto;
 
     public String getFacebook() {
         return facebook;
@@ -27,11 +27,40 @@ public class Message {
     public void setUser_name(String user_name) {
         this.user_name = user_name;
     }
+
+
+
+    public String getLatitud() {
+        return latitud;
+    }
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+
+
+    public String getLongitud() {
+        return longitud;
+    }
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
+    }
+    public String getFoto() {
+        return foto;
+    }
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+
     public Message() {
     }
-    public Message(String message, String user_name,String facebook) {
+    public Message(String message, String user_name,String facebook,String foto,String latitud,String longitud) {
         this.message = message;
         this.user_name = user_name;
         this.facebook=facebook;
+        this.foto=foto;
+        this.longitud=longitud;
+        this.latitud=latitud;
     }
 }

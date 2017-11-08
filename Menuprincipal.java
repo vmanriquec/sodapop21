@@ -27,6 +27,8 @@ import com.facebook.login.LoginManager;
 import com.food.sistemas.sodapopapp.modelo.Dashboardpedido;
 import com.food.sistemas.sodapopapp.modelo.Detallepedido;
 import com.food.sistemas.sodapopapp.modelo.Productos;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +41,7 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 public class Menuprincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
    String idd;
-
+    private GoogleApiClient mGoogleApiClient;
     private RecyclerView recycler,recycler2,recycler3;
     private RecyclerView.Adapter adapter,adapter2,adapter3;
     private RecyclerView.LayoutManager lManager,lManager2,lManager3;
@@ -153,9 +155,10 @@ public class Menuprincipal extends AppCompatActivity
             case R.id.mapaaction:
                 startActivity(new Intent(Menuprincipal.this, Map.class));
                 return true;
-           // case R.id.action_notification:
-             //   inflateInboxLayout();
-               // return true;
+           case R.id.chat:
+               startActivity(new Intent(Menuprincipal.this, Chatfirebase.class));
+
+               return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -238,5 +241,13 @@ public class Menuprincipal extends AppCompatActivity
     }
 
 
+    protected synchronized void buildGoogleApiClient() {
+
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(LocationServices.API)
+                .build();
+    }
 
 }

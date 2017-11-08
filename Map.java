@@ -3,6 +3,8 @@ package com.food.sistemas.sodapopapp;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,11 +30,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 
 public class Map extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static final int REQUEST_LOCATION = 0;
@@ -45,7 +51,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback,
     private static final String TAG = "";
     private GoogleMap mMap;
     private int markerCount;
-
+private String session,imgUrl,nombreususrio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,27 +60,29 @@ public class Map extends FragmentActivity implements OnMapReadyCallback,
 
         markerCount=0;
 
-        //Check If Google Services Is Available
+        String FileName ="myfile";
+        SharedPreferences sharedPreferences=getSharedPreferences(FileName, Context.MODE_PRIVATE);
+        session=sharedPreferences.getString("sessionid","");
+        nombreususrio=sharedPreferences.getString("sessionnombre","");
+        imgUrl = "https://graph.facebook.com/"+session+"/picture?type=small";
+        //Check si Google Services estan disponibles
         if (getServicesAvailable()) {
-            // Building the GoogleApi client
+            // iniciando la api
             buildGoogleApiClient();
             createLocationRequest();
-            Toast.makeText(this, "Google Service Is Available!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Los servicios estan disponibles!!", Toast.LENGTH_SHORT).show();
         }
 
-        //Create The MapView Fragment
+        //creando un fragmento en mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
     }
 
-    /**
-     * GOOGLE MAPS AND MAPS OBJECTS
-     *
-     * */
 
-    // After Creating the Map Set Initial Location
+
+    // iniciamos el mapa con la localizacion
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -97,7 +105,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback,
     }
 
     Marker mk = null;
-    // Add A Map Pointer To The MAp
+    // agregamos un maker o punto
     public void addMarker(GoogleMap googleMap, double lat, double lon) {
 
         if(markerCount==1){
@@ -108,15 +116,23 @@ public class Map extends FragmentActivity implements OnMapReadyCallback,
             //Set Custom BitMap for Pointer
             int height = 80;
             int width = 45;
+          //  Picasso.with(this) .load(imgUrl);
             BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.mipmap.icon_car);
             Bitmap b = bitmapdraw.getBitmap();
             Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
             mMap = googleMap;
-
+            Target target;
             LatLng latlong = new LatLng(lat, lon);
+
             mk= mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
-                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
+                   // .icon(BitmapDescriptorFactory.fromBitmap((smallMarker)))//este es el valor original
+
+.title(nombreususrio)
+
+                       );
+            PicassoMarker marker = new PicassoMarker(mk);
+            Picasso.with(Map.this).load(imgUrl).transform(new CropCircleTransformation()).resize(50, 50).into(marker);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 16));
 
             //Set Marker Count to 1 after first marker is created
@@ -363,5 +379,46 @@ public class Map extends FragmentActivity implements OnMapReadyCallback,
             }
         }
     }
+
+    /*
+    * llenarmuchos marketspicasso
+    *
+    *
+    * for(int x =0; x < mapIcon_url.length; x++){
+
+    new AddMarker().execute(mapIcon_url[x]);
+}
+
+
+public class AddMarker extends AsyncTask<String, Integer, BitmapDescriptor> {
+
+    BitmapDescriptor bitmapMarker1;
+    VenueDetails myVenue;
+
+    @Override
+    protected BitmapDescriptor doInBackground(String... url) {
+        myUrl = url[0];
+        try {
+            bitmapMarker1 = BitmapDescriptorFactory.fromBitmap(Picasso.with(getActivity()).load(myUrl).resize(marker_size, marker_size+15).get());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmapMarker1;
+    }
+
+    protected void onPostExecute(BitmapDescriptor icon) {
+
+        try {
+
+            map.addMarker(new MarkerOptions().position(marker_position).icon(icon)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+    *
+    * */
 }
 
