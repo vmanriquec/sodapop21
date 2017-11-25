@@ -1,5 +1,4 @@
 package com.food.sistemas.sodapopapp;
-
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
@@ -16,6 +15,9 @@ import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,16 +32,22 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-
-
 public class Map extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener{
-
+    private DatabaseReference mDatabase;
+    private DatabaseReference refDatabase;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static final int REQUEST_LOCATION = 0;
     private Location mLastLocation;
@@ -51,15 +59,15 @@ public class Map extends FragmentActivity implements OnMapReadyCallback,
     private static final String TAG = "";
     private GoogleMap mMap;
     private int markerCount;
+    String lat,lon;
+
 private String session,imgUrl,nombreususrio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
         markerCount=0;
-
         String FileName ="myfile";
         SharedPreferences sharedPreferences=getSharedPreferences(FileName, Context.MODE_PRIVATE);
         session=sharedPreferences.getString("sessionid","");
@@ -72,16 +80,12 @@ private String session,imgUrl,nombreususrio;
             createLocationRequest();
             Toast.makeText(this, "Los servicios estan disponibles!!", Toast.LENGTH_SHORT).show();
         }
-
         //creando un fragmento en mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
     }
-
-
-
     // iniciamos el mapa con la localizacion
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -106,7 +110,7 @@ private String session,imgUrl,nombreususrio;
 
     Marker mk = null;
     // agregamos un maker o punto
-    public void addMarker(GoogleMap googleMap, double lat, double lon) {
+    public void addMarker(GoogleMap googleMap, double lat, double lon,String face) {
 
         if(markerCount==1){
             animateMarker(mLastLocation,mk);
@@ -128,10 +132,11 @@ private String session,imgUrl,nombreususrio;
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
                    // .icon(BitmapDescriptorFactory.fromBitmap((smallMarker)))//este es el valor original
 
-.title(nombreususrio)
+.title(face)
 
                        );
             PicassoMarker marker = new PicassoMarker(mk);
+            String imgUrl = "https://graph.facebook.com/"+face+"/picture?type=small";
             Picasso.with(Map.this).load(imgUrl).transform(new CropCircleTransformation()).resize(50, 50).into(marker);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 16));
 
@@ -208,7 +213,25 @@ private String session,imgUrl,nombreususrio;
     protected void onPause() {
         super.onPause();
     }
+    ValueEventListener postListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            // Get Post object and use the values to update the UI
+            Message post = dataSnapshot.getValue(Message.class);
 
+            lon=post.getLongitud();
+            lat=post.getLatitud();
+        }
+
+
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            // Getting Post failed, log a message
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            // ...
+        }
+    };
     //Method to display the location on UI
     private void displayLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -223,22 +246,116 @@ private String session,imgUrl,nombreususrio;
             mLastLocation = LocationServices.FusedLocationApi
                     .getLastLocation(mGoogleApiClient);
 
+
+
             if (mLastLocation != null) {
                 double latitude = mLastLocation.getLatitude();
                 double longitude = mLastLocation.getLongitude();
                 String loc = "" + latitude + " ," + longitude + " ";
                 Toast.makeText(this,loc, Toast.LENGTH_SHORT).show();
-
+Log.d("ioo",session);
                 //Add pointer to the map at location
-                addMarker(mMap,latitude,longitude);
+                addMarker(mMap,latitude,longitude,session);
 
 
-            } else {
+
+
+                DatabaseReference dbr;
+                dbr=FirebaseDatabase.getInstance().getReference();
+
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                               DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+                GeoFire geoFire = new GeoFire(ref);
+                geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+
+                geoFire.getLocation(userId, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(String key, GeoLocation location) {
+                        if (location != null) {
+
+
+                          //  System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
+
+                            //LatLng pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                            //Marker pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.icon_car)));
+
+                           addMarker(mMap,mLastLocation.getLatitude(),mLastLocation.getLongitude(),"106810993281948");
+
+                        } else {
+                            System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.err.println("There was an error getting the GeoFire location: " + databaseError);
+                    }
+                });
+                String userIdo = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference refo = FirebaseDatabase.getInstance().getReference("user_name");
+                refo.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                       // usuarios.clear();
+                        for(DataSnapshot snapshot :
+                                dataSnapshot.getChildren())
+                        {
+                         //   Usuario usuario2 = snapshot.getValue(Usuario.class);
+                           // usuarios.add(usuario2);
+                        }
+                        //adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                                           });
+
+
+/*
+                Query prediccionesPorClaveHija =
+                       dbr.child("chat_data")
+                                .orderByChild("facebook").equalTo("106810993281948").limitToFirst(1);
+
+                prediccionesPorClaveHija.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                       // Message s =dataSnapshot.child("chat_data").getValue(Message.class);
+                        // ss=dataSnapshot.child("latitud").getValue(Message.class);
+                        // dd=dataSnapshot.child("longitud").getValue(Message.class);
+                        //message,user_name,facebook,latitud,longitud,foto;
+                        //Message aa = new Message( "s","s","s",ss, dd,"s");
+                     //   Log.d("ieoo",s.getLatitud());
+                     //   LatLng newLocation = new LatLng(Double.parseDouble(s.getLatitud()),Double.parseDouble(s.getLongitud()));
+                        //mMap.addMarker(new MarkerOptions()
+                          //      .position(newLocation)
+                            //    .title(dataSnapshot.getKey()));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+
+
+                    // addMarker(mMap,Double.parseDouble(lon),Double.parseDouble(lat),session);
+                });*/
+            }
+            else {
 
                 Toast.makeText(this, "Couldn't get the location. Make sure location is enabled on the device",
                         Toast.LENGTH_SHORT).show();
             }
+
         }
+
+
     }
 
 
